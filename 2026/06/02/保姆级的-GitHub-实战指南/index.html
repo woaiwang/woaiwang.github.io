@@ -1,12 +1,26 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-  <meta charset="utf-8">
-  
-  
-  <title>保姆级的 GitHub 实战指南 | 渊渟岳峙的技术笔记</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="🚀 告别 Git 恐惧症：从团队协作到开源贡献的 GitHub 进阶通关指南 摘要：平时自己写代码 git add&#x2F;commit&#x2F;push 行云流水，一到团队协作就疯狂代码冲突？想参与开源项目，却连 Fork 和 Clone 的区别都搞不清，甚至不知道怎么同步原作者的代码？这篇文章不讲废话，直接带你啃透 GitHub 的进阶名词与关键设置，并带入 4 个真实的开发场景，一次性打通你的任督二脉！">
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="🚀 告别 Git 恐惧症：从团队协作到开源贡献的 GitHub 进阶通关指南 摘要：平时自己写代码 git add&#x2F;commit&#x2F;push 行云流水，一到团队协作就疯狂代码冲突？想参与开源项目，却连 Fork 和 Clone 的区别都搞不清，甚至不知道怎么同步原作者的代码？这篇文章不讲废话，直接带你啃透 GitHub 的进阶名词与关键设置，并带入 4 个真实的开发场景，一次性打通你的任督二脉！">
 <meta property="og:type" content="article">
 <meta property="og:title" content="保姆级的 GitHub 实战指南">
 <meta property="og:url" content="http://example.com/2026/06/02/%E4%BF%9D%E5%A7%86%E7%BA%A7%E7%9A%84-GitHub-%E5%AE%9E%E6%88%98%E6%8C%87%E5%8D%97/index.html">
@@ -17,89 +31,193 @@
 <meta property="article:modified_time" content="2026-06-02T13:52:15.144Z">
 <meta property="article:author" content="查志渊">
 <meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2026/06/02/%E4%BF%9D%E5%A7%86%E7%BA%A7%E7%9A%84-GitHub-%E5%AE%9E%E6%88%98%E6%8C%87%E5%8D%97/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2026/06/02/%E4%BF%9D%E5%A7%86%E7%BA%A7%E7%9A%84-GitHub-%E5%AE%9E%E6%88%98%E6%8C%87%E5%8D%97/","path":"2026/06/02/保姆级的-GitHub-实战指南/","title":"保姆级的 GitHub 实战指南"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>保姆级的 GitHub 实战指南 | 渊渟岳峙的技术笔记</title>
   
-    <link rel="alternate" href="/atom.xml" title="渊渟岳峙的技术笔记" type="application/atom+xml">
-  
-  
-    <link rel="shortcut icon" href="/favicon.png">
-  
-  
-  
-<link rel="stylesheet" href="/css/style.css">
+
+
+
+
+
+
+
 
   
-    
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
 
   
+
+
+
+
+
+
   
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
 
-<meta name="generator" content="Hexo 7.3.0"></head>
 
-<body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">渊渟岳峙的技术笔记</a>
-      </h1>
-      
-        <h2 id="subtitle-wrap">
-          <a href="/" id="subtitle">用你喜欢的方式去度过一生</a>
-        </h2>
-      
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
     </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">渊渟岳峙的技术笔记</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">用你喜欢的方式去度过一生</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
         
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-        
-          <a class="nav-icon" href="/atom.xml" title="RSS 订阅"><span class="fa fa-rss"></span></a>
-        
-        <a class="nav-icon nav-search-btn" title="搜索"><span class="fa fa-search"></span></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%F0%9F%9A%80-%E5%91%8A%E5%88%AB-Git-%E6%81%90%E6%83%A7%E7%97%87%EF%BC%9A%E4%BB%8E%E5%9B%A2%E9%98%9F%E5%8D%8F%E4%BD%9C%E5%88%B0%E5%BC%80%E6%BA%90%E8%B4%A1%E7%8C%AE%E7%9A%84-GitHub-%E8%BF%9B%E9%98%B6%E9%80%9A%E5%85%B3%E6%8C%87%E5%8D%97"><span class="nav-number">1.</span> <span class="nav-text">🚀 告别 Git 恐惧症：从团队协作到开源贡献的 GitHub 进阶通关指南</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%9B%91-%E5%AF%BC%E8%AF%AD%EF%BC%9A%E4%BD%A0%E7%9C%9F%E7%9A%84%E4%BC%9A%E7%94%A8-GitHub-%E5%90%97%EF%BC%9F"><span class="nav-number">1.1.</span> <span class="nav-text">🛑 导语：你真的会用 GitHub 吗？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%87%E7%AB%A0%E9%80%82%E5%90%88%E6%80%8E%E4%B9%88%E8%AE%B2"><span class="nav-number">1.1.1.</span> <span class="nav-text">文章适合怎么讲</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%A7%A0-%E7%AC%AC%E4%B8%80%E9%83%A8%E5%88%86%EF%BC%9A%E6%A0%B8%E5%BF%83%E5%90%8D%E8%AF%8D%E9%87%8D%E5%A1%91%E4%B8%8E%E7%BB%8F%E5%85%B8%E8%AE%BE%E7%BD%AE%E8%A7%A3%E6%9E%90%EF%BC%88%E6%8B%92%E7%BB%9D%E4%B8%80%E7%9F%A5%E5%8D%8A%E8%A7%A3%EF%BC%89"><span class="nav-number">1.2.</span> <span class="nav-text">🧠 第一部分：核心名词重塑与经典设置解析（拒绝一知半解）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%9F%BA%E7%A1%80%E5%8A%A8%E4%BD%9C%E7%9A%84%E2%80%9C%E6%BD%9C%E5%8F%B0%E8%AF%8D%E2%80%9D%EF%BC%88%E4%BD%A0%E5%8F%AF%E8%83%BD%E4%B8%80%E7%9B%B4%E7%90%86%E8%A7%A3%E9%94%99%E4%BA%86%EF%BC%89"><span class="nav-number">1.2.1.</span> <span class="nav-text">1. 基础动作的“潜台词”（你可能一直理解错了）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%BC%80%E6%BA%90%E4%B8%8E%E5%8D%8F%E5%90%8C%E9%BB%91%E8%AF%9D%EF%BC%88%E8%B7%A8%E5%87%BA%E4%B8%AA%E4%BA%BA%E4%BB%93%E5%BA%93%E7%9A%84%E7%AC%AC%E4%B8%80%E6%AD%A5%EF%BC%89"><span class="nav-number">1.2.2.</span> <span class="nav-text">2. 开源与协同黑话（跨出个人仓库的第一步）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%F0%9F%9B%A1%EF%B8%8F-%E7%BB%8F%E5%85%B8%E4%BB%93%E5%BA%93%E8%AE%BE%E7%BD%AE%EF%BC%88%E9%AB%98%E7%BA%A7%E7%8E%A9%E5%AE%B6%E5%BF%85%E5%A4%87%EF%BC%89"><span class="nav-number">1.2.3.</span> <span class="nav-text">3. 🛡️ 经典仓库设置（高级玩家必备）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E7%9C%8B%E5%88%B0%E4%B8%80%E4%B8%AA%E5%A5%BD%E9%A1%B9%E7%9B%AE%EF%BC%8C%E7%AC%AC%E4%B8%80%E6%AD%A5%E5%BA%94%E8%AF%A5%E5%81%9A%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-number">1.2.4.</span> <span class="nav-text">4. 看到一个好项目，第一步应该做什么？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-GitHub-%E4%B8%8A%E6%9C%80%E5%AE%B9%E6%98%93%E6%B7%B7%E6%B7%86%E7%9A%84%E5%B8%B8%E7%94%A8%E5%90%8D%E8%AF%8D"><span class="nav-number">1.2.5.</span> <span class="nav-text">5. GitHub 上最容易混淆的常用名词</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E5%B8%B8%E8%A7%81-GitHub-%E7%8E%A9%E6%B3%95%EF%BC%9A%E4%B8%8D%E5%8F%AA%E6%98%AF%E5%8F%91%E4%BB%A3%E7%A0%81"><span class="nav-number">1.2.6.</span> <span class="nav-text">6. 常见 GitHub 玩法：不只是发代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%8E%AC-%E7%AC%AC%E4%BA%8C%E9%83%A8%E5%88%86%EF%BC%9A%E5%AE%9E%E6%88%98%E6%BC%94%E7%BB%83%E2%80%94%E2%80%94%E5%9B%9B%E5%A4%A7%E7%9C%9F%E5%AE%9E%E5%9C%BA%E6%99%AF%E5%B8%A6%E4%BD%A0%E7%8E%A9%E8%BD%AC%E5%8D%8F%E4%BD%9C"><span class="nav-number">1.3.</span> <span class="nav-text">🎬 第二部分：实战演练——四大真实场景带你玩转协作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%F0%9F%8C%B1-%E5%9C%BA%E6%99%AF%E9%9B%B6%EF%BC%9A%E7%AC%AC%E4%B8%80%E6%AC%A1%E7%9C%8B%E5%88%B0%E4%B8%80%E4%B8%AA%E5%A5%BD%E9%A1%B9%E7%9B%AE%EF%BC%8C%E5%BA%94%E8%AF%A5%E6%80%8E%E4%B9%88%E5%BC%80%E5%A7%8B%EF%BC%9F"><span class="nav-number">1.3.1.</span> <span class="nav-text">🌱 场景零：第一次看到一个好项目，应该怎么开始？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%F0%9F%A4%BA-%E5%9C%BA%E6%99%AF%E4%B8%80%EF%BC%9A%E5%9B%A2%E9%98%9F%E5%8D%8F%E5%90%8C%E4%B9%8B%E2%80%9C%E4%B8%8D%E8%A6%81%E5%8A%A8%E6%88%91%E7%9A%84%E4%B8%BB%E5%B9%B2%E4%BB%A3%E7%A0%81%E2%80%9D"><span class="nav-number">1.3.2.</span> <span class="nav-text">🤺 场景一：团队协同之“不要动我的主干代码”</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%F0%9F%94%84-%E5%9C%BA%E6%99%AF%E4%BA%8C%EF%BC%9A%E5%BC%80%E6%BA%90%E7%97%9B%E7%82%B9%E4%B9%8B%E2%80%9C%E6%88%91%E7%9A%84-Fork-%E4%BB%93%E5%BA%93%E8%90%BD%E5%90%8E%E4%BA%86%E6%80%8E%E4%B9%88%E5%8A%9E%EF%BC%9F%E2%80%9D"><span class="nav-number">1.3.3.</span> <span class="nav-text">🔄 场景二：开源痛点之“我的 Fork 仓库落后了怎么办？”</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E2%9A%94%EF%B8%8F-%E5%9C%BA%E6%99%AF%E4%B8%89%EF%BC%9A%E6%81%90%E6%80%96%E7%9A%84-Merge-Conflict%EF%BC%88%E5%90%88%E5%B9%B6%E5%86%B2%E7%AA%81%EF%BC%89%E5%AE%9E%E6%88%98%E5%8C%96%E8%A7%A3"><span class="nav-number">1.3.4.</span> <span class="nav-text">⚔️ 场景三：恐怖的 Merge Conflict（合并冲突）实战化解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%F0%9F%8F%86-%E5%9C%BA%E6%99%AF%E5%9B%9B%EF%BC%9A%E4%BD%A0%E7%9A%84%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%BC%80%E6%BA%90%E8%B4%A1%E7%8C%AE%EF%BC%88The-First-PR%EF%BC%89"><span class="nav-number">1.3.5.</span> <span class="nav-text">🏆 场景四：你的第一次开源贡献（The First PR）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%F0%9F%A7%AD-%E5%9C%BA%E6%99%AF%E4%BA%94%EF%BC%9A%E6%97%A5%E5%B8%B8%E5%8D%8F%E4%BD%9C%E9%87%8C%E6%9C%80%E5%B8%B8%E8%A7%81%E7%9A%84%E9%AB%98%E9%A2%91%E5%8A%A8%E4%BD%9C"><span class="nav-number">1.3.6.</span> <span class="nav-text">🧭 场景五：日常协作里最常见的高频动作</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%93%9A-%E7%AC%AC%E4%B8%89%E9%83%A8%E5%88%86%EF%BC%9AGitHub-%E5%B8%B8%E7%94%A8%E7%8E%A9%E6%B3%95%E8%A1%A5%E5%85%A8%EF%BC%88%E4%BB%8E%E4%BC%9A%E7%94%A8%E5%88%B0%E7%94%A8%E7%86%9F%EF%BC%89"><span class="nav-number">1.4.</span> <span class="nav-text">📚 第三部分：GitHub 常用玩法补全（从会用到用熟）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%85%88%E5%AD%A6%E4%BC%9A%E7%9C%8B%E4%B8%80%E4%B8%AA%E9%A1%B9%E7%9B%AE%E5%80%BC%E4%B8%8D%E5%80%BC%E5%BE%97%E7%94%A8"><span class="nav-number">1.4.1.</span> <span class="nav-text">1. 先学会看一个项目值不值得用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%94%B6%E8%97%8F%E3%80%81%E5%85%B3%E6%B3%A8%E3%80%81%E8%B7%9F%E8%B8%AA%E6%9B%B4%E6%96%B0"><span class="nav-number">1.4.2.</span> <span class="nav-text">2. 收藏、关注、跟踪更新</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%BC%80%E5%A7%8B%E4%BD%BF%E7%94%A8%E4%B8%80%E4%B8%AA%E9%A1%B9%E7%9B%AE%E7%9A%84%E6%AD%A3%E7%A1%AE%E5%A7%BF%E5%8A%BF"><span class="nav-number">1.4.3.</span> <span class="nav-text">3. 开始使用一个项目的正确姿势</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E6%8F%90%E9%97%AE%E5%92%8C%E6%8A%A5%E9%94%99%E7%9A%84%E6%AD%A3%E7%A1%AE%E6%96%B9%E5%BC%8F"><span class="nav-number">1.4.4.</span> <span class="nav-text">4. 提问和报错的正确方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E5%8D%8F%E4%BD%9C%E6%97%B6%E6%9C%80%E5%B8%B8%E7%94%A8%E7%9A%84-GitHub-%E5%8A%9F%E8%83%BD"><span class="nav-number">1.4.5.</span> <span class="nav-text">5. 协作时最常用的 GitHub 功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E9%A1%B9%E7%9B%AE%E7%BB%B4%E6%8A%A4%E8%80%85%E5%B8%B8%E8%A7%81%E7%9A%84-GitHub-%E7%8E%A9%E6%B3%95"><span class="nav-number">1.4.6.</span> <span class="nav-text">6. 项目维护者常见的 GitHub 玩法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-%E6%9B%B4%E8%BF%9B%E9%98%B6%E4%B8%80%E7%82%B9%E7%9A%84-GitHub-%E7%8E%A9%E6%B3%95"><span class="nav-number">1.4.7.</span> <span class="nav-text">7. 更进阶一点的 GitHub 玩法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-%E6%96%B0%E6%89%8B%E6%9C%80%E5%AE%B9%E6%98%93%E7%8A%AF%E7%9A%84%E5%87%A0%E4%B8%AA%E8%AF%AF%E5%8C%BA"><span class="nav-number">1.4.8.</span> <span class="nav-text">8. 新手最容易犯的几个误区</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%8F%81-%E7%BB%93%E8%AF%AD%EF%BC%9A%E5%BC%80%E6%BA%90%E5%85%B6%E5%AE%9E%E7%A6%BB%E4%BD%A0%E5%B9%B6%E4%B8%8D%E9%81%A5%E8%BF%9C"><span class="nav-number">1.5.</span> <span class="nav-text">🏁 结语：开源其实离你并不遥远</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">查志渊</p>
+  <div class="site-description" itemprop="description">磨炼自己的一点点技术</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/woaiwang" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;woaiwang" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
       </div>
     </div>
-  </div>
-</header>
 
-      <div class="outer">
-        <section id="main"><article id="post-保姆级的-GitHub-实战指南" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2026/06/02/%E4%BF%9D%E5%A7%86%E7%BA%A7%E7%9A%84-GitHub-%E5%AE%9E%E6%88%98%E6%8C%87%E5%8D%97/" class="article-date">
-  <time class="dt-published" datetime="2026-06-02T11:54:51.000Z" itemprop="datePublished">2026-06-02</time>
-</a>
     
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="p-name article-title" itemprop="headline name">
-      保姆级的 GitHub 实战指南
-    </h1>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
   
 
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/06/02/%E4%BF%9D%E5%A7%86%E7%BA%A7%E7%9A%84-GitHub-%E5%AE%9E%E6%88%98%E6%8C%87%E5%8D%97/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="查志渊">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="渊渟岳峙的技术笔记">
+      <meta itemprop="description" content="磨炼自己的一点点技术">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="保姆级的 GitHub 实战指南 | 渊渟岳峙的技术笔记">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          保姆级的 GitHub 实战指南
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
       
-        <h1 id="🚀-告别-Git-恐惧症：从团队协作到开源贡献的-GitHub-进阶通关指南"><a href="#🚀-告别-Git-恐惧症：从团队协作到开源贡献的-GitHub-进阶通关指南" class="headerlink" title="🚀 告别 Git 恐惧症：从团队协作到开源贡献的 GitHub 进阶通关指南"></a>🚀 告别 Git 恐惧症：从团队协作到开源贡献的 GitHub 进阶通关指南</h1><blockquote>
+
+      <time title="创建时间：2026-06-02 19:54:51 / 修改时间：21:52:15" itemprop="dateCreated datePublished" datetime="2026-06-02T19:54:51+08:00">2026-06-02</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="🚀-告别-Git-恐惧症：从团队协作到开源贡献的-GitHub-进阶通关指南"><a href="#🚀-告别-Git-恐惧症：从团队协作到开源贡献的-GitHub-进阶通关指南" class="headerlink" title="🚀 告别 Git 恐惧症：从团队协作到开源贡献的 GitHub 进阶通关指南"></a>🚀 告别 Git 恐惧症：从团队协作到开源贡献的 GitHub 进阶通关指南</h1><blockquote>
 <p><strong>摘要</strong>：平时自己写代码 <code>git add/commit/push</code> 行云流水，一到团队协作就疯狂代码冲突？想参与开源项目，却连 <code>Fork</code> 和 <code>Clone</code> 的区别都搞不清，甚至不知道怎么同步原作者的代码？这篇文章不讲废话，直接带你啃透 GitHub 的进阶名词与关键设置，并带入 4 个真实的开发场景，一次性打通你的任督二脉！</p>
 </blockquote>
 <hr>
@@ -497,113 +615,69 @@
 <li>开源并不一定要写出惊世骇俗的代码，哪怕是修复一个标点符号、补一段文档、写一个示例，也是对开源世界的一份贡献。</li>
 </ul>
 
-      
     </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2026/06/02/%E4%BF%9D%E5%A7%86%E7%BA%A7%E7%9A%84-GitHub-%E5%AE%9E%E6%88%98%E6%8C%87%E5%8D%97/" data-id="cmpwpez1v0001hsb91zn6f114" data-title="保姆级的 GitHub 实战指南" class="article-share-link"><span class="fa fa-share">分享</span></a>
-      
-      
-      
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/06/02/hello-world/" rel="prev" title="Hello World">
+                  <i class="fa fa-angle-left"></i> Hello World
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
     </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2024 – 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">查志渊</span>
   </div>
-  
-    
-<nav id="article-nav">
-  
-  
-    <a href="/2026/06/02/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">后一篇</strong>
-      <div class="article-nav-title">Hello World</div>
-    </a>
-  
-</nav>
-
-  
-</article>
-
-
-</section>
-        
-          <aside id="sidebar">
-  
-    
-
-  
-    
-
-  
-    
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">归档</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/06/">六月 2026</a></li></ul>
-    </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">最新文章</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2026/06/02/%E4%BF%9D%E5%A7%86%E7%BA%A7%E7%9A%84-GitHub-%E5%AE%9E%E6%88%98%E6%8C%87%E5%8D%97/">保姆级的 GitHub 实战指南</a>
-          </li>
-        
-          <li>
-            <a href="/2026/06/02/hello-world/">Hello World</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-</aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      
-      &copy; 2026 查志渊<br>
-      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
-</footer>
 
     </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
-    
-
-
-<script src="/js/jquery-3.6.4.min.js"></script>
-
-
+  </footer>
 
   
-<script src="/fancybox/jquery.fancybox.min.js"></script>
-
-
-
-
-<script src="/js/script.js"></script>
-
-
-
-
-
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
   </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
 </body>
 </html>
