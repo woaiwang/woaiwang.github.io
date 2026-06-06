@@ -139,9 +139,19 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-count">5</span>
           <span class="site-state-item-name">日志</span>
         </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
 </div>
@@ -162,6 +172,320 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/06/06/%E9%80%82%E5%90%88%E6%96%B0%E6%89%8B%E5%AE%9D%E5%AE%9D%E7%9A%84vibe-coding/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="查志渊">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="渊渟岳峙的技术笔记">
+      <meta itemprop="description" content="磨炼自己的一点点技术">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=" | 渊渟岳峙的技术笔记">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2026/06/06/%E9%80%82%E5%90%88%E6%96%B0%E6%89%8B%E5%AE%9D%E5%AE%9D%E7%9A%84vibe-coding/" class="post-title-link" itemprop="url">适合新手宝宝的vibe coding</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2026-06-06 23:03:34 / 修改时间：23:16:02" itemprop="dateCreated datePublished" datetime="2026-06-06T23:03:34+08:00">2026-06-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">学习</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <hr>
+<h1 id="Claude-Code-×-Vibe-Coding：写给中高级开发者的硬核实战指南"><a href="#Claude-Code-×-Vibe-Coding：写给中高级开发者的硬核实战指南" class="headerlink" title="Claude Code × Vibe Coding：写给中高级开发者的硬核实战指南"></a>Claude Code × Vibe Coding：写给中高级开发者的硬核实战指南</h1><blockquote>
+<p><strong>当前版本参考</strong>：v2.1.163<br><strong>适用环境</strong>：macOS &#x2F; Linux (WSL2)<br><strong>前置要求</strong>：Claude Pro&#x2F;Max 订阅 或 API Key</p>
+</blockquote>
+<h2 id="一、极简配置与环境调优"><a href="#一、极简配置与环境调优" class="headerlink" title="一、极简配置与环境调优"></a>一、极简配置与环境调优</h2><h3 id="1-1-安装（别再用-npm-了）"><a href="#1-1-安装（别再用-npm-了）" class="headerlink" title="1.1 安装（别再用 npm 了）"></a>1.1 安装（别再用 npm 了）</h3><p>⚠️ <strong>注意</strong>：npm 包 <code>@anthropic-ai/claude-code</code> 在 v2.1.113 时已废弃，CLI 已迁移为平台原生二进制。请勿使用旧方式安装。</p>
+<p><strong>推荐安装方式（支持后台自动更新）</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># macOS / Linux 原生安装（推荐，自动后台更新）</span></span><br><span class="line">curl -fsSL https://code.claude.com/install.sh | sh</span><br><span class="line"></span><br><span class="line"><span class="comment"># macOS Homebrew（不自动更新，需手动 brew upgrade）</span></span><br><span class="line">brew install claude-code         <span class="comment"># 稳定版，约延后一周</span></span><br><span class="line">brew install claude-code@latest  <span class="comment"># 最新版</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="1-2-大佬级环境变量配置"><a href="#1-2-大佬级环境变量配置" class="headerlink" title="1.2 大佬级环境变量配置"></a>1.2 大佬级环境变量配置</h3><p>不要每次都在终端里配，直接把以下配置写进你的 <code>~/.zshrc</code> 或 <code>~/.bashrc</code>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ── Claude Code 核心环境变量 ──────────────────────────────</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 1. API Key（订阅用户走 OAuth 则无需此项）</span></span><br><span class="line"><span class="built_in">export</span> ANTHROPIC_API_KEY=<span class="string">&quot;sk-ant-...&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. 指定努力等级（auto/low/medium/high/xhigh）</span></span><br><span class="line"><span class="comment"># xhigh 对应 Opus 4.7 模型，优先级高于配置文件</span></span><br><span class="line"><span class="built_in">export</span> CLAUDE_CODE_EFFORT=<span class="string">&quot;high&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 3. 关闭遥测/反馈上报（适合企业环境/强隐私需求）</span></span><br><span class="line"><span class="built_in">export</span> CLAUDE_CODE_DISABLE_TELEMETRY=1</span><br><span class="line"></span><br><span class="line"><span class="comment"># 4. 启动时从额外目录加载 CLAUDE.md</span></span><br><span class="line"><span class="built_in">export</span> CLAUDE_ADD_DIR_LOAD_CLAUDE_MD=1</span><br><span class="line"></span><br><span class="line"><span class="comment"># 5. 禁用 SessionEnd Cron（节省内存）</span></span><br><span class="line"><span class="built_in">export</span> CLAUDE_CODE_DISABLE_CRON=<span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="1-3-Shell-补全（Tab-键补全-CLI-flags）"><a href="#1-3-Shell-补全（Tab-键补全-CLI-flags）" class="headerlink" title="1.3 Shell 补全（Tab 键补全 CLI flags）"></a>1.3 Shell 补全（Tab 键补全 CLI flags）</h3><p>CLI 自带补全脚本，极大提升输入效率：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># zsh</span></span><br><span class="line">claude completion zsh &gt;&gt; ~/.zshrc &amp;&amp; <span class="built_in">source</span> ~/.zshrc</span><br><span class="line"></span><br><span class="line"><span class="comment"># bash</span></span><br><span class="line">claude completion bash &gt;&gt; ~/.bashrc &amp;&amp; <span class="built_in">source</span> ~/.bashrc</span><br><span class="line"></span><br><span class="line"><span class="comment"># fish</span></span><br><span class="line">claude completion fish &gt; ~/.config/fish/completions/claude.fish</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-4-项目结构黄金模板"><a href="#1-4-项目结构黄金模板" class="headerlink" title="1.4 项目结构黄金模板"></a>1.4 项目结构黄金模板</h3><p>一个经得起实战考验的 Vibe Coding 项目结构如下：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">my-project/</span><br><span class="line">├── CLAUDE.md                   # 项目永久记忆（每次 session 都强制加载）</span><br><span class="line">├── .claudeignore               # 排除上下文文件（防 Token 爆炸）</span><br><span class="line">├── .claude/</span><br><span class="line">│   ├── settings.json           # 权限 + Hooks（必须提交进 git 供团队共享）</span><br><span class="line">│   ├── agents/                 # 自定义子智能体</span><br><span class="line">│   │   ├── code-reviewer.md</span><br><span class="line">│   │   └── codebase-explorer.md</span><br><span class="line">│   ├── commands/               # 自定义斜杠命令</span><br><span class="line">│   └── hooks/                  # 确定性 Hook 脚本</span><br><span class="line">│       ├── pre-bash-guard.sh</span><br><span class="line">│       └── post-edit-format.sh</span><br><span class="line">└── ... (项目文件)</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-5-CLAUDE-md-—-写法的反常识真相"><a href="#1-5-CLAUDE-md-—-写法的反常识真相" class="headerlink" title="1.5 CLAUDE.md — 写法的反常识真相"></a>1.5 CLAUDE.md — 写法的反常识真相</h3><p><code>CLAUDE.md</code> 是一个特殊文件，Claude 在每次对话开始时都会读取它。你可以通过跑 <code>/init</code> 生成初稿，它会自动分析你的代码库并生成基础配置。</p>
+<p>❌ <strong>反常识：不要往 CLAUDE.md 里塞代码风格规则！</strong><br>永远不要让 LLM 去做 linter 的工作。LLM 相比传统 linter 既贵又慢，把代码风格指南塞进这里会吃掉大量上下文窗口并降低性能。优先使用指针（<code>file:line</code>）而非复制粘贴代码。</p>
+<p><strong>一个经过实战验证的 CLAUDE.md 模板：</strong></p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="section"># My SaaS API</span></span><br><span class="line">Backend service for user management. Node.js + TypeScript + PostgreSQL.</span><br><span class="line"></span><br><span class="line"><span class="section">## Tech Stack</span></span><br><span class="line"><span class="bullet">-</span> Runtime: Node 20, Bun for scripts</span><br><span class="line"><span class="bullet">-</span> ORM: Prisma</span><br><span class="line"><span class="bullet">-</span> Test: Vitest</span><br><span class="line"><span class="bullet">-</span> Lint/Format: Biome (handles both, NOT Prettier+ESLint)</span><br><span class="line"></span><br><span class="line"><span class="section">## How to verify changes</span></span><br><span class="line"><span class="code">`bun run typecheck`</span>   # tsc --noEmit</span><br><span class="line"><span class="code">`bun run test`</span>        # vitest run</span><br><span class="line"><span class="code">`bun run lint`</span>        # biome check .</span><br><span class="line"></span><br><span class="line"><span class="section">## Architecture map</span></span><br><span class="line"><span class="bullet">-</span> src/routes/ → HTTP handlers</span><br><span class="line"><span class="bullet">-</span> src/services/ → business logic</span><br><span class="line"><span class="bullet">-</span> src/db/ → Prisma client + migrations</span><br><span class="line"><span class="bullet">-</span> src/lib/ → shared utilities</span><br><span class="line"></span><br><span class="line"><span class="section">## Hard rules</span></span><br><span class="line"><span class="bullet">-</span> Never edit .env or prisma/migrations/</span><br><span class="line"><span class="bullet">-</span> Always run tests before committing</span><br><span class="line"><span class="bullet">-</span> Use bun not npm</span><br><span class="line"></span><br><span class="line"><span class="section">## File pointers</span></span><br><span class="line"><span class="bullet">-</span> Auth logic: see src/services/auth.ts:42</span><br><span class="line"><span class="bullet">-</span> DB schema: prisma/schema.prisma</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-6-claudeignore-最佳实践"><a href="#1-6-claudeignore-最佳实践" class="headerlink" title="1.6 .claudeignore 最佳实践"></a>1.6 <code>.claudeignore</code> 最佳实践</h3><p><code>.claudeignore</code> 的作用类似 <code>.gitignore</code>，防止自动文件发现期间将垃圾文件拉入上下文。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"># .claudeignore</span><br><span class="line"></span><br><span class="line"># 依赖（最大的上下文杀手）</span><br><span class="line">node_modules/</span><br><span class="line">.venv/</span><br><span class="line">vendor/</span><br><span class="line"></span><br><span class="line"># 构建产物</span><br><span class="line">dist/</span><br><span class="line">build/</span><br><span class="line">.next/</span><br><span class="line"></span><br><span class="line"># 数据库/大文件</span><br><span class="line">*.sqlite</span><br><span class="line">data/raw/</span><br><span class="line"></span><br><span class="line"># 敏感文件（注意：仍需 settings.json 做硬性拒绝）</span><br><span class="line">.env</span><br><span class="line">.env.*</span><br><span class="line">secrets/</span><br></pre></td></tr></table></figure>
+
+<p>⚠️ <strong>高能预警</strong>：<code>.claudeignore</code> 不会让文件完全不可见。对于真正敏感的 secrets，必须在 <code>.claude/settings.json</code> 里做硬性拒绝：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;permissions&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;deny&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">      <span class="string">&quot;Read(.env)&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="string">&quot;Read(.env.*)&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="string">&quot;Read(./secrets/**)&quot;</span></span><br><span class="line">    <span class="punctuation">]</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="二、Vibe-Coding-核心心法在-Claude-Code-中的映射"><a href="#二、Vibe-Coding-核心心法在-Claude-Code-中的映射" class="headerlink" title="二、Vibe Coding 核心心法在 Claude Code 中的映射"></a>二、Vibe Coding 核心心法在 Claude Code 中的映射</h2><p>Claude Code 不是一个“能生成代码的聊天界面”，而是一个<strong>能规划工作、读取代码库、跨目录编辑文件、运行测试并创建 PR 的 Agentic（智能体）工具</strong>。</p>
+<h3 id="2-1-核心心法映射表"><a href="#2-1-核心心法映射表" class="headerlink" title="2.1 核心心法映射表"></a>2.1 核心心法映射表</h3><table>
+<thead>
+<tr>
+<th align="left">Vibe Coding 心法</th>
+<th align="left">Claude Code 对应机制</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>描述意图，不描述步骤</strong></td>
+<td align="left">自然语言 → 多步骤 Agentic 自动执行</td>
+</tr>
+<tr>
+<td align="left"><strong>先让它跑起来</strong></td>
+<td align="left"><code>Auto Mode</code> + 宽松权限</td>
+</tr>
+<tr>
+<td align="left"><strong>保持心流</strong></td>
+<td align="left">会话恢复 (<code>-c</code>) + <code>CLAUDE.md</code> 持久记忆</td>
+</tr>
+<tr>
+<td align="left"><strong>快速迭代</strong></td>
+<td align="left"><code>/rewind</code> + <code>/fork</code> 回滚与分支实验</td>
+</tr>
+<tr>
+<td align="left"><strong>信任工具</strong></td>
+<td align="left"><code>--dangerously-skip-permissions</code>（仅限受控 CI 环境）</td>
+</tr>
+</tbody></table>
+<h3 id="2-2-精准控制文件读写权限"><a href="#2-2-精准控制文件读写权限" class="headerlink" title="2.2 精准控制文件读写权限"></a>2.2 精准控制文件读写权限</h3><p>读取类工具（如 <code>Read</code>, <code>Glob</code>, <code>Grep</code>）默认自动批准。修改类工具（如 <code>Edit</code>, <code>Bash</code>）需要你的批准。根据场景选择模式：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 模式 1：默认（安全，每次修改都提示确认）</span></span><br><span class="line">claude</span><br><span class="line"></span><br><span class="line"><span class="comment"># 模式 2：Auto Mode（推荐日常开发）</span></span><br><span class="line"><span class="comment"># 让独立的分类器模型自动审查命令，只拦截高风险操作</span></span><br><span class="line">claude --auto-approve</span><br><span class="line"></span><br><span class="line"><span class="comment"># 模式 3：完全跳过权限（极度危险，仅用于沙盒或 CI）</span></span><br><span class="line">claude --dangerously-skip-permissions -p <span class="string">&quot;run all tests and fix failures&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>你可以通过 <code>settings.json</code> 预批准安全的开发命令，同时拉黑危险命令：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;permissions&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;allow&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">      <span class="string">&quot;Bash(bun run *)&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="string">&quot;Bash(git status)&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="string">&quot;Bash(git diff *)&quot;</span></span><br><span class="line">    <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;deny&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">      <span class="string">&quot;Bash(git push --force*)&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="string">&quot;Bash(rm -rf *)&quot;</span></span><br><span class="line">    <span class="punctuation">]</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-3-让-Claude-先“采访”你，再动手"><a href="#2-3-让-Claude-先“采访”你，再动手" class="headerlink" title="2.3 让 Claude 先“采访”你，再动手"></a>2.3 让 Claude 先“采访”你，再动手</h3><p>对于大型功能，别直接叫它动手写代码。从最简短的 Prompt 开始，让它反向收集需求：</p>
+<blockquote>
+<p>我想构建 [简短描述]。<br>请使用 AskUserQuestion 工具详细采访我。<br>询问技术实现、UI&#x2F;UX、边界情况、顾虑和权衡。不要问显而易见的问题，深入挖掘我可能没考虑到的难点。<br>持续采访直到我们覆盖所有内容，然后将完整规格写入 SPEC.md。<br>规格完成后，我们将开启一个新 session 来执行它。</p>
+</blockquote>
+<h3 id="2-4-Plan-Mode-—-大改动前的安全网"><a href="#2-4-Plan-Mode-—-大改动前的安全网" class="headerlink" title="2.4 Plan Mode — 大改动前的安全网"></a>2.4 Plan Mode — 大改动前的安全网</h3><p>对生产关键文件或数据库迁移，先用 Plan Mode 让 Claude 处于<strong>只读状态</strong>。它会分析代码并给出修改计划，但绝不动手。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 启动时直接进入 Plan Mode</span></span><br><span class="line">claude --plan</span><br><span class="line"></span><br><span class="line"><span class="comment"># 或在交互 session 内输入：</span></span><br><span class="line">&gt; /plan</span><br><span class="line"><span class="comment"># 或直接按 Shift+Tab 切换</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="三、进阶与硬核操作（核心干货）"><a href="#三、进阶与硬核操作（核心干货）" class="headerlink" title="三、进阶与硬核操作（核心干货）"></a>三、进阶与硬核操作（核心干货）</h2><h3 id="3-1-精准控制-Context，避免-Token-浪费"><a href="#3-1-精准控制-Context，避免-Token-浪费" class="headerlink" title="3.1 精准控制 Context，避免 Token 浪费"></a>3.1 精准控制 Context，避免 Token 浪费</h3><p>Context 管理是 Vibe Coding 的最核心技能。</p>
+<ul>
+<li><strong>&#x2F;compact — Token 救星</strong><br>当上下文超过 80% 时，用它把历史记录压缩成密集摘要。<br><em>用法</em>：<code>&gt; /compact Focus on the auth module and current test failures</code></li>
+<li><strong>&#x2F;fork — 对话层面的 Git Branch</strong><br>想尝试一种激进的重构方式？用 <code>/fork try-aggressive-approach</code> 创建对话分支。如果失败了，直接回到原来的 session，不破坏工作状态。</li>
+<li><strong>&#x2F;rewind — 后悔药</strong><br>双击 <code>Esc</code> 或输入 <code>/rewind</code>。你可以选择“仅回滚代码”，在保留对话（诊断过程）的同时撤销所有文件修改。再也不用 <code>git stash</code> 了。</li>
+</ul>
+<p><strong>跨项目工作（无需切目录）：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">claude --add-dir ../backend -p <span class="string">&quot;Validate that API calls in current dir match endpoints in ../backend&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-Bash-管道符的高阶联动"><a href="#3-2-Bash-管道符的高阶联动" class="headerlink" title="3.2 Bash 管道符的高阶联动"></a>3.2 Bash 管道符的高阶联动</h3><p>加上 <code>-p</code> 标志，Claude Code 就会运行一次查询后直接退出（不启动交互 session），非常适合结合 Bash 管道（Piping）做自动化：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 自动分析并修复 TypeScript 错误，输出结构化 JSON 供脚本消费</span></span><br><span class="line">npx tsc --noEmit 2&gt;&amp;1 | claude -p <span class="string">&quot;categorize these TS errors by severity and suggest fixes&quot;</span> --output-format json &gt; ts-errors.json</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. CI 中自动检测 PR 安全回归</span></span><br><span class="line">git diff origin/main...HEAD | claude -p \</span><br><span class="line">  <span class="string">&quot;Does this diff introduce any security vulnerabilities? Reply YES or NO then explain.&quot;</span> \</span><br><span class="line">  --output-format json</span><br><span class="line"></span><br><span class="line"><span class="comment"># 3. 将线上 Sentry 错误直接转化为本地任务清单</span></span><br><span class="line">curl -s <span class="string">&quot;https://sentry.io/api/.../issues/&quot;</span> -H <span class="string">&quot;Authorization: Bearer <span class="variable">$TOKEN</span>&quot;</span> | \</span><br><span class="line">  claude -p <span class="string">&quot;Convert these Sentry issues into a prioritized todo list with reproduction steps&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-3-大型重构任务：子智能体-Worktree-并行战术（最硬核）"><a href="#3-3-大型重构任务：子智能体-Worktree-并行战术（最硬核）" class="headerlink" title="3.3 大型重构任务：子智能体 + Worktree 并行战术（最硬核）"></a>3.3 大型重构任务：子智能体 + Worktree 并行战术（最硬核）</h3><p>当面临复杂的大型重构时，将任务拆分给子智能体（Subagents），并利用 Git Worktrees 进行<strong>并行无冲突执行</strong>。</p>
+<p><strong>第一步：为并行任务创建独立 Worktree（零冲突）</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 打开三个 Terminal，互不污染</span></span><br><span class="line">claude --worktree refactor-auth-module     <span class="comment"># Terminal 1</span></span><br><span class="line">claude --worktree migrate-api-layer        <span class="comment"># Terminal 2</span></span><br><span class="line">claude --worktree fix-prod-memory-leak     <span class="comment"># Terminal 3</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>第二步：定义专业化子智能体</strong><br>在 <code>.claude/agents/</code> 目录下创建 YAML+Markdown 结合的定义文件：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># .claude/agents/codebase-explorer.md</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">name:</span> <span class="string">codebase-explorer</span></span><br><span class="line"><span class="attr">description:</span> <span class="string">Read-only</span> <span class="string">agent</span> <span class="string">for</span> <span class="string">deep</span> <span class="string">codebase</span> <span class="string">exploration</span></span><br><span class="line"><span class="attr">tools:</span> <span class="string">Read,</span> <span class="string">Glob,</span> <span class="string">Grep,</span> <span class="string">Bash</span></span><br><span class="line"><span class="attr">model:</span> <span class="string">claude-haiku-4-5</span>  <span class="comment"># 便宜快速，适合探索</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="string">你是一个只读探索智能体。分析代码库并返回简洁的发现（带文件路径）。</span></span><br><span class="line"><span class="string">绝不要修改任何文件。</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># .claude/agents/code-reviewer.md</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">name:</span> <span class="string">code-reviewer</span></span><br><span class="line"><span class="attr">description:</span> <span class="string">Reviews</span> <span class="string">code</span> <span class="string">for</span> <span class="string">security,</span> <span class="string">performance,</span> <span class="string">and</span> <span class="string">correctness.</span> <span class="string">Read-only.</span></span><br><span class="line"><span class="attr">tools:</span> <span class="string">Read,</span> <span class="string">Glob,</span> <span class="string">Grep,</span> <span class="string">Bash</span></span><br><span class="line"><span class="attr">model:</span> <span class="string">claude-sonnet-4-6</span> <span class="comment"># 旗舰模型，适合深度审查</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="string">你是一位高级代码审查者。只审查变更的文件。</span></span><br><span class="line"><span class="string">关注：安全漏洞、性能问题、边界情况。不要修改任何文件。</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>第三步：发起重构指令</strong><br>在主 Session 中派发任务：</p>
+<blockquote>
+<p>我需要将 authentication 模块从 Passport.js 迁移到自定义 JWT 实现。</p>
+<ol>
+<li>先使用 <code>codebase-explorer</code> 分析当前 auth 实现，返回涉及文件清单。</li>
+<li>在各自的 worktree 中并行实现逻辑。</li>
+<li>完成后，调用 <code>code-reviewer</code> 审查 diff。审查通过后再生成 PR 描述。</li>
+</ol>
+</blockquote>
+<h3 id="3-4-Hooks-系统：注入确定性保障"><a href="#3-4-Hooks-系统：注入确定性保障" class="headerlink" title="3.4 Hooks 系统：注入确定性保障"></a>3.4 Hooks 系统：注入确定性保障</h3><p><code>CLAUDE.md</code> 里的规则大模型偶尔会忘，但 <strong>Hooks 每次都会确定性触发</strong>。<br>在 <code>.claude/settings.json</code> 中配置：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;hooks&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;PreToolUse&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">      <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;matcher&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Bash&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;hooks&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">&#123;</span><span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;command&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;command&quot;</span><span class="punctuation">:</span> <span class="string">&quot;./.claude/hooks/pre-bash-guard.sh&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">]</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;PostToolUse&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">      <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;matcher&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Write|Edit&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;hooks&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">          <span class="punctuation">&#123;</span><span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;command&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;command&quot;</span><span class="punctuation">:</span> <span class="string">&quot;npx biome format --write \&quot;$CLAUDE_TOOL_INPUT_FILE_PATH\&quot;&quot;</span><span class="punctuation">&#125;</span></span><br><span class="line">        <span class="punctuation">]</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>硬核技巧：使用 <code>exit 2</code> 阻断或强制执行</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="comment"># .claude/hooks/pre-bash-guard.sh</span></span><br><span class="line">COMMAND=$(<span class="built_in">cat</span> | jq -r <span class="string">&#x27;.tool_input.command&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> <span class="built_in">echo</span> <span class="string">&quot;<span class="variable">$COMMAND</span>&quot;</span> | grep -qi <span class="string">&quot;drop table&quot;</span>; <span class="keyword">then</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;🚫 Blocked: &#x27;drop table&#x27; detected!&quot;</span> &gt;&amp;2</span><br><span class="line">  <span class="built_in">exit</span> 2  <span class="comment"># exit 2 在 PreToolUse 中表示：立刻阻断工具调用，报错给 Claude！</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"><span class="built_in">exit</span> 0</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="四、避坑指南（Anti-patterns）"><a href="#四、避坑指南（Anti-patterns）" class="headerlink" title="四、避坑指南（Anti-patterns）"></a>四、避坑指南（Anti-patterns）</h2><h3 id="❌-坑-1：在一个超长-Session-里干所有事"><a href="#❌-坑-1：在一个超长-Session-里干所有事" class="headerlink" title="❌ 坑 1：在一个超长 Session 里干所有事"></a>❌ 坑 1：在一个超长 Session 里干所有事</h3><p>新手喜欢开一个 session，加功能、改 bug、写测试全在里面。结果导致上下文被严重压缩，Claude 开始遗忘三小时前的架构决策。<br><strong>✅ 大佬的做法</strong>：<br>每个独立任务使用 <code>/clear</code> 开新 session。依赖 <code>CLAUDE.md</code> 保留永久架构知识，使用 <code>/compact</code> 进行定向压缩。</p>
+<h3 id="❌-坑-2：Prompt-太模糊，导致瞎猜"><a href="#❌-坑-2：Prompt-太模糊，导致瞎猜" class="headerlink" title="❌ 坑 2：Prompt 太模糊，导致瞎猜"></a>❌ 坑 2：Prompt 太模糊，导致瞎猜</h3><p>新手：“帮我优化这个函数”。Claude 不知道优化指的是性能、可读性还是内存，大概率改错。<br><strong>✅ 大佬的做法</strong>（目标 + 约束 + 验证）：</p>
+<blockquote>
+<p>优化 src&#x2F;user.ts 中的 getUserData 函数。<br><strong>目标</strong>：减少数据库查询次数（解决 N+1）。<br><strong>约束</strong>：保持函数签名不变；不引入新依赖。<br><strong>验证</strong>：必须通过 <code>bun run test src/user.test.ts</code>。完成后告诉我时间复杂度的变化。</p>
+</blockquote>
+<h3 id="❌-坑-3：生产环境不控制权限"><a href="#❌-坑-3：生产环境不控制权限" class="headerlink" title="❌ 坑 3：生产环境不控制权限"></a>❌ 坑 3：生产环境不控制权限</h3><p>让不受约束的 AI 读取环境文件或修改 git 历史。<br><strong>✅ 大佬的做法</strong>：<br>使用 <code>--allowedTools</code> 严格限制单次 session。<br><code>claude --allowedTools &quot;Read,Glob,Grep,Bash(git log*)&quot;</code>（打造一个纯探索、零破坏风险的 session）。</p>
+<hr>
+<h2 id="五、完整-Vibe-Coding-实战-Workflow"><a href="#五、完整-Vibe-Coding-实战-Workflow" class="headerlink" title="五、完整 Vibe Coding 实战 Workflow"></a>五、完整 Vibe Coding 实战 Workflow</h2><p><strong>案例</strong>：用 Claude Code 从零排查并修复 Node.js 内存泄漏（OOM 崩溃）。</p>
+<p><strong>Phase 1：探索阶段（不污染主上下文）</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt; use the codebase-explorer subagent to:</span><br><span class="line">  1. Find missing .removeListener() calls</span><br><span class="line">  2. Find un-cleared setIntervals</span><br><span class="line">  3. Map cache implementations without eviction policies</span><br></pre></td></tr></table></figure>
+
+<p><strong>Phase 2：管道收集运行时数据</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 将 heapdump 分析结果直接 pipe 给 Claude 定位问题</span></span><br><span class="line"><span class="built_in">cat</span> heapdump-analysis.txt | claude -p <span class="string">&quot;Analyze this V8 heap dump. Identify top 3 memory leak candidates.&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>Phase 3：Plan Mode 审查（零风险）</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; /plan</span><br><span class="line"><span class="comment"># Claude 给出 rateLimiter.ts 和 emailQueue.ts 的修复计划，人工 Review 确认。</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>Phase 4：Worktree 并行修复</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Terminal 1</span></span><br><span class="line">claude --worktree fix/rate-limiter</span><br><span class="line">&gt; 按照 Plan 修复 rateLimiter，实现 LRU，跑通测试后提交。</span><br><span class="line"></span><br><span class="line"><span class="comment"># Terminal 2</span></span><br><span class="line">claude --worktree fix/email-queue</span><br><span class="line">&gt; 按照 Plan 修复 emailQueue 的 EventEmitter，跑通测试后提交。</span><br></pre></td></tr></table></figure>
+
+<p><strong>Phase 5：Review 与合并</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 回到主分支</span></span><br><span class="line">&gt; use the code-reviewer subagent to review the changes <span class="keyword">in</span> those two worktrees.</span><br><span class="line"><span class="comment"># 审查通过后</span></span><br><span class="line">git merge ...</span><br><span class="line">&gt; Write a detailed PR description <span class="keyword">for</span> these memory leak fixes.</span><br></pre></td></tr></table></figure>
+
+<h3 id="🔁-Workflow-总结："><a href="#🔁-Workflow-总结：" class="headerlink" title="🔁 Workflow 总结："></a>🔁 Workflow 总结：</h3><p>自然语言描述问题 → 子智能体探索 → Bash 管道查数据 → Plan Mode 零风险审查 → Worktree 并行实现 → Hooks 自动跑测试 → 子智能体 Code Review → 完美合入。</p>
+<hr>
+<h2 id="🚀-快速参考卡-Cheat-Sheet"><a href="#🚀-快速参考卡-Cheat-Sheet" class="headerlink" title="🚀 快速参考卡 (Cheat Sheet)"></a>🚀 快速参考卡 (Cheat Sheet)</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ── 日常必用 ──────────────────────────────────</span></span><br><span class="line">claude -c                          <span class="comment"># 恢复上次 session</span></span><br><span class="line">claude --plan                      <span class="comment"># Plan Mode（只读规划模式）</span></span><br><span class="line">/compact focus on X                <span class="comment"># 定向压缩历史上下文</span></span><br><span class="line">/rewind                            <span class="comment"># 回滚对话和代码（双击 Esc）</span></span><br><span class="line">/fork experiment-name              <span class="comment"># 建立当前对话的安全分支</span></span><br><span class="line">/model haiku                       <span class="comment"># 切换便宜模型（适合探索）</span></span><br><span class="line">/cost                              <span class="comment"># 查看本次 session 花费</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ── 跨域与并行 ────────────────────────────────</span></span><br><span class="line">claude --worktree feature-name     <span class="comment"># 启动带独立分支的工作树</span></span><br><span class="line">/add-dir ../other-project          <span class="comment"># 将其他项目拉入当前上下文</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ── 管道与自动化 ──────────────────────────────</span></span><br><span class="line">claude -p <span class="string">&quot;prompt&quot;</span> --output-format json       <span class="comment"># JSON 结构化输出</span></span><br><span class="line"><span class="built_in">cat</span> file.log | claude -p <span class="string">&quot;analyze this&quot;</span>       <span class="comment"># 结合 Bash 管道</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>💡 <strong>终极心法</strong>：Claude Code 不是“更聪明的 Copilot”，它是一个通过<strong>权限</strong>、<strong>Hooks</strong>、<strong>子智能体</strong>和 <strong>Git Worktrees</strong> 分层系统来执行任务的自动化终端。Vibe Coding 的精髓就是：<strong>你负责定义意图和审查，Claude 负责脏活累活。</strong></p>
+</blockquote>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/06/03/kaggle-test-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="查志渊">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="渊渟岳峙的技术笔记">
+      <meta itemprop="description" content="磨炼自己的一点点技术">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=" | 渊渟岳峙的技术笔记">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2026/06/03/kaggle-test-1/" class="post-title-link" itemprop="url">kaggle_test_1</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2026-06-03 16:12:00 / 修改时间：16:52:58" itemprop="dateCreated datePublished" datetime="2026-06-03T16:12:00+08:00">2026-06-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" itemprop="url" rel="index"><span itemprop="name">数据分析</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="kaggle练习1"><a href="#kaggle练习1" class="headerlink" title="kaggle练习1"></a>kaggle练习1</h1><h2 id="kaggle是什么："><a href="#kaggle是什么：" class="headerlink" title="kaggle是什么："></a>kaggle是什么：</h2><p>Kaggle 是一个由 Google 旗下的免费在线平台，全球各地的人们在这里一起解决数据问题、学习新技能并分享他们的成果。它提供工具、数据集、竞赛和学习资源，对所有对数据感兴趣的人开放——无论你是初学者还是专家，这里都有适合你的内容。</p>
+<h2 id="kaggle的五大核心功能："><a href="#kaggle的五大核心功能：" class="headerlink" title="kaggle的五大核心功能："></a>kaggle的五大核心功能：</h2><ul>
+<li>Competitions（竞赛） — 参与挑战并赢取奖品</li>
+<li>Datasets（数据集） — 免费获取数以千计的公开数据集</li>
+<li>Code&#x2F;Notebooks（代码） — 直接在浏览器中编写和运行代码</li>
+<li>Courses（课程） — 学习 Python、机器学习、数据可视化等课程</li>
+<li>Discussions（讨论区） — 与社区交流、提问、分享见解</li>
+</ul>
+<h2 id="进入-泰坦尼克号题目：-https-www-kaggle-com-c-titanic"><a href="#进入-泰坦尼克号题目：-https-www-kaggle-com-c-titanic" class="headerlink" title="进入 泰坦尼克号题目：(https://www.kaggle.com/c/titanic)"></a>进入 泰坦尼克号题目：(<a target="_blank" rel="noopener" href="https://www.kaggle.com/c/titanic">https://www.kaggle.com/c/titanic</a>)</h2><h3 id="数据集"><a href="#数据集" class="headerlink" title="数据集"></a>数据集</h3><p>我们可以在kaggle中找到泰坦尼克号的数据集，包括泰坦尼克号的乘客名单、舱位、年龄、性别、船票价格、船舱号、登船港口等信息。</p>
+<ol>
+<li>导入库：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> import pandas as pd</span><br><span class="line">import numpy as np</span><br><span class="line">from sklearn.ensemble import RandomForestClassifier</span><br><span class="line">from sklearn.preprocessing import LabelEncoder</span><br></pre></td></tr></table></figure>
+解释：</li>
+</ol>
+<ul>
+<li>pandas是一个强大的数据分析工具，用于处理和分析结构化数据。</li>
+<li>numpy是Python的一个科学计算库，提供了高性能的数组和矩阵操作。</li>
+<li>RandomForestClassifier是scikit-learn库中的一个分类器，基于随机森林算法实现。</li>
+<li>LabelEncoder是scikit-learn库中的一个工具，用于将分类变量转换为数值变量。</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
