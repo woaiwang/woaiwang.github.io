@@ -139,18 +139,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-count">6</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-count">3</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -172,6 +172,326 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/06/10/HNSW%E7%90%86%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="查志渊">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="渊渟岳峙的技术笔记">
+      <meta itemprop="description" content="磨炼自己的一点点技术">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=" | 渊渟岳峙的技术笔记">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2026/06/10/HNSW%E7%90%86%E8%A7%A3/" class="post-title-link" itemprop="url">HNSW理解</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2026-06-10 19:46:27 / 修改时间：19:47:13" itemprop="dateCreated datePublished" datetime="2026-06-10T19:46:27+08:00">2026-06-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">算法</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="HNSW-算法理解"><a href="#HNSW-算法理解" class="headerlink" title="HNSW 算法理解"></a>HNSW 算法理解</h1><blockquote>
+<p>Hierarchical Navigable Small World — 分层可导航小世界图</p>
+<p>核心思想：用<strong>多层图</strong>让搜索从”全局粗筛”到”局部精搜”，每一步都在图上贪心走，而不是暴力扫表。</p>
+</blockquote>
+<hr>
+<h2 id="基本原理"><a href="#基本原理" class="headerlink" title="基本原理"></a>基本原理</h2><ol>
+<li>HNSW 本质是<strong>多个层次的图</strong>堆叠在一起</li>
+<li>每个节点有一个<strong>层级</strong>（<code>random_level</code> 决定），出现在该层及以下所有层</li>
+<li>层级越高 → 该层的节点越<strong>稀疏</strong>（指数级减少）</li>
+<li>每层内部是一个<strong>可导航小世界图（NSW）</strong>：每个节点有若干邻居，邻居之间形成<strong>短程 + 长程连接</strong></li>
+<li>搜索时<strong>从顶向下</strong>：高层做路由（快速定位区域），低层做精搜（找到具体近邻）</li>
+<li>时间复杂度 <strong>O(log N)</strong></li>
+</ol>
+<h3 id="结构示意"><a href="#结构示意" class="headerlink" title="结构示意"></a>结构示意</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">层 2 (最高)     ● ── ●</span><br><span class="line">                极少节点，长程连接，只做路由</span><br><span class="line"></span><br><span class="line">层 1             ○ ── ○ ── ○</span><br><span class="line">                节点变多，短程 + 中程连接</span><br><span class="line"></span><br><span class="line">层 0 (最密)     ★ ── ★ ── ★ ── ★</span><br><span class="line">                所有节点都在这里，精细搜索</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="一、节点的层级分配-—-random-level"><a href="#一、节点的层级分配-—-random-level" class="headerlink" title="一、节点的层级分配 — random_level()"></a>一、节点的层级分配 — <code>random_level()</code></h2><p>每个新节点加入时，需要决定它出现在哪些层。</p>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// mL_ = 1.0 / ln(M) , M 是每个节点的最大邻居数（默认 16）</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">random_level</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">std::uniform_real_distribution&lt;<span class="type">float</span>&gt; <span class="title">dist</span><span class="params">(<span class="number">0.0f</span>, <span class="number">1.0f</span>)</span></span>;</span><br><span class="line">    <span class="type">float</span> r = <span class="built_in">dist</span>(rng_);       <span class="comment">// 在 (0, 1] 均匀采样</span></span><br><span class="line">    <span class="keyword">if</span> (r == <span class="number">0.0f</span>) &#123;</span><br><span class="line">        r = <span class="number">1e-6f</span>;              <span class="comment">// 避免 log(0)</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">static_cast</span>&lt;<span class="type">int</span>&gt;(std::<span class="built_in">floor</span>(-std::<span class="built_in">log</span>(r) * mL_));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="数学原理"><a href="#数学原理" class="headerlink" title="数学原理"></a>数学原理</h3><ul>
+<li><code>r ~ Uniform(0, 1]</code> → <code>-ln(r)</code> 服从<strong>参数 λ&#x3D;1 的指数分布</strong></li>
+<li>乘以 <code>mL_ = 1 / ln(M)</code> → 缩放后取整，得到<strong>几何分布</strong>的层数</li>
+<li>层数 ≥ L 的概率：$P(level \ge L) &#x3D; 1 &#x2F; M^L$</li>
+</ul>
+<h3 id="实际效果（M-16）"><a href="#实际效果（M-16）" class="headerlink" title="实际效果（M&#x3D;16）"></a>实际效果（M&#x3D;16）</h3><table>
+<thead>
+<tr>
+<th>层级</th>
+<th>出现在该层的概率</th>
+<th>约为</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>100%</td>
+<td>所有节点</td>
+</tr>
+<tr>
+<td>1</td>
+<td>~1&#x2F;16 ≈ 6.25%</td>
+<td>每 16 个中有 1 个</td>
+</tr>
+<tr>
+<td>2</td>
+<td>~1&#x2F;256 ≈ 0.39%</td>
+<td>每 256 个中有 1 个</td>
+</tr>
+<tr>
+<td>3</td>
+<td>~1&#x2F;4096 ≈ 0.024%</td>
+<td>每 4096 个中有 1 个</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>🔑 这就是”上层稀疏，下层密集”的来源。</p>
+</blockquote>
+<hr>
+<h2 id="二、插入节点流程"><a href="#二、插入节点流程" class="headerlink" title="二、插入节点流程"></a>二、插入节点流程</h2><blockquote>
+<p>以 <strong>M&#x3D;16（每层最大邻居数），ef_construction&#x3D;200（候选池大小）</strong> 为例。</p>
+</blockquote>
+<h3 id="整体入口"><a href="#整体入口" class="headerlink" title="整体入口"></a>整体入口</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">add</span><span class="params">(<span class="type">const</span> Vector&lt;<span class="type">float</span>&gt;&amp; vec)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 1. 保存向量</span></span><br><span class="line">    <span class="type">size_t</span> internal_idx = vectors_.<span class="built_in">size</span>();</span><br><span class="line">    vectors_.<span class="built_in">push_back</span>(vec);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. 分配层级</span></span><br><span class="line">    <span class="type">int</span> l = <span class="built_in">random_level</span>();</span><br><span class="line">    max_level_.<span class="built_in">push_back</span>(l);</span><br><span class="line">    <span class="comment">// 为该节点在 0~l 层各创建一个空的邻接表</span></span><br><span class="line">    adjacency_.<span class="built_in">push_back</span>(vector&lt;vector&lt;<span class="type">size_t</span>&gt;&gt;(l + <span class="number">1</span>));</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 3. 如果是第一个节点 → 直接设为入口点</span></span><br><span class="line">    <span class="keyword">if</span> (internal_idx == <span class="number">0</span>) &#123;</span><br><span class="line">        entry_point_ = <span class="number">0</span>;</span><br><span class="line">        max_level_global_ = l;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 4. 否则，执行完整插入流程</span></span><br><span class="line">    <span class="built_in">add_impl</span>(internal_idx, l, distance_func);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="第-1-步：从上到下找入口（路由阶段）"><a href="#第-1-步：从上到下找入口（路由阶段）" class="headerlink" title="第 1 步：从上到下找入口（路由阶段）"></a>第 1 步：从上到下找入口（路由阶段）</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">size_t</span> current_ep = entry_point_;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 从最高层往下，走到 l 的上一层为止</span></span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> level = max_level_global_; level &gt; l; --level) &#123;</span><br><span class="line">    <span class="keyword">auto</span> results = <span class="built_in">search_layer</span>(query_vec, current_ep, <span class="comment">/*ef=*/</span><span class="number">1</span>, level, distance_func);</span><br><span class="line">    <span class="comment">//                           ↑                     ↑</span></span><br><span class="line">    <span class="comment">//                     从当前入口出发        每层只找 1 个最近的</span></span><br><span class="line">    <span class="keyword">if</span> (!results.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">        current_ep = results[<span class="number">0</span>].second;  <span class="comment">// 把找到的最近节点设为下一层的入口</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>💡 节点只出现在 0~l 层。比 l 高的层它不在，所以只需<strong>经过</strong>那些层，找到下层的入口即可。</p>
+</blockquote>
+<h3 id="第-2-步：在-l-0-层逐层插入"><a href="#第-2-步：在-l-0-层逐层插入" class="headerlink" title="第 2 步：在 l ~ 0 层逐层插入"></a>第 2 步：在 l ~ 0 层逐层插入</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="type">int</span> level = <span class="built_in">min</span>(l, max_level_global_); level &gt;= <span class="number">0</span>; --level) &#123;</span><br><span class="line">    <span class="comment">// 2a. 在当前层搜索 ef_construction 个候选节点</span></span><br><span class="line">    <span class="keyword">auto</span> candidates = <span class="built_in">search_layer</span>(query_vec, current_ep, ef_construction_, level, distance_func);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2b. 用启发式从候选中选出真正的邻居</span></span><br><span class="line">    <span class="type">size_t</span> max_conn = (level == <span class="number">0</span>) ? M_max0_ : M_;</span><br><span class="line">    <span class="comment">//                     第 0 层可以连 M_max0_=2M=32 个邻居</span></span><br><span class="line">    <span class="comment">//                     以上各层最多连 M=16 个邻居</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">auto</span> neighbors = <span class="built_in">select_neighbors</span>(distance_func, query_vec, candidates, max_conn);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2c. 双向连接：新节点 ←→ 选出的邻居</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">size_t</span> n : neighbors) &#123;</span><br><span class="line">        adjacency_[new_node][level].<span class="built_in">push_back</span>(n);  <span class="comment">// 我指向邻居</span></span><br><span class="line">        adjacency_[n][level].<span class="built_in">push_back</span>(new_node);   <span class="comment">// 邻居指向我</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2d. 如果某个邻居的边数超过了上限 → 帮它重新裁剪</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">size_t</span> n : neighbors) &#123;</span><br><span class="line">        <span class="keyword">auto</span>&amp; n_adj = adjacency_[n][level];</span><br><span class="line">        <span class="keyword">if</span> (n_adj.<span class="built_in">size</span>() &gt; max_conn) &#123;</span><br><span class="line">            <span class="comment">// 重新对它的所有邻居跑 select_neighbors，只保留 max_conn 个</span></span><br><span class="line">            <span class="keyword">auto</span> pruned = <span class="built_in">select_neighbors</span>(distance_func, vectors_[n],</span><br><span class="line">                                           n_candidates, max_conn);</span><br><span class="line">            n_adj = std::<span class="built_in">move</span>(pruned);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2e. 更新下一层的入口</span></span><br><span class="line">    current_ep = candidates[<span class="number">0</span>].second;  <span class="comment">// 用当前层找到的最佳节点</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="第-3-步：如果新节点层级比全局最高还高-→-成为新入口点"><a href="#第-3-步：如果新节点层级比全局最高还高-→-成为新入口点" class="headerlink" title="第 3 步：如果新节点层级比全局最高还高 → 成为新入口点"></a>第 3 步：如果新节点层级比全局最高还高 → 成为新入口点</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (l &gt; max_level_global_) &#123;</span><br><span class="line">    max_level_global_ = l;</span><br><span class="line">    entry_point_ = internal_idx;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>🔑 入口点永远是<strong>当前全局最高层的那个节点</strong>（最早插入到该层的人）。</p>
+</blockquote>
+<hr>
+<h2 id="三、查找与-q-最近的节点的流程"><a href="#三、查找与-q-最近的节点的流程" class="headerlink" title="三、查找与 q 最近的节点的流程"></a>三、查找与 q 最近的节点的流程</h2><h3 id="整体入口-1"><a href="#整体入口-1" class="headerlink" title="整体入口"></a>整体入口</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">search_impl</span>(query_vec, k, distance_func) &#123;</span><br><span class="line">    <span class="type">size_t</span> current_ep = entry_point_;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 阶段 A：从最高层下降到第 0 层</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> level = max_level_global_; level &gt; <span class="number">0</span>; --level) &#123;</span><br><span class="line">        <span class="keyword">auto</span> results = <span class="built_in">search_layer</span>(query_vec, current_ep, ef=<span class="number">1</span>, level, distance_func);</span><br><span class="line">        <span class="comment">// 只取最近的一个作为下层入口</span></span><br><span class="line">        current_ep = results[<span class="number">0</span>].second;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 阶段 B：在第 0 层（所有节点都在此）做实打实的搜索</span></span><br><span class="line">    <span class="keyword">auto</span> results = <span class="built_in">search_layer</span>(query_vec, current_ep, ef=ef_, level=<span class="number">0</span>, distance_func);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 返回前 k 个</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">top_k</span>(results, k);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="核心函数：search-layer-做了什么"><a href="#核心函数：search-layer-做了什么" class="headerlink" title="核心函数：search_layer 做了什么"></a>核心函数：<code>search_layer</code> 做了什么</h3><blockquote>
+<p><strong>从入口 ep 出发，沿着当前层的图边”贪心 BFS”，找到离 q 最近的 ef 个节点。</strong></p>
+</blockquote>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">search_layer</span>(query_vec, ep, ef, level, distance_func) &#123;</span><br><span class="line">    <span class="comment">// 两个堆</span></span><br><span class="line">    priority_queue&lt;Candidate, ..., greater&lt;Candidate&gt;&gt; candidates;  <span class="comment">// ⚡ 小顶堆</span></span><br><span class="line">    priority_queue&lt;Candidate&gt; results;                               <span class="comment">// 🔥 大顶堆</span></span><br><span class="line"></span><br><span class="line">    visited_[ep] = visited_tag_++;</span><br><span class="line">    candidates.<span class="built_in">emplace</span>(<span class="built_in">d</span>(ep), ep);</span><br><span class="line">    results.<span class="built_in">emplace</span>(<span class="built_in">d</span>(ep), ep);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (!candidates.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">        <span class="keyword">auto</span> [c_dist, c_idx] = candidates.<span class="built_in">top</span>();   <span class="comment">// 取最近未探索节点</span></span><br><span class="line">        candidates.<span class="built_in">pop</span>();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// ★ 核心终止条件 ★</span></span><br><span class="line">        <span class="keyword">if</span> (c_dist &gt; results.<span class="built_in">top</span>().first) &#123;</span><br><span class="line">            <span class="keyword">break</span>;  <span class="comment">// 最近的候选都比最差结果远 → 后面的只会更远 → 结束</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">size_t</span> neighbor : adjacency_[c_idx][level]) &#123;</span><br><span class="line">            <span class="keyword">if</span> (visited_[neighbor]) <span class="keyword">continue</span>;</span><br><span class="line">            visited_[neighbor] = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">            <span class="type">float</span> d = <span class="built_in">distance_func</span>(query_vec, vectors_[neighbor]);</span><br><span class="line">            <span class="type">float</span> worst = results.<span class="built_in">top</span>().first;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (d &lt; worst || results.<span class="built_in">size</span>() &lt; ef) &#123;</span><br><span class="line">                candidates.<span class="built_in">emplace</span>(d, neighbor);  <span class="comment">// 加入待探索</span></span><br><span class="line">                results.<span class="built_in">emplace</span>(d, neighbor);     <span class="comment">// 加入结果集</span></span><br><span class="line">                <span class="keyword">if</span> (results.<span class="built_in">size</span>() &gt; ef) &#123;</span><br><span class="line">                    results.<span class="built_in">pop</span>();                <span class="comment">// 踢掉最远的</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 将 results 转为排序数组（从近到远）返回</span></span><br><span class="line">    <span class="keyword">return</span> sorted_results;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="两个堆的分工"><a href="#两个堆的分工" class="headerlink" title="两个堆的分工"></a>两个堆的分工</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">candidates (小顶堆)  ← &quot;我打算去看看这些节点&quot;    堆顶 = 离 q 最近的待探索节点</span><br><span class="line">results    (大顶堆)  ← &quot;我目前找到的 ef 个候选&quot;   堆顶 = 离 q 最远的候选（最差的那个）</span><br></pre></td></tr></table></figure>
+
+<h3 id="提前终止条件的直觉"><a href="#提前终止条件的直觉" class="headerlink" title="提前终止条件的直觉"></a>提前终止条件的直觉</h3><p>每轮从 <code>candidates</code> 中取出最近未探索节点。如果它已经比 <code>results</code> 中最差的结果还要远——那剩下的候选者只会更远，不可能改善结果集，<strong>再搜就是浪费时间</strong>。</p>
+<blockquote>
+<p>就好比你已经在手里攥着 3 个离你 10 米以内的人，现在名单上排第一的陌生人站 15 米远，那名单上剩下的只会更远，没必要找了。</p>
+</blockquote>
+<h3 id="上层-vs-第-0-层的区别"><a href="#上层-vs-第-0-层的区别" class="headerlink" title="上层 vs 第 0 层的区别"></a>上层 vs 第 0 层的区别</h3><table>
+<thead>
+<tr>
+<th>参数</th>
+<th>上层（路由阶段）</th>
+<th>第 0 层（精搜阶段）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ef</code></td>
+<td><strong>1</strong></td>
+<td><strong><code>ef_</code>（默认 16）</strong></td>
+</tr>
+<tr>
+<td>目的</td>
+<td>找到 1 个路由节点即可</td>
+<td>找到足够多的候选者</td>
+</tr>
+<tr>
+<td>原因</td>
+<td>上层稀疏，只需要”方向”</td>
+<td>第 0 层稠密，需要精确结果</td>
+</tr>
+</tbody></table>
+<h3 id="为什么不用暴力搜索"><a href="#为什么不用暴力搜索" class="headerlink" title="为什么不用暴力搜索"></a>为什么不用暴力搜索</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">不用暴力搜索的原因：</span><br><span class="line">在第 0 层也是从入口出发走图，不是遍历所有节点。</span><br><span class="line">只是因为 ef 开大了，所以探索得更广。</span><br><span class="line"></span><br><span class="line">暴力搜索 = O(N)</span><br><span class="line">HNSW    = O(log N)，靠的是&quot;图结构引导搜索方向&quot;，不是&quot;把所有点算一遍&quot;。</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="四、启发式邻居选择-—-select-neighbors"><a href="#四、启发式邻居选择-—-select-neighbors" class="headerlink" title="四、启发式邻居选择 — select_neighbors"></a>四、启发式邻居选择 — <code>select_neighbors</code></h2><h3 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">select_neighbors</span>(distance_func, query, candidates, max_conn) &#123;</span><br><span class="line">    vector&lt;<span class="type">size_t</span>&gt; result;</span><br><span class="line">    vector&lt;<span class="type">size_t</span>&gt; discard;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> [dist_c, idx_c] : candidates) &#123;   <span class="comment">// 从近到远遍历候选</span></span><br><span class="line">        <span class="keyword">if</span> (result.<span class="built_in">size</span>() &gt;= max_conn) <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">        <span class="type">bool</span> should_keep = <span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">size_t</span> idx_r : result) &#123;           <span class="comment">// 检查每个已选邻居</span></span><br><span class="line">            <span class="type">float</span> d_c_to_r = <span class="built_in">distance_func</span>(vectors_[idx_c], vectors_[idx_r]);</span><br><span class="line">            <span class="keyword">if</span> (d_c_to_r &lt; dist_c) &#123;            <span class="comment">// ❌ 候选离已选邻居比离 query 更近</span></span><br><span class="line">                should_keep = <span class="literal">false</span>;             <span class="comment">// → 这个候选被&quot;遮挡&quot;了，不要</span></span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (should_keep)</span><br><span class="line">            result.<span class="built_in">push_back</span>(idx_c);</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            discard.<span class="built_in">push_back</span>(idx_c);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 如果还不够，把被淘汰的补进来</span></span><br><span class="line">    <span class="keyword">if</span> (result.<span class="built_in">size</span>() &lt; max_conn) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">size_t</span> idx_d : discard) &#123;</span><br><span class="line">            <span class="keyword">if</span> (result.<span class="built_in">size</span>() &gt;= max_conn) <span class="keyword">break</span>;</span><br><span class="line">            result.<span class="built_in">push_back</span>(idx_d);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="一句话解释"><a href="#一句话解释" class="headerlink" title="一句话解释"></a>一句话解释</h3><blockquote>
+<p><strong>如果一个候选离我已经选中的邻居，比离 query 还近 → 它被”遮挡”了，选它和选那个邻居没区别 → 跳过它，找其他方向的。</strong></p>
+</blockquote>
+<h3 id="示意图"><a href="#示意图" class="headerlink" title="示意图"></a>示意图</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">         query(a)</span><br><span class="line">           │</span><br><span class="line">           │ dist_c</span><br><span class="line">           │</span><br><span class="line">    idx_c  ●</span><br><span class="line">      ╲    │</span><br><span class="line">       ╲   │ d_c_to_r</span><br><span class="line">        ╲  │</span><br><span class="line">         ╲ │</span><br><span class="line">          ● idx_r (已选中的邻居)</span><br><span class="line"></span><br><span class="line">如果 d_c_to_r &lt; dist_c</span><br><span class="line">→ idx_c 在 idx_r 的&quot;势力范围&quot;内</span><br><span class="line">→ 选 idx_c 不会带来新的方向信息</span><br><span class="line">→ 剔除！</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="五、容易遇到的问题-常见疑问"><a href="#五、容易遇到的问题-常见疑问" class="headerlink" title="五、容易遇到的问题 &#x2F; 常见疑问"></a>五、容易遇到的问题 &#x2F; 常见疑问</h2><h3 id="Q1：为什么要层层往下推？为什么不在最高层直接找？"><a href="#Q1：为什么要层层往下推？为什么不在最高层直接找？" class="headerlink" title="Q1：为什么要层层往下推？为什么不在最高层直接找？"></a>Q1：为什么要层层往下推？为什么不在最高层直接找？</h3><pre><code>答：每一层的节点数量不同。在层 2 找到的最近节点 a，只是&quot;层 2 里离 q 最近的&quot;。到了层 1，节点变多了，a 旁边可能出现一个 b 比 a 更近。每往下一层，图更密，你能找到更好的入口。
+
+所以层间下降相当于：**先用粗糙的图定位区域，再用精细的图锁定目标。**
+</code></pre>
+<h3 id="Q2：ef-construction-和-ef-有什么区别？"><a href="#Q2：ef-construction-和-ef-有什么区别？" class="headerlink" title="Q2：ef_construction 和 ef 有什么区别？"></a>Q2：<code>ef_construction</code> 和 <code>ef</code> 有什么区别？</h3><table>
+<thead>
+<tr>
+<th>参数</th>
+<th>用在</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ef_construction</code></td>
+<td>插入时</td>
+<td>插入时搜多宽 → 影响<strong>建图质量</strong></td>
+</tr>
+<tr>
+<td><code>ef</code></td>
+<td>查询时</td>
+<td>查询时搜多宽 → 影响<strong>查询精度</strong></td>
+</tr>
+</tbody></table>
+<p>两者越大：</p>
+<ul>
+<li>✅ recall 越高（找到真正近邻的概率越大）</li>
+<li>❌ 速度越慢</li>
+</ul>
+<h3 id="Q3：为什么上层用-ef-1-就够了？"><a href="#Q3：为什么上层用-ef-1-就够了？" class="headerlink" title="Q3：为什么上层用 ef=1 就够了？"></a>Q3：为什么上层用 <code>ef=1</code> 就够了？</h3><p>因为上层节点<strong>极其稀疏</strong>。层 2 可能只有几十个节点，层 1 几百个。在这些层上你不需要找到很多候选——你只需要”走对方向”，到了第 0 层再展开。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">你从机场去朋友家：</span><br><span class="line">  机场（高层）→ 找到正确的城区      → ef=1 就够了</span><br><span class="line">  城区（中层）→ 找到正确的街道      → ef=1 就够了</span><br><span class="line">  街道（低层）→ 找到正确的门牌号    → ef=16 要开大</span><br></pre></td></tr></table></figure>
+
+<h3 id="Q4：如果最高层只有-entry-point-一个节点，search-layer-怎么走？"><a href="#Q4：如果最高层只有-entry-point-一个节点，search-layer-怎么走？" class="headerlink" title="Q4：如果最高层只有 entry_point 一个节点，search_layer 怎么走？"></a>Q4：如果最高层只有 entry_point 一个节点，search_layer 怎么走？</h3><p>走不了——<code>adjacency_[ep][level]</code> 是空的。但没关系：</p>
+<ul>
+<li><code>search_layer</code> 会返回 <code>[(d(ep), ep)]</code></li>
+<li><code>results[0].second = ep</code></li>
+<li><code>current_ep</code> 不变</li>
+<li>继续往下一层走</li>
+</ul>
+<p>所以唯一节点唯一节点即使没有邻居，它自己就是一个有效的路由节点。</p>
+<h3 id="Q5：如何提高-recall？"><a href="#Q5：如何提高-recall？" class="headerlink" title="Q5：如何提高 recall？"></a>Q5：如何提高 recall？</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">增大 ef_construction（插入时）：建图更密，邻居选得更准 → 建图变慢，但查询 recall 提高</span><br><span class="line">增大 ef（查询时）：         搜索更广 → 查询变慢，但 recall 提高</span><br><span class="line">增大 M：                    每层更多边 → 图更连通，但内存更大</span><br><span class="line">减小 M：                    每层更少边 → 图稀疏，可能 recall 下降</span><br></pre></td></tr></table></figure>
+
+<p>典型调参路径：先固定 M&#x3D;16，调 <code>ef_construction</code>（100<del>300）让 recall 达标，再用 <code>ef</code>（16</del>200）做查询时的速度&#x2F;精度权衡。</p>
+<h3 id="Q6：visited-tag-是什么？为什么用-tag-而不是清空数组？"><a href="#Q6：visited-tag-是什么？为什么用-tag-而不是清空数组？" class="headerlink" title="Q6：visited_tag_ 是什么？为什么用 tag 而不是清空数组？"></a>Q6：<code>visited_tag_</code> 是什么？为什么用 tag 而不是清空数组？</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 每次 search_layer 开始时：</span></span><br><span class="line">visited_tag_++;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 判断是否已访问：</span></span><br><span class="line"><span class="keyword">if</span> (visited_[neighbor] == visited_tag_) <span class="keyword">continue</span>;  <span class="comment">// 已访问</span></span><br><span class="line">visited_[neighbor] = visited_tag_;                  <span class="comment">// 标记已访问</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>不用 <code>std::fill</code> 清空的原因</strong>：<code>visited_</code> 数组长度 &#x3D; 向量总数（可能百万级）。每次搜索都清一遍是 O(N) 的，太慢。</p>
+<p>Tag 方案的妙处：</p>
+<ul>
+<li><code>visited_tag_</code> 从 0 开始，每次 +1</li>
+<li>数组初始化为 0</li>
+<li><code>visited_[i] == visited_tag_</code> 等价于”本次是否访问过”</li>
+<li>每次搜索只 O(1) 增加一个计数器，不清数组</li>
+</ul>
+<p>⚠️ <strong>但有个坑</strong>：<code>visited_tag_</code> 是 <code>int</code>，长期运行会溢出。实践中会在溢出时做一次全量重置，VecFlow 当前版本尚未处理这个边界情况。</p>
+<h3 id="Q7：select-neighbors-和直接取-top-K-有什么区别？"><a href="#Q7：select-neighbors-和直接取-top-K-有什么区别？" class="headerlink" title="Q7：select_neighbors 和直接取 top-K 有什么区别？"></a>Q7：<code>select_neighbors</code> 和直接取 top-K 有什么区别？</h3><p>直接取 top-K：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">候选按距离排序，取前 16 个</span><br><span class="line">结果：16 个节点可能全在一坨 → 图退化成&quot;星形&quot; → 搜索时容易掉进局部最优</span><br></pre></td></tr></table></figure>
+
+<p>启发式选择（<code>select_neighbors</code>）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">候选从近到远遍历，但每个候选要和已选邻居做&quot;遮挡测试&quot;</span><br><span class="line">结果：选出的 16 个节点覆盖不同方向 → 图更&quot;立体&quot; → 搜索时更容易找到全局近邻</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="六、代码结构速查"><a href="#六、代码结构速查" class="headerlink" title="六、代码结构速查"></a>六、代码结构速查</h2><table>
+<thead>
+<tr>
+<th>函数</th>
+<th>所在行</th>
+<th>作用</th>
+<th>返回</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>random_level()</code></td>
+<td>~121</td>
+<td>为新节点分配层级</td>
+<td><code>int</code>（层级）</td>
+</tr>
+<tr>
+<td><code>add()</code></td>
+<td>~57</td>
+<td>插入入口</td>
+<td><code>void</code></td>
+</tr>
+<tr>
+<td><code>add_impl()</code></td>
+<td>~244</td>
+<td>完整的多层插入逻辑</td>
+<td><code>void</code></td>
+</tr>
+<tr>
+<td><code>search()</code></td>
+<td>~89</td>
+<td>搜索入口</td>
+<td><code>vector&lt;SearchResult&gt;</code></td>
+</tr>
+<tr>
+<td><code>search_impl()</code></td>
+<td>~307</td>
+<td>完整的层间下降搜索</td>
+<td><code>vector&lt;SearchResult&gt;</code></td>
+</tr>
+<tr>
+<td><code>search_layer()</code></td>
+<td>~132</td>
+<td>单层贪心 BFS 搜索</td>
+<td><code>vector&lt;pair&lt;float, size_t&gt;&gt;</code></td>
+</tr>
+<tr>
+<td><code>select_neighbors()</code></td>
+<td>~198</td>
+<td>启发式邻居选择（多样性剪枝）</td>
+<td><code>vector&lt;size_t&gt;</code></td>
+</tr>
+</tbody></table>
+<hr>
+<blockquote>
+<p><strong>回顾关键直觉：</strong></p>
+<p>插入时：从顶向下找入口 → 每层搜 <code>ef_construction</code> 个候选 → 启发式选邻居 → 双向连边</p>
+<p>搜索时：从顶向下路由（ef&#x3D;1）→ 在第 0 层精搜（ef&#x3D;ef_）→ 返回 top-k</p>
+<p>整个算法 &#x3D; <strong>多层图 + 贪心 BFS + 提前终止 + 多样性剪枝</strong></p>
+</blockquote>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
