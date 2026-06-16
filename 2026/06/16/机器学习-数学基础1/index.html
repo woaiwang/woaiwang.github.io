@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="你好！我是你的机器学习老师。看到你准备踏入机器学习的殿堂，我非常高兴。机器学习的本质其实就是用数学模型来拟合数据，因此扎实的数学基础是你未来推导算法、阅读顶级会议论文、甚至是应对大厂面试的“内功”。 下面我为你精心整理了这份Markdown格式的学习笔记。笔记中不仅有公式和概念，我还专门加入了【老师的叮嘱】（将数学与实际ML算法结合）以及【随堂测试与解析】。 你可以直接点击右上角的“一键复制”保存">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机器学习-数学基础1">
+<meta property="og:url" content="http://example.com/2026/06/16/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%95%B0%E5%AD%A6%E5%9F%BA%E7%A1%801/index.html">
+<meta property="og:site_name" content="渊渟岳峙的技术笔记">
+<meta property="og:description" content="你好！我是你的机器学习老师。看到你准备踏入机器学习的殿堂，我非常高兴。机器学习的本质其实就是用数学模型来拟合数据，因此扎实的数学基础是你未来推导算法、阅读顶级会议论文、甚至是应对大厂面试的“内功”。 下面我为你精心整理了这份Markdown格式的学习笔记。笔记中不仅有公式和概念，我还专门加入了【老师的叮嘱】（将数学与实际ML算法结合）以及【随堂测试与解析】。 你可以直接点击右上角的“一键复制”保存">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-06-16T09:19:28.000Z">
+<meta property="article:modified_time" content="2026-06-16T09:28:11.571Z">
+<meta property="article:author" content="查志渊">
+<meta property="article:tag" content="机器学习">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2026/06/16/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%95%B0%E5%AD%A6%E5%9F%BA%E7%A1%801/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2026/06/16/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%95%B0%E5%AD%A6%E5%9F%BA%E7%A1%801/","path":"2026/06/16/机器学习-数学基础1/","title":"机器学习-数学基础1"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>机器学习-数学基础1 | 渊渟岳峙的技术笔记</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">渊渟岳峙的技术笔记</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">用你喜欢的方式去度过一生</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%F0%9F%8E%93-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E9%9D%A2%E8%AF%95%E5%9F%BA%E7%A1%80%EF%BC%9A%E6%95%B0%E5%AD%A6%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%E7%AC%94%E8%AE%B0"><span class="nav-number">1.</span> <span class="nav-text">🎓 机器学习面试基础：数学内功心法笔记</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81-%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0-Linear-Algebra"><span class="nav-number">1.1.</span> <span class="nav-text">一、 线性代数 (Linear Algebra)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-%E5%90%91%E9%87%8F%E4%B8%8E%E7%9F%A9%E9%98%B5%E8%BF%90%E7%AE%97"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.1 向量与矩阵运算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-%E7%9F%A9%E9%98%B5%E5%88%86%E8%A7%A3"><span class="nav-number">1.1.2.</span> <span class="nav-text">1.2 矩阵分解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-%E8%A1%8C%E5%88%97%E5%BC%8F%E3%80%81%E7%A7%A9%E3%80%81%E8%8C%83%E6%95%B0"><span class="nav-number">1.1.3.</span> <span class="nav-text">1.3 行列式、秩、范数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4-%E6%AD%A3%E5%AE%9A%E7%9F%A9%E9%98%B5%E4%B8%8E%E5%8D%8F%E6%96%B9%E5%B7%AE%E7%9F%A9%E9%98%B5"><span class="nav-number">1.1.4.</span> <span class="nav-text">1.4 正定矩阵与协方差矩阵</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%F0%9F%93%9D-%E9%9A%8F%E5%A0%82%E6%B5%8B%E8%AF%95%E4%B8%8E%E8%A7%A3%E6%9E%90-%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0"><span class="nav-number">1.1.5.</span> <span class="nav-text">📝 随堂测试与解析 (线性代数)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81-%E6%A6%82%E7%8E%87%E4%B8%8E%E7%BB%9F%E8%AE%A1-Probability-Statistics"><span class="nav-number">1.2.</span> <span class="nav-text">二、 概率与统计 (Probability &amp; Statistics)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E6%A6%82%E7%8E%87%E5%9F%BA%E7%A1%80"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1 概率基础</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E5%B8%B8%E8%A7%81%E6%A6%82%E7%8E%87%E5%88%86%E5%B8%83"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.2 常见概率分布</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-%E6%9C%9F%E6%9C%9B%E3%80%81%E6%96%B9%E5%B7%AE%E3%80%81%E5%8D%8F%E6%96%B9%E5%B7%AE%E3%80%81%E7%86%B5"><span class="nav-number">1.2.3.</span> <span class="nav-text">2.3 期望、方差、协方差、熵</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-%E6%9C%80%E5%A4%A7%E4%BC%BC%E7%84%B6%E4%BC%B0%E8%AE%A1-MLE-%E4%B8%8E-%E6%9C%80%E5%A4%A7%E5%90%8E%E9%AA%8C%E4%BC%B0%E8%AE%A1-MAP"><span class="nav-number">1.2.4.</span> <span class="nav-text">2.4 最大似然估计(MLE) 与 最大后验估计(MAP)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5-%E5%81%87%E8%AE%BE%E6%A3%80%E9%AA%8C%E3%80%81%E7%BD%AE%E4%BF%A1%E5%8C%BA%E9%97%B4%E3%80%81p%E5%80%BC"><span class="nav-number">1.2.5.</span> <span class="nav-text">2.5 假设检验、置信区间、p值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%F0%9F%93%9D-%E9%9A%8F%E5%A0%82%E6%B5%8B%E8%AF%95%E4%B8%8E%E8%A7%A3%E6%9E%90-%E6%A6%82%E7%8E%87%E4%B8%8E%E7%BB%9F%E8%AE%A1"><span class="nav-number">1.2.6.</span> <span class="nav-text">📝 随堂测试与解析 (概率与统计)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81-%E5%BE%AE%E7%A7%AF%E5%88%86%E4%B8%8E%E4%BC%98%E5%8C%96-Calculus-Optimization"><span class="nav-number">1.3.</span> <span class="nav-text">三、 微积分与优化 (Calculus &amp; Optimization)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E5%AF%BC%E6%95%B0%E3%80%81%E5%81%8F%E5%AF%BC%E6%95%B0%E3%80%81%E9%93%BE%E5%BC%8F%E6%B3%95%E5%88%99"><span class="nav-number">1.3.1.</span> <span class="nav-text">3.1 导数、偏导数、链式法则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E6%A2%AF%E5%BA%A6%E3%80%81Hessian%E7%9F%A9%E9%98%B5"><span class="nav-number">1.3.2.</span> <span class="nav-text">3.2 梯度、Hessian矩阵</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-%E5%87%B8%E5%87%BD%E6%95%B0%E4%B8%8E%E5%87%B8%E4%BC%98%E5%8C%96"><span class="nav-number">1.3.3.</span> <span class="nav-text">3.3 凸函数与凸优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E4%B9%98%E6%95%B0%E6%B3%95%E3%80%81KKT%E6%9D%A1%E4%BB%B6"><span class="nav-number">1.3.4.</span> <span class="nav-text">3.4 拉格朗日乘数法、KKT条件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%F0%9F%93%9D-%E9%9A%8F%E5%A0%82%E6%B5%8B%E8%AF%95%E4%B8%8E%E8%A7%A3%E6%9E%90-%E5%BE%AE%E7%A7%AF%E5%88%86%E4%B8%8E%E4%BC%98%E5%8C%96"><span class="nav-number">1.3.5.</span> <span class="nav-text">📝 随堂测试与解析 (微积分与优化)</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">查志渊</p>
+  <div class="site-description" itemprop="description">磨炼自己的一点点技术</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/woaiwang" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;woaiwang" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/06/16/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%95%B0%E5%AD%A6%E5%9F%BA%E7%A1%801/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="查志渊">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="渊渟岳峙的技术笔记">
+      <meta itemprop="description" content="磨炼自己的一点点技术">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="机器学习-数学基础1 | 渊渟岳峙的技术笔记">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          机器学习-数学基础1
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2026-06-16 17:19:28 / 修改时间：17:28:11" itemprop="dateCreated datePublished" datetime="2026-06-16T17:19:28+08:00">2026-06-16</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>你好！我是你的机器学习老师。看到你准备踏入机器学习的殿堂，我非常高兴。机器学习的本质其实就是<strong>用数学模型来拟合数据</strong>，因此扎实的数学基础是你未来推导算法、阅读顶级会议论文、甚至是应对大厂面试的“内功”。</p>
+<p>下面我为你精心整理了这份Markdown格式的学习笔记。笔记中不仅有公式和概念，我还专门加入了<strong>【老师的叮嘱】</strong>（将数学与实际ML算法结合）以及<strong>【随堂测试与解析】</strong>。</p>
+<p>你可以直接点击右上角的“一键复制”保存到你的本地笔记软件（如Typora, Obsidian, Notion）中。</p>
+<hr>
+<h1 id="🎓-机器学习面试基础：数学内功心法笔记"><a href="#🎓-机器学习面试基础：数学内功心法笔记" class="headerlink" title="🎓 机器学习面试基础：数学内功心法笔记"></a>🎓 机器学习面试基础：数学内功心法笔记</h1><blockquote>
+<p><strong>导语</strong>：万丈高楼平地起。不要害怕枯燥的公式，在机器学习中，每一个数学公式背后都有其直观的几何意义和物理背景。让我们开始吧！</p>
+</blockquote>
+<h2 id="一、-线性代数-Linear-Algebra"><a href="#一、-线性代数-Linear-Algebra" class="headerlink" title="一、 线性代数 (Linear Algebra)"></a>一、 线性代数 (Linear Algebra)</h2><p><em>线代是处理高维数据的基石。在机器学习中，万物皆可向量化&#x2F;矩阵化。</em></p>
+<h3 id="1-1-向量与矩阵运算"><a href="#1-1-向量与矩阵运算" class="headerlink" title="1.1 向量与矩阵运算"></a>1.1 向量与矩阵运算</h3><ul>
+<li>**向量 (Vector)**：表示空间中的一个点或一个方向。<br>向量可以想象成一组数据，比如一个人的特征（身高，体重，年龄，性别，…）</li>
+<li>**点积 (Dot Product)**：$a \cdot b &#x3D; \sum a_i b_i &#x3D; |a| |b| \cos(\theta)$。<ul>
+<li><em>意义</em>：衡量两个向量的相似度（余弦相似度），或者一个向量在另一个向量上的投影。</li>
+</ul>
+</li>
+<li>**叉积 (Cross Product)**：产生一个垂直于原来两个向量的新向量（在标准ML中较少用，多用于3D视觉&#x2F;物理引擎）。</li>
+<li>**转置 (Transpose)**：矩阵的行变成列，$ (A^T)<em>{ij} &#x3D; A</em>{ji} $。性质：$(AB)^T &#x3D; B^T A^T$。</li>
+<li>**逆矩阵 (Inverse)**：$A^{-1} A &#x3D; I$。如果矩阵不可逆（奇异矩阵），说明它的列向量存在线性相关。</li>
+</ul>
+<p>这里插入行列式的定义：</p>
+<ul>
+<li>**行列式 (Determinant)**：表示矩阵所代表的线性变换对空间的“体积拉伸”比例。如果为0，说明空间被压缩了（降维了），矩阵不可逆。就是面积或者体积被压缩了还是扩大了，如果是0，说明空间被压缩了（降维了），矩阵不可逆。<br>奇异矩阵：行列式为0的矩阵。<br>秩（Rank）—— 数据的“真实信息量”，比如一个信息包含（面积单位是平方米，面积，但是是平方厘米）其实这两个特征可以划分为一个，这就是降维。<br>范数（Norm）—— 向量的大小或长度。L1范数：$|x|_1 &#x3D; \sum |x_i|$ （曼哈顿距离）。L2范数：$|x|_2 &#x3D; \sqrt{\sum x_i^2}$ （欧几里得距离）。通常用于正则化。</li>
+</ul>
+<h3 id="1-2-矩阵分解"><a href="#1-2-矩阵分解" class="headerlink" title="1.2 矩阵分解"></a>1.2 矩阵分解</h3><p>将复杂的矩阵拆解为简单矩阵的乘积，是降维和推荐系统的核心。</p>
+<ul>
+<li>**特征值分解 (Eigendecomposition)**：$Av &#x3D; \lambda v$（$v$是特征向量，$\lambda$是特征值）。<ul>
+<li><em>意义</em>：矩阵$A$本质是一个线性变换，特征向量表示变换后方向不变的轴，特征值表示在这些轴上的拉伸程度。只能用于<strong>方阵</strong>。</li>
+</ul>
+</li>
+<li>**奇异值分解 (SVD)**：$A &#x3D; U \Sigma V^T$。<ul>
+<li><em>意义</em>：SVD是特征值分解在<strong>任意矩阵</strong>上的推广。在主成分分析（PCA）和协同过滤（推荐系统）中极为重要。</li>
+</ul>
+</li>
+<li><strong>LU分解</strong>：将方阵分解为一个下三角矩阵(L)和一个上三角矩阵(U)的乘积。常用于计算机底层高效求解线性方程组。</li>
+</ul>
+<h3 id="1-3-行列式、秩、范数"><a href="#1-3-行列式、秩、范数" class="headerlink" title="1.3 行列式、秩、范数"></a>1.3 行列式、秩、范数</h3><ul>
+<li>**行列式 (Determinant)**：表示矩阵所代表的线性变换对空间的“体积拉伸”比例。如果为0，说明空间被压缩了（降维了），矩阵不可逆。</li>
+<li>**秩 (Rank)**：矩阵中线性无关的行（或列）的最大数量。代表了数据中真正包含的“有效维度”或“信息量”。</li>
+<li>**范数 (Norm)**：衡量向量或矩阵的“大小”或“长度”。<ul>
+<li><strong>L1范数</strong>：$|x|_1 &#x3D; \sum |x_i|$ （曼哈顿距离）。</li>
+<li><strong>L2范数</strong>：$|x|_2 &#x3D; \sqrt{\sum x_i^2}$ （欧几里得距离）。</li>
+</ul>
+</li>
+</ul>
+<h3 id="1-4-正定矩阵与协方差矩阵"><a href="#1-4-正定矩阵与协方差矩阵" class="headerlink" title="1.4 正定矩阵与协方差矩阵"></a>1.4 正定矩阵与协方差矩阵</h3><ul>
+<li>**正定矩阵 (Positive Definite Matrix)**：对于任意非零向量$x$，都有 $x^T A x &gt; 0$。<ul>
+<li><em>意义</em>：在优化中，如果海森矩阵（Hessian）是正定的，说明我们找到了一个局部极小值（像一个碗的底部）。</li>
+</ul>
+</li>
+<li><strong>协方差矩阵 (Covariance Matrix)<strong>：衡量多维数据中，各个维度之间的相关性。对角线是各维度的方差，非对角线是协方差。它一定是一个</strong>半正定矩阵</strong>。</li>
+</ul>
+<blockquote>
+<p>💡 <strong>【老师的叮嘱】</strong>：面试中常问L1和L2的区别。记住：L1范数容易产生<strong>稀疏解</strong>（常用于特征选择，如Lasso回归），L2范数能防止过拟合，让权重趋于平滑（如Ridge回归）。</p>
+</blockquote>
+<hr>
+<h3 id="📝-随堂测试与解析-线性代数"><a href="#📝-随堂测试与解析-线性代数" class="headerlink" title="📝 随堂测试与解析 (线性代数)"></a>📝 随堂测试与解析 (线性代数)</h3><p><strong>Q1：请直观解释什么是奇异值分解（SVD），以及它在降维（PCA）中的作用？</strong></p>
+<blockquote>
+<p><strong>解答</strong>：<br>SVD将任何矩阵分解为三个步骤：旋转($V^T$)、拉伸($\Sigma$)、再旋转($U$)。<br>在PCA（主成分分析）中，我们希望找到数据中方差最大（最分散）的方向。如果对去中心化后的数据矩阵求SVD，得到的$\Sigma$中的奇异值的平方就正比于数据在各个主成分方向上的方差，$V$的列向量就是主成分的方向（特征脸&#x2F;特征轴）。保留最大的几个奇异值对应的向量，就实现了降维。</p>
+</blockquote>
+<p><strong>Q2：判断题：如果两个向量的点积为0，说明它们是线性相关的。</strong></p>
+<blockquote>
+<p><strong>解答</strong>：<br><strong>错误</strong>。如果两个非零向量的点积为0，说明它们的夹角是90度（正交），它们不仅不是线性相关，反而是绝对的<strong>线性无关</strong>。</p>
+</blockquote>
+<hr>
+<h2 id="二、-概率与统计-Probability-Statistics"><a href="#二、-概率与统计-Probability-Statistics" class="headerlink" title="二、 概率与统计 (Probability &amp; Statistics)"></a>二、 概率与统计 (Probability &amp; Statistics)</h2><p><em>世界充满不确定性，机器学习就是在不确定性中寻找确定性的规律。</em></p>
+<h3 id="2-1-概率基础"><a href="#2-1-概率基础" class="headerlink" title="2.1 概率基础"></a>2.1 概率基础</h3><ul>
+<li><strong>条件概率</strong>：$P(A|B) &#x3D; P(A \cap B) &#x2F; P(B)$。已知B发生的情况下，A发生的概率。</li>
+<li><strong>全概率公式</strong>：$P(A) &#x3D; \sum P(A|B_i)P(B_i)$。将复杂事件分解为互相排斥的子事件求和。</li>
+<li>**贝叶斯定理 (Bayes’ Theorem)**：$P(A|B) &#x3D; \frac{P(B|A)P(A)}{P(B)}$。<ul>
+<li><em>核心思想</em>：<strong>后验概率 &#x3D; (似然度 × 先验概率) &#x2F; 标准化常量</strong>。这是不断根据新数据(B)更新我们对旧知识(A)认知的数学表达。</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-2-常见概率分布"><a href="#2-2-常见概率分布" class="headerlink" title="2.2 常见概率分布"></a>2.2 常见概率分布</h3><ul>
+<li>**高斯&#x2F;正态分布 (Gaussian)**：最常见的分布。中心极限定理告诉我们，大量独立随机变量的和趋向于高斯分布。</li>
+<li>**伯努利分布 (Bernoulli)**：掷一次硬币（0或1）的分布。用于二分类问题。</li>
+<li>**泊松分布 (Poisson)**：描述单位时间内随机事件发生的次数（如一天内收到邮件的数量）。</li>
+<li><strong>Beta&#x2F;Dirichlet分布</strong>：通常作为二项分布&#x2F;多项分布的<strong>共轭先验</strong>。在自然语言处理（如LDA主题模型）中非常重要。</li>
+</ul>
+<h3 id="2-3-期望、方差、协方差、熵"><a href="#2-3-期望、方差、协方差、熵" class="headerlink" title="2.3 期望、方差、协方差、熵"></a>2.3 期望、方差、协方差、熵</h3><ul>
+<li>**期望 (Expectation)**：均值，随机变量取值的加权平均。</li>
+<li>**方差 (Variance)**：衡量数据偏离期望的程度。</li>
+<li>**协方差 (Covariance)**：衡量两个变量变化趋势的一致性。</li>
+<li>**信息熵 (Entropy)**：$H(X) &#x3D; - \sum p(x) \log p(x)$。<ul>
+<li><em>意义</em>：衡量系统的不确定性&#x2F;混乱度。信息熵越大，系统越混乱。机器学习中的<strong>交叉熵损失 (Cross-Entropy Loss)</strong> 就是基于此，用来衡量模型预测分布与真实分布的差异。</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-4-最大似然估计-MLE-与-最大后验估计-MAP"><a href="#2-4-最大似然估计-MLE-与-最大后验估计-MAP" class="headerlink" title="2.4 最大似然估计(MLE) 与 最大后验估计(MAP)"></a>2.4 最大似然估计(MLE) 与 最大后验估计(MAP)</h3><ul>
+<li>**MLE (Maximum Likelihood Estimation)**：寻找一组参数 $\theta$，使得当前观测到的数据 $X$ 发生的概率最大。目标：$\arg\max_\theta P(X|\theta)$。</li>
+<li><strong>MAP (Maximum A Posteriori)<strong>：在MLE的基础上，加入了</strong>先验知识</strong> $P(\theta)$。寻找使得后验概率最大的参数。目标：$\arg\max_\theta P(X|\theta)P(\theta)$。</li>
+</ul>
+<h3 id="2-5-假设检验、置信区间、p值"><a href="#2-5-假设检验、置信区间、p值" class="headerlink" title="2.5 假设检验、置信区间、p值"></a>2.5 假设检验、置信区间、p值</h3><p>用于A&#x2F;B测试和特征显著性分析。</p>
+<ul>
+<li>**原假设 ($H_0$)**：通常指“没有效果”或“没有差异”。</li>
+<li><strong>p值 (p-value)<strong>：在原假设成立的前提下，观察到当前数据（或更极端数据）的概率。</strong>p值越小，越有理由拒绝原假设。</strong>（业界常用标准：p &lt; 0.05）。</li>
+<li><strong>置信区间</strong>：我们有一定信心（如95%）认为真实的参数落在这个区间内。</li>
+</ul>
+<blockquote>
+<p>💡 <strong>【老师的叮嘱】</strong>：MLE和MAP极其重要！在机器学习中，<strong>只用MLE推导出来的损失函数（如均方误差MSE）容易过拟合</strong>。而加入了高斯先验的MAP，推导出来的结果等价于 <strong>MLE + L2正则化</strong>。数学的美妙就在这里闭环了！</p>
+</blockquote>
+<hr>
+<h3 id="📝-随堂测试与解析-概率与统计"><a href="#📝-随堂测试与解析-概率与统计" class="headerlink" title="📝 随堂测试与解析 (概率与统计)"></a>📝 随堂测试与解析 (概率与统计)</h3><p><strong>Q1：抛一枚不均匀的硬币，连续3次都是正面。用MLE估计正面朝上的概率是多少？用MAP呢（假设我们坚信硬币一般是公平的）？</strong></p>
+<blockquote>
+<p><strong>解答</strong>：</p>
+<ol>
+<li><strong>MLE</strong>：完全相信数据。设正面概率为 $p$。似然函数 $L(p) &#x3D; p^3$。最大化 $p^3$ (其中 $0 \le p \le 1$)，得到 $p_{MLE} &#x3D; 1.0$。结论：下一次100%是正面。这显然过拟合了。</li>
+<li><strong>MAP</strong>：引入先验（如Beta分布）。因为我们先验认为硬币大概率是公平的（$p$在0.5附近概率最高）。MAP &#x3D; 似然 × 先验。经过计算，MAP估计出的 $p$ 会被“拉回”到0.5左右（比如0.6或0.7，取决于先验的强度），从而避免了极端预测。</li>
+</ol>
+</blockquote>
+<p><strong>Q2：什么是p-value？如果p-value&#x3D;0.03，说明什么？</strong></p>
+<blockquote>
+<p><strong>解答</strong>：<br>p-value是指在假设“毫无关联&#x2F;毫无效果”（原假设）成立的情况下，出现目前这种数据的概率。<br>如果p-value&#x3D;0.03，说明如果真的没有效果，出现当前观测结果的概率只有3%。因为概率很小，所以我们倾向于不相信原假设，即认为“效果是显著的”。</p>
+</blockquote>
+<hr>
+<h2 id="三、-微积分与优化-Calculus-Optimization"><a href="#三、-微积分与优化-Calculus-Optimization" class="headerlink" title="三、 微积分与优化 (Calculus &amp; Optimization)"></a>三、 微积分与优化 (Calculus &amp; Optimization)</h2><p><em>模型的训练过程（如深度学习的BP算法），本质上就是在参数空间中寻找最优解（极小值）的微积分过程。</em></p>
+<h3 id="3-1-导数、偏导数、链式法则"><a href="#3-1-导数、偏导数、链式法则" class="headerlink" title="3.1 导数、偏导数、链式法则"></a>3.1 导数、偏导数、链式法则</h3><ul>
+<li>**导数 (Derivative)**：一元函数的瞬时变化率。</li>
+<li>**偏导数 (Partial Derivative)**：多元函数中，固定其他变量，只对其中一个变量求导。</li>
+<li>**链式法则 (Chain Rule)**：$ \frac{dz}{dx} &#x3D; \frac{dz}{dy} \cdot \frac{dy}{dx} $。<ul>
+<li><em>意义</em>：<strong>反向传播算法（Backpropagation）的核心</strong>。神经网络一层层嵌套，求梯度时必须用链式法则从输出层向输入层逐层传导。</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-2-梯度、Hessian矩阵"><a href="#3-2-梯度、Hessian矩阵" class="headerlink" title="3.2 梯度、Hessian矩阵"></a>3.2 梯度、Hessian矩阵</h3><ul>
+<li>**梯度 (Gradient)**：是一个向量，由函数对各个自变量的偏导数组成：$\nabla f &#x3D; [\frac{\partial f}{\partial x_1}, \frac{\partial f}{\partial x_2}, …]^T$。<ul>
+<li><em>物理意义</em>：<strong>梯度指向函数值增加最快的方向</strong>。因此，梯度下降法要减去梯度（向反方向走）来寻找最小值。</li>
+</ul>
+</li>
+<li><strong>Hessian矩阵</strong>：二阶偏导数构成的方阵。描述了函数的“曲率”。<ul>
+<li><em>应用</em>：牛顿法优化利用了Hessian矩阵，不仅知道该往哪走，还知道步子该迈多大，比梯度下降收敛更快，但计算Hessian的逆矩阵代价过高。</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-3-凸函数与凸优化"><a href="#3-3-凸函数与凸优化" class="headerlink" title="3.3 凸函数与凸优化"></a>3.3 凸函数与凸优化</h3><ul>
+<li>**凸函数 (Convex Function)**：直观上是一个“碗”形的函数。数学定义上，函数上任意两点的连线，都在函数图像的上方。</li>
+<li><strong>凸优化 (Convex Optimization)<strong>：如果目标函数是凸的，并且约束条件构成的集合也是凸集，那么</strong>局部极小值就是全局最小值</strong>。<ul>
+<li><em>例子</em>：线性回归的MSE损失、逻辑回归的对数损失、支持向量机(SVM)都是凸优化问题。深度神经网络(DNN)是<strong>非凸</strong>的，容易陷入局部最优&#x2F;鞍点。</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-4-拉格朗日乘数法、KKT条件"><a href="#3-4-拉格朗日乘数法、KKT条件" class="headerlink" title="3.4 拉格朗日乘数法、KKT条件"></a>3.4 拉格朗日乘数法、KKT条件</h3><p>处理<strong>带约束条件</strong>的优化问题。</p>
+<ul>
+<li><strong>拉格朗日乘数法</strong>：用于等式约束问题。通过引入拉格朗日乘子 $\lambda$，将有约束问题转化为无约束问题：$L(x, \lambda) &#x3D; f(x) + \lambda g(x)$。</li>
+<li><strong>KKT条件 (Karush-Kuhn-Tucker)<strong>：拉格朗日乘数法在</strong>不等式约束</strong>下的推广。<ul>
+<li><em>意义</em>：它是非线性规划问题有最优解的<strong>必要条件</strong>（在凸优化下是充分必要条件）。支持向量机（SVM）的推导完全建立在KKT条件之上，KKT条件解释了为什么SVM只依赖于少数几个“支持向量”。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>💡 <strong>【老师的叮嘱】</strong>：面试官问“为什么深度学习不用牛顿法而用梯度下降&#x2F;Adam？” 答案在于：神经网络参数量极大（千万或上亿级别），Hessian矩阵大小是参数量的平方，计算和存储它根本不现实。</p>
+</blockquote>
+<hr>
+<h3 id="📝-随堂测试与解析-微积分与优化"><a href="#📝-随堂测试与解析-微积分与优化" class="headerlink" title="📝 随堂测试与解析 (微积分与优化)"></a>📝 随堂测试与解析 (微积分与优化)</h3><p><strong>Q1：梯度下降法中，为什么更新公式是 $\theta &#x3D; \theta - \alpha \nabla J(\theta)$ （为什么要减去梯度）？</strong></p>
+<blockquote>
+<p><strong>解答</strong>：<br>根据泰勒展开式，函数在某一点的局部近似线性变化量等于梯度与微小步长向量的点积。为了让函数值下降最大，步长的方向应该与梯度的夹角为180度（即 $\cos(180^\circ) &#x3D; -1$）。因此，最快下降的方向就是<strong>负梯度方向</strong>。$\alpha$ 则是控制步长的学习率。</p>
+</blockquote>
+<p><strong>Q2：什么是鞍点（Saddle Point）？它在高维机器学习优化中有什么危害？</strong></p>
+<blockquote>
+<p><strong>解答</strong>：<br>鞍点是指在一个方向上是极小值（微积分中一阶导数为0，二阶导数大于0），但在另一个方向上是极大值（二阶导数小于0）的点，形状像马鞍。<br>在高维空间（如深度学习）中，完全陷入局部最小值的概率很小，但遇到鞍点的概率极大。在鞍点处，梯度为0，传统的梯度下降算法可能会停滞不前，或者更新极慢。这就是为什么现代优化器（如加入动量Momentum或Adam）如此重要的原因。</p>
+</blockquote>
+<hr>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/06/16/%E7%AB%AF%E5%88%B0%E7%AB%AFRAG%E8%A7%A3%E8%AF%BB/" rel="prev" title="东北大学政策RAG智能问答系统 — 从零构建到消融实验全解析">
+                  <i class="fa fa-angle-left"></i> 东北大学政策RAG智能问答系统 — 从零构建到消融实验全解析
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2024 – 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">查志渊</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>
