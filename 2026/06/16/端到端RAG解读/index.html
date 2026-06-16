@@ -1,0 +1,1359 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="东北大学政策RAG智能问答系统 — 从零构建到消融实验全解析 本文目标: 面试前只看这一篇，就能回答面试官可能提出的所有问题。建议阅读顺序：先完整读一遍理解全局，面试前重点看 §15 Q&amp;A 速查表。   1. 项目概述一句话定位面向东北大学真实政策文档的垂直领域 RAG（Retrieval-Augmented Generation）智能问答系统。学生用自然语言提问（如”保研要什么条件？”">
+<meta property="og:type" content="article">
+<meta property="og:title" content="东北大学政策RAG智能问答系统 — 从零构建到消融实验全解析">
+<meta property="og:url" content="http://example.com/2026/06/16/%E7%AB%AF%E5%88%B0%E7%AB%AFRAG%E8%A7%A3%E8%AF%BB/index.html">
+<meta property="og:site_name" content="渊渟岳峙的技术笔记">
+<meta property="og:description" content="东北大学政策RAG智能问答系统 — 从零构建到消融实验全解析 本文目标: 面试前只看这一篇，就能回答面试官可能提出的所有问题。建议阅读顺序：先完整读一遍理解全局，面试前重点看 §15 Q&amp;A 速查表。   1. 项目概述一句话定位面向东北大学真实政策文档的垂直领域 RAG（Retrieval-Augmented Generation）智能问答系统。学生用自然语言提问（如”保研要什么条件？”">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-06-16T00:49:10.000Z">
+<meta property="article:modified_time" content="2026-06-16T01:17:53.335Z">
+<meta property="article:author" content="查志渊">
+<meta property="article:tag" content="RAG">
+<meta property="article:tag" content="检索增强生成">
+<meta property="article:tag" content="信息检索">
+<meta property="article:tag" content="向量数据库">
+<meta property="article:tag" content="消融实验">
+<meta property="article:tag" content="LLM-as-Judge">
+<meta property="article:tag" content="面试准备">
+<meta property="article:tag" content="项目总结">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2026/06/16/%E7%AB%AF%E5%88%B0%E7%AB%AFRAG%E8%A7%A3%E8%AF%BB/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2026/06/16/%E7%AB%AF%E5%88%B0%E7%AB%AFRAG%E8%A7%A3%E8%AF%BB/","path":"2026/06/16/端到端RAG解读/","title":"东北大学政策RAG智能问答系统 — 从零构建到消融实验全解析"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>东北大学政策RAG智能问答系统 — 从零构建到消融实验全解析 | 渊渟岳峙的技术笔记</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">渊渟岳峙的技术笔记</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">用你喜欢的方式去度过一生</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%9C%E5%8C%97%E5%A4%A7%E5%AD%A6%E6%94%BF%E7%AD%96RAG%E6%99%BA%E8%83%BD%E9%97%AE%E7%AD%94%E7%B3%BB%E7%BB%9F-%E2%80%94-%E4%BB%8E%E9%9B%B6%E6%9E%84%E5%BB%BA%E5%88%B0%E6%B6%88%E8%9E%8D%E5%AE%9E%E9%AA%8C%E5%85%A8%E8%A7%A3%E6%9E%90"><span class="nav-number">1.</span> <span class="nav-text">东北大学政策RAG智能问答系统 — 从零构建到消融实验全解析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E9%A1%B9%E7%9B%AE%E6%A6%82%E8%BF%B0"><span class="nav-number">1.1.</span> <span class="nav-text">1. 项目概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E5%8F%A5%E8%AF%9D%E5%AE%9A%E4%BD%8D"><span class="nav-number">1.1.1.</span> <span class="nav-text">一句话定位</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E7%9A%84%E6%A0%B8%E5%BF%83%E9%97%AE%E9%A2%98"><span class="nav-number">1.1.2.</span> <span class="nav-text">解决的核心问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%80%89-RAG-%E8%80%8C%E4%B8%8D%E6%98%AF%E5%BE%AE%E8%B0%83%EF%BC%9F"><span class="nav-number">1.1.3.</span> <span class="nav-text">为什么选 RAG 而不是微调？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%87%E6%A1%A3%E8%8C%83%E5%9B%B4"><span class="nav-number">1.1.4.</span> <span class="nav-text">文档范围</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%80%E6%9C%AF%E6%A0%88"><span class="nav-number">1.1.5.</span> <span class="nav-text">技术栈</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E6%80%BB%E8%A7%88"><span class="nav-number">1.2.</span> <span class="nav-text">2. 系统架构总览</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89%E5%B1%82%E6%9E%B6%E6%9E%84"><span class="nav-number">1.2.1.</span> <span class="nav-text">三层架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%8C%E6%95%B4%E6%95%B0%E6%8D%AE%E6%B5%81"><span class="nav-number">1.2.2.</span> <span class="nav-text">完整数据流</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E9%94%AE%E8%AE%BE%E8%AE%A1%E5%86%B3%E7%AD%96"><span class="nav-number">1.2.3.</span> <span class="nav-text">关键设计决策</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E6%96%87%E6%A1%A3%E7%AE%A1%E7%90%86%E4%B8%8E%E5%88%87%E7%89%87%E7%AD%96%E7%95%A5"><span class="nav-number">1.3.</span> <span class="nav-text">3. 文档管理与切片策略</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%87%E6%A1%A3%E4%B8%8A%E4%BC%A0%E5%85%A8%E6%B5%81%E7%A8%8B"><span class="nav-number">1.3.1.</span> <span class="nav-text">文档上传全流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%87%E7%89%87%E7%AD%96%E7%95%A5"><span class="nav-number">1.3.2.</span> <span class="nav-text">切片策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%87%E6%A1%A3%E5%88%A0%E9%99%A4%E7%9A%84%E5%85%83%E6%95%B0%E6%8D%AE%E8%BF%87%E6%BB%A4%E6%96%B9%E6%A1%88"><span class="nav-number">1.3.3.</span> <span class="nav-text">文档删除的元数据过滤方案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B5%8C%E5%85%A5%E6%A8%A1%E5%9E%8B%E9%80%89%E6%8B%A9"><span class="nav-number">1.3.4.</span> <span class="nav-text">嵌入模型选择</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E4%B8%89%E5%A4%A7%E6%A3%80%E7%B4%A2%E7%AD%96%E7%95%A5%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90%EF%BC%88%E6%A0%B8%E5%BF%83%E7%AB%A0%E8%8A%82%EF%BC%89"><span class="nav-number">1.4.</span> <span class="nav-text">4. 三大检索策略深度解析（核心章节）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-VectorRetriever-%E2%80%94-%E5%90%91%E9%87%8F%E8%AF%AD%E4%B9%89%E6%A3%80%E7%B4%A2"><span class="nav-number">1.4.1.</span> <span class="nav-text">4.1 VectorRetriever — 向量语义检索</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-BM25Retriever-%E2%80%94-%E5%85%B3%E9%94%AE%E8%AF%8D%E7%A8%80%E7%96%8F%E6%A3%80%E7%B4%A2"><span class="nav-number">1.4.2.</span> <span class="nav-text">4.2 BM25Retriever — 关键词稀疏检索</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-HybridRetriever-%E2%80%94-RRF-%E8%9E%8D%E5%90%88%EF%BC%88%E2%98%85-%E6%8E%A8%E8%8D%90%E9%85%8D%E7%BD%AE%EF%BC%89"><span class="nav-number">1.4.3.</span> <span class="nav-text">4.3 HybridRetriever — RRF 融合（★ 推荐配置）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.4.4.</span> <span class="nav-text">4.4 工厂模式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E6%9F%A5%E8%AF%A2%E9%A2%84%E5%A4%84%E7%90%86"><span class="nav-number">1.5.</span> <span class="nav-text">5. 查询预处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-Query-Rewriting%EF%BC%88%E6%9F%A5%E8%AF%A2%E6%94%B9%E5%86%99%EF%BC%89"><span class="nav-number">1.5.1.</span> <span class="nav-text">5.1 Query Rewriting（查询改写）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-Multi-Query-Expansion%EF%BC%88%E5%A4%9A%E6%9F%A5%E8%AF%A2%E6%89%A9%E5%B1%95%EF%BC%89"><span class="nav-number">1.5.2.</span> <span class="nav-text">5.2 Multi-Query Expansion（多查询扩展）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-3-RRF-%E7%9A%84%E5%8F%8C%E9%87%8D%E5%BA%94%E7%94%A8"><span class="nav-number">1.5.3.</span> <span class="nav-text">5.3 RRF 的双重应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-4-%E4%B8%BA%E4%BB%80%E4%B9%88-Rewrite-%E8%83%9C%E5%87%BA%E8%80%8C-Expand-%E5%A4%B1%E8%B4%A5%EF%BC%9F"><span class="nav-number">1.5.4.</span> <span class="nav-text">5.4 为什么 Rewrite 胜出而 Expand 失败？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-Cross-Encoder-%E9%87%8D%E6%8E%92%E5%BA%8F"><span class="nav-number">1.6.</span> <span class="nav-text">6. Cross-Encoder 重排序</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#6-1-Bi-Encoder-vs-Cross-Encoder"><span class="nav-number">1.6.1.</span> <span class="nav-text">6.1 Bi-Encoder vs Cross-Encoder</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-%E6%87%92%E5%8A%A0%E8%BD%BD%E5%8D%95%E4%BE%8B%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.6.2.</span> <span class="nav-text">6.2 懒加载单例实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-3-%E4%B8%89%E7%BA%A7%E9%99%8D%E7%BA%A7%E7%AD%96%E7%95%A5"><span class="nav-number">1.6.3.</span> <span class="nav-text">6.3 三级降级策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-4-%E4%B8%BA%E4%BB%80%E4%B9%88%E5%9C%A8%E6%AD%A4%E9%A1%B9%E7%9B%AE%E4%B8%AD-Reranker-%E6%95%88%E6%9E%9C%E4%B8%8D%E4%BD%B3%EF%BC%9F"><span class="nav-number">1.6.4.</span> <span class="nav-text">6.4 为什么在此项目中 Reranker 效果不佳？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-%E7%94%9F%E6%88%90%E5%99%A8%E4%B8%8E-Prompt-%E5%B7%A5%E7%A8%8B"><span class="nav-number">1.7.</span> <span class="nav-text">7. 生成器与 Prompt 工程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#API-%E5%B0%81%E8%A3%85"><span class="nav-number">1.7.1.</span> <span class="nav-text">API 封装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9B%E7%A7%8D-Prompt-%E6%A8%A1%E6%9D%BF"><span class="nav-number">1.7.2.</span> <span class="nav-text">四种 Prompt 模板</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-%E8%AF%84%E4%BC%B0%E4%BD%93%E7%B3%BB"><span class="nav-number">1.8.</span> <span class="nav-text">8. 评估体系</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#8-1-%E6%B5%8B%E8%AF%95%E6%95%B0%E6%8D%AE%E9%9B%86%E8%AE%BE%E8%AE%A1"><span class="nav-number">1.8.1.</span> <span class="nav-text">8.1 测试数据集设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-2-%E6%A3%80%E7%B4%A2%E6%8C%87%E6%A0%87"><span class="nav-number">1.8.2.</span> <span class="nav-text">8.2 检索指标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-3-%E6%B6%88%E8%9E%8D%E5%AE%9E%E9%AA%8C%E8%AE%BE%E8%AE%A1-%E2%80%94-7%E7%BB%84%E9%85%8D%E7%BD%AE"><span class="nav-number">1.8.3.</span> <span class="nav-text">8.3 消融实验设计 — 7组配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-4-LLM-as-Judge-%E7%94%9F%E6%88%90%E8%B4%A8%E9%87%8F%E8%AF%84%E4%BC%B0"><span class="nav-number">1.8.4.</span> <span class="nav-text">8.4 LLM-as-Judge 生成质量评估</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C%E4%B8%8E%E5%85%B3%E9%94%AE%E5%8F%91%E7%8E%B0"><span class="nav-number">1.9.</span> <span class="nav-text">9. 实验结果与关键发现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#9-1-%E6%A3%80%E7%B4%A2%E6%8C%87%E6%A0%87%E5%AF%B9%E6%AF%94"><span class="nav-number">1.9.1.</span> <span class="nav-text">9.1 检索指标对比</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-2-%E7%94%9F%E6%88%90%E8%B4%A8%E9%87%8F%E5%AF%B9%E6%AF%94%EF%BC%88LLM-as-Judge-%E6%BB%A1%E5%88%865%E5%88%86%EF%BC%89"><span class="nav-number">1.9.2.</span> <span class="nav-text">9.2 生成质量对比（LLM-as-Judge, 满分5分）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-3-%E6%8C%89%E7%B1%BB%E5%88%AB-HR-3-%E5%88%86%E6%9E%90"><span class="nav-number">1.9.3.</span> <span class="nav-text">9.3 按类别 HR@3 分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-4-%E5%85%AD%E5%A4%A7%E5%85%B3%E9%94%AE%E5%8F%91%E7%8E%B0"><span class="nav-number">1.9.4.</span> <span class="nav-text">9.4 六大关键发现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-5-%E7%BB%84%E4%BB%B6%E8%B4%A1%E7%8C%AE%E9%87%8F%E5%8C%96"><span class="nav-number">1.9.5.</span> <span class="nav-text">9.5 组件贡献量化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10-%E7%B3%BB%E7%BB%9F%E6%9C%89%E6%95%88%E6%80%A7%E5%88%86%E6%9E%90%EF%BC%88Can-Do-Cannot-Do%EF%BC%89"><span class="nav-number">1.10.</span> <span class="nav-text">10. 系统有效性分析（Can Do &#x2F; Cannot Do）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%83%E8%83%BD%E5%81%9A%E4%BB%80%E4%B9%88-%E2%9C%85"><span class="nav-number">1.10.1.</span> <span class="nav-text">它能做什么 ✅</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%83%E4%B8%8D%E8%83%BD%E5%81%9A%E4%BB%80%E4%B9%88-%E2%9D%8C"><span class="nav-number">1.10.2.</span> <span class="nav-text">它不能做什么 ❌</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%BC%E5%90%88%E8%AF%84%E7%BA%A7"><span class="nav-number">1.10.3.</span> <span class="nav-text">综合评级</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%80%BB%E7%BB%93"><span class="nav-number">1.10.4.</span> <span class="nav-text">一句话总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#11-%E5%BC%80%E5%8F%91%E4%B8%AD%E7%9A%845%E4%B8%AA%E5%AE%9E%E6%88%98%E9%97%AE%E9%A2%98"><span class="nav-number">1.11.</span> <span class="nav-text">11. 开发中的5个实战问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%981%EF%BC%9APDF%E6%96%87%E4%BB%B6%E5%90%8D%E4%B8%AD%E6%96%87%E5%BC%95%E5%8F%B7%E7%BC%96%E7%A0%81%E4%B8%8D%E5%8C%B9%E9%85%8D"><span class="nav-number">1.11.1.</span> <span class="nav-text">问题1：PDF文件名中文引号编码不匹配</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%982%EF%BC%9AWindows%E7%BB%88%E7%AB%AFGBK%E7%BC%96%E7%A0%81%E4%B8%8D%E6%94%AF%E6%8C%81Emoji"><span class="nav-number">1.11.2.</span> <span class="nav-text">问题2：Windows终端GBK编码不支持Emoji</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%983%EF%BC%9Aeval-dataset-jsonl-%E4%B8%AD-source-doc-%E5%8C%B9%E9%85%8D%E5%A4%B1%E8%B4%A5"><span class="nav-number">1.11.3.</span> <span class="nav-text">问题3：eval_dataset.jsonl 中 source_doc 匹配失败</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%984%EF%BC%9AReranker%E5%86%B7%E5%90%AF%E5%8A%A8%E5%BB%B6%E8%BF%9F"><span class="nav-number">1.11.4.</span> <span class="nav-text">问题4：Reranker冷启动延迟</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%985%EF%BC%9Aconda-run-%E4%B8%8D%E6%94%AF%E6%8C%81%E5%A4%9A%E8%A1%8CPython%E8%84%9A%E6%9C%AC"><span class="nav-number">1.11.5.</span> <span class="nav-text">问题5：conda run 不支持多行Python脚本</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#12-%E5%85%B3%E9%94%AE%E4%BB%A3%E7%A0%81%E8%A7%A3%E8%AF%BB"><span class="nav-number">1.12.</span> <span class="nav-text">12. 关键代码解读</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#12-1-HybridRetriever-%E2%80%94-RRF-%E8%9E%8D%E5%90%88%E6%A0%B8%E5%BF%83"><span class="nav-number">1.12.1.</span> <span class="nav-text">12.1 HybridRetriever — RRF 融合核心</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#12-2-rrf-merge-%E2%80%94-%E7%8B%AC%E7%AB%8B%E5%A4%9A%E6%9F%A5%E8%AF%A2%E8%9E%8D%E5%90%88"><span class="nav-number">1.12.2.</span> <span class="nav-text">12.2 rrf_merge — 独立多查询融合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#12-3-retrieve-enhanced-%E2%80%94-%E5%A2%9E%E5%BC%BA%E6%A3%80%E7%B4%A2%E8%B0%83%E5%BA%A6%E5%99%A8"><span class="nav-number">1.12.3.</span> <span class="nav-text">12.3 retrieve_enhanced — 增强检索调度器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#12-4-Reranker-%E5%8D%95%E4%BE%8B-%E4%B8%89%E7%BA%A7%E9%99%8D%E7%BA%A7"><span class="nav-number">1.12.4.</span> <span class="nav-text">12.4 Reranker 单例 + 三级降级</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#12-5-DocumentManager-upload-pdf-%E2%80%94-%E6%96%87%E6%A1%A3%E5%85%A8%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="nav-number">1.12.5.</span> <span class="nav-text">12.5 DocumentManager.upload_pdf — 文档全生命周期</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#12-6-Evaluator-evaluate-generation-%E2%80%94-LLM-as-Judge"><span class="nav-number">1.12.6.</span> <span class="nav-text">12.6 Evaluator.evaluate_generation — LLM-as-Judge</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#13-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B8%8E%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5"><span class="nav-number">1.13.</span> <span class="nav-text">13. 设计模式与工程实践</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#14-%E5%90%8E%E7%BB%AD%E4%BC%98%E5%8C%96%E6%96%B9%E5%90%91"><span class="nav-number">1.14.</span> <span class="nav-text">14. 后续优化方向</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#15-%E9%9D%A2%E8%AF%95%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98-Q-A%EF%BC%88%E9%80%9F%E6%9F%A5%E8%A1%A8%EF%BC%89"><span class="nav-number">1.15.</span> <span class="nav-text">15. 面试常见问题 Q&amp;A（速查表）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#16-%E6%80%BB%E7%BB%93%E4%B8%8E%E5%8F%8D%E6%80%9D"><span class="nav-number">1.16.</span> <span class="nav-text">16. 总结与反思</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%88%91%E5%AD%A6%E5%88%B0%E4%BA%86%E4%BB%80%E4%B9%88"><span class="nav-number">1.16.1.</span> <span class="nav-text">我学到了什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E6%9E%9C%E9%87%8D%E5%81%9A%EF%BC%8C%E4%BC%9A%E6%80%8E%E4%B9%88%E6%94%B9"><span class="nav-number">1.16.2.</span> <span class="nav-text">如果重做，会怎么改</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%84%9F%E6%82%9F"><span class="nav-number">1.16.3.</span> <span class="nav-text">核心感悟</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E7%9A%84%E5%8F%AF%E8%BF%81%E7%A7%BB%E4%BB%B7%E5%80%BC"><span class="nav-number">1.16.4.</span> <span class="nav-text">项目的可迁移价值</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">查志渊</p>
+  <div class="site-description" itemprop="description">磨炼自己的一点点技术</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/woaiwang" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;woaiwang" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/06/16/%E7%AB%AF%E5%88%B0%E7%AB%AFRAG%E8%A7%A3%E8%AF%BB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="查志渊">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="渊渟岳峙的技术笔记">
+      <meta itemprop="description" content="磨炼自己的一点点技术">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="东北大学政策RAG智能问答系统 — 从零构建到消融实验全解析 | 渊渟岳峙的技术笔记">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          东北大学政策RAG智能问答系统 — 从零构建到消融实验全解析
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2026-06-16 08:49:10 / 修改时间：09:17:53" itemprop="dateCreated datePublished" datetime="2026-06-16T08:49:10+08:00">2026-06-16</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="东北大学政策RAG智能问答系统-—-从零构建到消融实验全解析"><a href="#东北大学政策RAG智能问答系统-—-从零构建到消融实验全解析" class="headerlink" title="东北大学政策RAG智能问答系统 — 从零构建到消融实验全解析"></a>东北大学政策RAG智能问答系统 — 从零构建到消融实验全解析</h1><blockquote>
+<p><strong>本文目标</strong>: 面试前只看这一篇，就能回答面试官可能提出的所有问题。<br>建议阅读顺序：先完整读一遍理解全局，面试前重点看 §15 Q&amp;A 速查表。</p>
+</blockquote>
+<hr>
+<h2 id="1-项目概述"><a href="#1-项目概述" class="headerlink" title="1. 项目概述"></a>1. 项目概述</h2><h3 id="一句话定位"><a href="#一句话定位" class="headerlink" title="一句话定位"></a>一句话定位</h3><p><strong>面向东北大学真实政策文档的垂直领域 RAG（Retrieval-Augmented Generation）智能问答系统</strong>。学生用自然语言提问（如”保研要什么条件？””被处分了还能拿奖学金吗？”），系统从5份官方政策PDF中检索相关内容，结合 DeepSeek 大模型生成准确回答。</p>
+<h3 id="解决的核心问题"><a href="#解决的核心问题" class="headerlink" title="解决的核心问题"></a>解决的核心问题</h3><p>通用大模型（如 ChatGPT、DeepSeek）有两大缺陷：</p>
+<ol>
+<li><strong>私有数据盲区</strong> — 不知道东北大学内部政策文件的具体内容</li>
+<li><strong>时效性滞后</strong> — 训练数据截止日期前的知识，无法反映最新政策修订</li>
+</ol>
+<h3 id="为什么选-RAG-而不是微调？"><a href="#为什么选-RAG-而不是微调？" class="headerlink" title="为什么选 RAG 而不是微调？"></a>为什么选 RAG 而不是微调？</h3><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>RAG</th>
+<th>LoRA 微调</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>训练成本</strong></td>
+<td>零训练，只需索引</td>
+<td>需要 GPU 微调（本项目 Qwen-1.8B 用 4-bit QLoRA，epoch&#x3D;3）</td>
+</tr>
+<tr>
+<td><strong>实时更新</strong></td>
+<td>更新文档即生效，重新上传 PDF 即可</td>
+<td>政策变化需重新训练</td>
+</tr>
+<tr>
+<td><strong>可追溯性</strong></td>
+<td>每次回答附带来源引用</td>
+<td>黑盒，无法追溯具体依据</td>
+</tr>
+<tr>
+<td><strong>幻觉控制</strong></td>
+<td>Prompt 约束 + 参考资料显式注入，幻觉更可控</td>
+<td>模型可能编造看似合理的内容</td>
+</tr>
+</tbody></table>
+<p>对于政策问答这种<strong>高准确性要求 + 文档频繁更新</strong>的场景，RAG 是更合适的选择。</p>
+<h3 id="文档范围"><a href="#文档范围" class="headerlink" title="文档范围"></a>文档范围</h3><p>系统索引了5份东北大学真实政策PDF：</p>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>内容</th>
+<th>页数</th>
+<th>切片数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>奖学金评定办法</td>
+<td>本科生奖学金等级&#x2F;金额&#x2F;比例&#x2F;条件</td>
+<td>4</td>
+<td>7</td>
+</tr>
+<tr>
+<td>考试违纪处理办法</td>
+<td>考试违纪&#x2F;作弊认定与处分流程</td>
+<td>8</td>
+<td>16</td>
+</tr>
+<tr>
+<td>学生违纪处分实施细则</td>
+<td>2025修订版纪律处分类型&#x2F;程序&#x2F;申诉</td>
+<td>30</td>
+<td>62</td>
+</tr>
+<tr>
+<td>推免遴选实施细则</td>
+<td>保研资格&#x2F;成绩要求&#x2F;遴选流程</td>
+<td>7</td>
+<td>15</td>
+</tr>
+<tr>
+<td>五四奖章评选通知</td>
+<td>五四奖章&#x2F;奖状评选条件&#x2F;名额&#x2F;流程</td>
+<td>8</td>
+<td>22</td>
+</tr>
+</tbody></table>
+<h3 id="技术栈"><a href="#技术栈" class="headerlink" title="技术栈"></a>技术栈</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">前端: Streamlit (Python Web UI)</span><br><span class="line">向量数据库: ChromaDB</span><br><span class="line">嵌入模型: BAAI/bge-small-zh-v1.5 (512维, L2归一化)</span><br><span class="line">重排序: BAAI/bge-reranker-base (Cross-Encoder)</span><br><span class="line">LLM: DeepSeek API (deepseek-chat)</span><br><span class="line">分词: jieba + rank_bm25</span><br><span class="line">本地模型(可选): Qwen-1.8B + LoRA (xtuner微调)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="2-系统架构总览"><a href="#2-系统架构总览" class="headerlink" title="2. 系统架构总览"></a>2. 系统架构总览</h2><h3 id="三层架构"><a href="#三层架构" class="headerlink" title="三层架构"></a>三层架构</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────────────────────────┐</span><br><span class="line">│                  Streamlit UI (app.py)               │</span><br><span class="line">│  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌────────┐ │</span><br><span class="line">│  │ API Key  │ │ 文档管理  │ │ 检索策略  │ │ 评估看板│ │</span><br><span class="line">│  │ LLM 选择 │ │ 上传/删除 │ │ 增强检索  │ │ 指标对比│ │</span><br><span class="line">│  └──────────┘ └──────────┘ └──────────┘ └────────┘ │</span><br><span class="line">│              ┌──────────────────────┐               │</span><br><span class="line">│              │    Chat 对话界面      │               │</span><br><span class="line">│              │  流式输出 + 来源标注   │               │</span><br><span class="line">│              └──────────────────────┘               │</span><br><span class="line">└──────────────────────┬──────────────────────────────┘</span><br><span class="line">                       │</span><br><span class="line">┌──────────────────────▼──────────────────────────────┐</span><br><span class="line">│                 RAG Core (rag_core/)                 │</span><br><span class="line">│                                                      │</span><br><span class="line">│  DocumentManager ──► RecursiveChunker ──► ChromaDB   │</span><br><span class="line">│  (上传/删除/管理)     (切片 300/50)       (向量存储)   │</span><br><span class="line">│                                                      │</span><br><span class="line">│  QueryProcessor ──► Retriever ──► Reranker ──► Generator │</span><br><span class="line">│  (改写/扩展/RRF)    (3种策略)     (CrossEncoder)  (DeepSeek) │</span><br><span class="line">└──────────────────────┬──────────────────────────────┘</span><br><span class="line">                       │</span><br><span class="line">┌──────────────────────▼──────────────────────────────┐</span><br><span class="line">│              Evaluation (evaluation/)                │</span><br><span class="line">│  TestDataset ──► Metrics ──► Evaluator               │</span><br><span class="line">│  (30题/5类)      (HR/MRR/P)   (检索+LLM-as-Judge)    │</span><br><span class="line">└─────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<h3 id="完整数据流"><a href="#完整数据流" class="headerlink" title="完整数据流"></a>完整数据流</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">用户提问: &quot;被处分了还能拿奖学金吗？&quot;</span><br><span class="line">    │</span><br><span class="line">    ▼</span><br><span class="line">[查询预处理] QueryProcessor.retrieve_enhanced()</span><br><span class="line">    ├─ mode=&quot;rewrite&quot;: 改写为&quot;受到纪律处分后是否具备奖学金评选资格&quot;</span><br><span class="line">    └─ 生成 2-3 个改写版本 + 保留原始查询</span><br><span class="line">    │</span><br><span class="line">    ▼</span><br><span class="line">[多策略检索] HybridRetriever.retrieve()</span><br><span class="line">    ├─ VectorRetriever: ChromaDB 余弦相似度 → Top-10</span><br><span class="line">    ├─ BM25Retriever: jieba分词 + BM25Okapi → Top-10</span><br><span class="line">    └─ RRF 融合: score = 1/(60+rank_v) + 1/(60+rank_b) → Top-3</span><br><span class="line">    │</span><br><span class="line">    ▼</span><br><span class="line">[可选: 重排序] Reranker.rerank()</span><br><span class="line">    └─ CrossEncoder(query, doc) → 分数 → 重排 → Top-3</span><br><span class="line">    │</span><br><span class="line">    ▼</span><br><span class="line">[生成回答] Generator.generate()</span><br><span class="line">    ├─ build_qa_prompt(): 注入参考文档 + 规则约束</span><br><span class="line">    └─ DeepSeek API: temperature=0.1, streaming 输出</span><br><span class="line">    │</span><br><span class="line">    ▼</span><br><span class="line">最终回答 + &quot;[来源: 奖学金评定办法.pdf]&quot; 引用标注</span><br></pre></td></tr></table></figure>
+
+<h3 id="关键设计决策"><a href="#关键设计决策" class="headerlink" title="关键设计决策"></a>关键设计决策</h3><p><strong>为什么用单 Chroma Collection 而不是每个文档一个 Collection？</strong></p>
+<ul>
+<li>跨文档检索本身就是核心需求，单 Collection 可以在一次查询中搜索所有文档</li>
+<li>通过 metadata 中的 <code>doc_id</code> 字段实现按文档过滤和删除，相当于用 metadata 替代了多 Collection</li>
+<li>避免管理多个 Collection 的复杂性</li>
+</ul>
+<p><strong>为什么用 SQLite 存元数据而不是全靠 Chroma？</strong></p>
+<ul>
+<li>Chroma 的元数据查询能力有限，SQLite 提供灵活的 SQL 查询</li>
+<li>零配置、零依赖、文件级持久化</li>
+<li>文档列表、上传时间排序等管理操作更适合结构化数据库</li>
+</ul>
+<p><strong>防御性编程贯穿始终</strong></p>
+<ul>
+<li>每个可选组件（Reranker、Query Rewriting）都有降级策略：组件挂了，系统继续运行</li>
+<li>LLM 调用失败后自动重试（3次 + 指数退避）</li>
+<li>向量库为空时返回空列表而不是抛异常</li>
+</ul>
+<hr>
+<h2 id="3-文档管理与切片策略"><a href="#3-文档管理与切片策略" class="headerlink" title="3. 文档管理与切片策略"></a>3. 文档管理与切片策略</h2><h3 id="文档上传全流程"><a href="#文档上传全流程" class="headerlink" title="文档上传全流程"></a>文档上传全流程</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># document_manager.py — upload_pdf() 核心流程</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">upload_pdf</span>(<span class="params">self, file_bytes: <span class="built_in">bytes</span>, original_filename: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">    doc_id = <span class="built_in">str</span>(uuid.uuid4())             <span class="comment"># 1. 生成唯一ID</span></span><br><span class="line">    <span class="comment"># 2. 保存原始PDF到 data/pdfs/</span></span><br><span class="line">    <span class="comment"># 3. PyPDFLoader 加载 → RecursiveChunker 切片</span></span><br><span class="line">    <span class="comment"># 4. 每个chunk注入 doc_id + filename 到 metadata</span></span><br><span class="line">    <span class="comment"># 5. ChromaDB.add_documents() + persist()</span></span><br><span class="line">    <span class="comment"># 6. SQLite INSERT (id, filename, upload_time, chunk_count, status)</span></span><br><span class="line">    <span class="keyword">return</span> doc_id</span><br></pre></td></tr></table></figure>
+
+<h3 id="切片策略"><a href="#切片策略" class="headerlink" title="切片策略"></a>切片策略</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># chunker.py</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">RecursiveChunker</span>(<span class="title class_ inherited__">BaseChunker</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, chunk_size=<span class="number">300</span>, chunk_overlap=<span class="number">50</span></span>):</span><br><span class="line">        <span class="variable language_">self</span>.splitter = RecursiveCharacterTextSplitter(</span><br><span class="line">            chunk_size=chunk_size,</span><br><span class="line">            chunk_overlap=chunk_overlap,</span><br><span class="line">        )</span><br></pre></td></tr></table></figure>
+
+<p><strong>chunk_size&#x3D;300 的设计理由</strong>：</p>
+<ul>
+<li>中文政策文档句子密度高，300字符约等于4-5句中文，刚好覆盖一个政策条款</li>
+<li>过小（&lt;200）：切断条款文本，丢失上下文</li>
+<li>过大（&gt;500）：检索精度下降，噪声增加</li>
+<li>评估实验发现，长流程类问题（如”考试作弊的完整处理流程”）Completeness&#x3D;3&#x2F;5，正是块太小导致的——后续优化方向之一是调大到500或按章节切片</li>
+</ul>
+<p><strong>chunk_overlap&#x3D;50 为什么重要</strong>：</p>
+<ul>
+<li>防止关键信息刚好落在两个块的边界上被”拦腰截断”</li>
+<li>50字符的冗余量在中文约等于1句，成本几乎为零但显著提升召回</li>
+</ul>
+<h3 id="文档删除的元数据过滤方案"><a href="#文档删除的元数据过滤方案" class="headerlink" title="文档删除的元数据过滤方案"></a>文档删除的元数据过滤方案</h3><p>Chroma 不原生支持”按文档删除”，所以我把 <code>doc_id</code> 注入到每个 chunk 的 metadata 中：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 删除时先按 metadata 过滤，再按 ID 删除</span></span><br><span class="line">results = vectorstore.get(where=&#123;<span class="string">&quot;doc_id&quot;</span>: doc_id&#125;)</span><br><span class="line">vectorstore.delete(ids=results[<span class="string">&quot;ids&quot;</span>])</span><br><span class="line"><span class="comment"># 同时删除本地文件 + SQLite 记录</span></span><br></pre></td></tr></table></figure>
+
+<p>这种方案利用了 Chroma 的 metadata 过滤能力，避免了维护多 Collection 的复杂度。</p>
+<h3 id="嵌入模型选择"><a href="#嵌入模型选择" class="headerlink" title="嵌入模型选择"></a>嵌入模型选择</h3><p><code>BAAI/bge-small-zh-v1.5</code>：中文语义理解好，模型小（~100MB），CPU 推理足够快。<code>normalize_embeddings=True</code> 使向量归一化后，内积就等于余弦相似度。</p>
+<hr>
+<h2 id="4-三大检索策略深度解析（核心章节）"><a href="#4-三大检索策略深度解析（核心章节）" class="headerlink" title="4. 三大检索策略深度解析（核心章节）"></a>4. 三大检索策略深度解析（核心章节）</h2><p>这是整个项目最核心的技术部分。我实现了三种互补的检索策略，通过统一的抽象基类组织：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Retriever</span>(<span class="title class_ inherited__">ABC</span>):</span><br><span class="line"><span class="meta">    @abstractmethod</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">retrieve</span>(<span class="params">self, query: <span class="built_in">str</span>, k: <span class="built_in">int</span> = <span class="number">3</span></span>) -&gt; <span class="type">List</span>[Document]: ...</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-1-VectorRetriever-—-向量语义检索"><a href="#4-1-VectorRetriever-—-向量语义检索" class="headerlink" title="4.1 VectorRetriever — 向量语义检索"></a>4.1 VectorRetriever — 向量语义检索</h3><p><strong>原理</strong>：将查询和文档块都映射到同一个512维向量空间，用余弦相似度找最相关的 Top-K。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">query → BGE Embedding → [0.12, -0.34, ...] (512维)</span><br><span class="line">                         ↓ 余弦相似度</span><br><span class="line">chunks → BGE Embedding → 每个chunk的向量 → 排序 → Top-K</span><br></pre></td></tr></table></figure>
+
+<p><strong>优势</strong>：语义匹配。”保研”能匹配到”推荐免试攻读研究生”，即使字面上完全不同。<br><strong>劣势</strong>：对精确数字、专有名词不敏感；一碗水端平，无法区分关键词权重。</p>
+<h3 id="4-2-BM25Retriever-—-关键词稀疏检索"><a href="#4-2-BM25Retriever-—-关键词稀疏检索" class="headerlink" title="4.2 BM25Retriever — 关键词稀疏检索"></a>4.2 BM25Retriever — 关键词稀疏检索</h3><p><strong>原理</strong>：经典的 TF-IDF 家族算法，核心公式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">BM25(q, d) = Σ IDF(qi) × ( TF(qi,d) × (k1+1) ) / ( TF(qi,d) + k1×(1-b+b×|d|/avgdl) )</span><br></pre></td></tr></table></figure>
+
+<p>其中 IDF(qi) 衡量词的稀有程度（如”五四奖章”很稀有，权重高），TF 项引入饱和曲线防止长文档优势。</p>
+<p><strong>实现</strong>：用 <code>jieba</code> 分词 + <code>rank_bm25</code> 库（BM25Okapi 实现）。<strong>遍历 Chroma 中所有 chunks 构建索引</strong>，查询时计算每个 chunk 的 BM25 分数。</p>
+<p><strong>优势</strong>：精确匹配政策编号（如”东大计算机院字〔2022〕4号”）、专有名词；速度极快（0.00s&#x2F;题）。<br><strong>劣势</strong>：无语义理解。”保研”和”推免”字面不同就完全匹配不到。</p>
+<h3 id="4-3-HybridRetriever-—-RRF-融合（★-推荐配置）"><a href="#4-3-HybridRetriever-—-RRF-融合（★-推荐配置）" class="headerlink" title="4.3 HybridRetriever — RRF 融合（★ 推荐配置）"></a>4.3 HybridRetriever — RRF 融合（★ 推荐配置）</h3><p>这是整个系统的精华。向量检索和 BM25 检索各有千秋，RRF（Reciprocal Rank Fusion）将它们无痛融合：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># retrievers.py — 核心RRF融合代码</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">retrieve</span>(<span class="params">self, query: <span class="built_in">str</span>, k: <span class="built_in">int</span> = <span class="number">3</span></span>) -&gt; <span class="type">List</span>[Document]:</span><br><span class="line">    <span class="comment"># 1. 两个检索器各取 Top-10（粗排阶段多取一些）</span></span><br><span class="line">    vector_results = <span class="variable language_">self</span>.vector_retriever.retrieve(query, k=<span class="number">10</span>)</span><br><span class="line">    bm25_results  = <span class="variable language_">self</span>.bm25_retriever.retrieve(query, k=<span class="number">10</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 2. RRF 融合: score(d) = 1/(60 + rank) 之和</span></span><br><span class="line">    fused_scores = &#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> rank, doc <span class="keyword">in</span> <span class="built_in">enumerate</span>(vector_results):</span><br><span class="line">        key = doc.page_content[:<span class="number">50</span>]  <span class="comment"># 前50字符做去重键</span></span><br><span class="line">        fused_scores[key] = fused_scores.get(key, <span class="number">0</span>) + <span class="number">1.0</span>/(<span class="number">60</span> + rank + <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> rank, doc <span class="keyword">in</span> <span class="built_in">enumerate</span>(bm25_results):</span><br><span class="line">        key = doc.page_content[:<span class="number">50</span>]</span><br><span class="line">        fused_scores[key] = fused_scores.get(key, <span class="number">0</span>) + <span class="number">1.0</span>/(<span class="number">60</span> + rank + <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 3. 按融合分数排序，返回 Top-K</span></span><br><span class="line">    sorted_keys = <span class="built_in">sorted</span>(fused_scores, key=<span class="keyword">lambda</span> k: fused_scores[k], reverse=<span class="literal">True</span>)</span><br><span class="line">    <span class="keyword">return</span> [content_to_doc[key] <span class="keyword">for</span> key <span class="keyword">in</span> sorted_keys[:k]]</span><br></pre></td></tr></table></figure>
+
+<p><strong>RRF 公式</strong>:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">RRF_score(d) = Σ 1/(k + rank_i(d))</span><br></pre></td></tr></table></figure>
+
+<p>其中 k&#x3D;60（来自原始论文的经验最优值），rank 从 1 开始。</p>
+<p><strong>为什么用 RRF 而不是加权平均？</strong></p>
+<p>这是面试官最爱问的问题。核心答案：<strong>向量相似度分数（余弦距离）和 BM25 分数处于完全不同的数域</strong>：</p>
+<ul>
+<li>向量相似度：通常在 0.3-1.0 之间（余弦相似度归一化后）</li>
+<li>BM25 分数：可以从 0 到几百不等</li>
+<li>两者不可直接加权比较——这就是”<strong>分数尺度不一致</strong>“（incommensurable scores）问题</li>
+</ul>
+<p>RRF 只使用<strong>排名</strong>（rank）而非原始分数，天然尺度无关。一个在向量检索排第1、BM25排第3的文档，RRF得分 &#x3D; 1&#x2F;61 + 1&#x2F;63 ≈ 0.0323；而向量排第5、BM25排第1的文档得分 &#x3D; 1&#x2F;65 + 1&#x2F;61 ≈ 0.0318——前者胜出。这就很合理。</p>
+<p><strong>为什么 k&#x3D;60？</strong><br>这是原始 RRF 论文（Cormack et al., 2009）的实证结果。k 越大，排名差异的影响越小（更平滑）；k 越小，排名差异越敏感。60 在大多数场景下是最优平衡点。</p>
+<p><strong>去重策略</strong>：用 <code>page_content[:50]</code>（前50个字符）做去重键。这是一种近似方法——假设相同内容有相同前缀。对于政策文档来说足够可靠，比基于 ID 的去重更简单直接。</p>
+<h3 id="4-4-工厂模式"><a href="#4-4-工厂模式" class="headerlink" title="4.4 工厂模式"></a>4.4 工厂模式</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 根据字符串配置名创建检索器，策略模式 + 工厂模式</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">create_retriever</span>(<span class="params">strategy: <span class="built_in">str</span>, doc_manager</span>) -&gt; Retriever:</span><br><span class="line">    strategy_map = &#123;</span><br><span class="line">        <span class="string">&quot;vector&quot;</span>: VectorRetriever,</span><br><span class="line">        <span class="string">&quot;bm25&quot;</span>:  BM25Retriever,</span><br><span class="line">        <span class="string">&quot;hybrid&quot;</span>: HybridRetriever,</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> strategy_map[strategy](doc_manager)</span><br></pre></td></tr></table></figure>
+
+<p>这样 Streamlit UI 中的下拉框可以直接用字符串驱动后端切换检索策略。</p>
+<hr>
+<h2 id="5-查询预处理"><a href="#5-查询预处理" class="headerlink" title="5. 查询预处理"></a>5. 查询预处理</h2><h3 id="5-1-Query-Rewriting（查询改写）"><a href="#5-1-Query-Rewriting（查询改写）" class="headerlink" title="5.1 Query Rewriting（查询改写）"></a>5.1 Query Rewriting（查询改写）</h3><p><strong>问题</strong>：学生用大白话问”保研要啥条件”，但政策文档里写的是”推荐优秀应届本科毕业生免试攻读硕士学位研究生”。</p>
+<p><strong>方案</strong>：使用 LLM 将口语查询改写为 2-3 个官方术语版本：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">System: &quot;你是一个政策文档检索优化专家。将用户口语改写为官方表述。&quot;</span><br><span class="line">User: &quot;保研要什么条件？&quot;</span><br><span class="line">LLM Output:</span><br><span class="line">  1. 保研要什么条件？</span><br><span class="line">  2. 推荐优秀应届本科毕业生免试攻读硕士学位研究生基本条件</span><br><span class="line">  3. 推免资格申请要求与选拔标准</span><br></pre></td></tr></table></figure>
+
+<p>每个改写版本分别检索，然后用 RRF 融合多路结果。<strong>原始查询始终保留作为兜底</strong>（防止改写失败或引入错误）。</p>
+<h3 id="5-2-Multi-Query-Expansion（多查询扩展）"><a href="#5-2-Multi-Query-Expansion（多查询扩展）" class="headerlink" title="5.2 Multi-Query Expansion（多查询扩展）"></a>5.2 Multi-Query Expansion（多查询扩展）</h3><p><strong>问题</strong>：像”保研需要满足什么条件？”这种问题包含多个维度（GPA、科研、英语、德育）。</p>
+<p><strong>方案</strong>：用 LLM 拆解为 3-5 个独立子问题：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">System: &quot;将用户问题拆解为3-5个独立子问题，互不重叠。&quot;</span><br><span class="line">User: &quot;保研需要满足什么条件？&quot;</span><br><span class="line">LLM Output:</span><br><span class="line">  1. GPA最低要求是多少？</span><br><span class="line">  2. 科研论文或竞赛获奖的加分政策是什么？</span><br><span class="line">  3. 英语六级或四级有硬性要求吗？</span><br><span class="line">  4. 德育考核和综合素质评价标准是什么？</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-3-RRF-的双重应用"><a href="#5-3-RRF-的双重应用" class="headerlink" title="5.3 RRF 的双重应用"></a>5.3 RRF 的双重应用</h3><p><strong>RRF 在系统中被用了两次</strong>，这是值得强调的设计点：</p>
+<ol>
+<li><strong>检索策略层</strong>：HybridRetriever 用 RRF 融合 Vector + BM25 的结果</li>
+<li><strong>查询处理层</strong>：<code>rrf_merge()</code> 融合多个改写&#x2F;扩展查询的检索结果</li>
+</ol>
+<p>同一个算法，不同应用场景，统一的代码实现。</p>
+<h3 id="5-4-为什么-Rewrite-胜出而-Expand-失败？"><a href="#5-4-为什么-Rewrite-胜出而-Expand-失败？" class="headerlink" title="5.4 为什么 Rewrite 胜出而 Expand 失败？"></a>5.4 为什么 Rewrite 胜出而 Expand 失败？</h3><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>Rewrite</th>
+<th>Expand</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>HR@3 变化</td>
+<td>0%</td>
+<td><strong>-6.6%</strong></td>
+</tr>
+<tr>
+<td>P@3 变化</td>
+<td><strong>+3.4%</strong></td>
+<td>-12.2%</td>
+</tr>
+<tr>
+<td>耗时增加</td>
+<td>+1.35s</td>
+<td>+1.93s</td>
+</tr>
+<tr>
+<td>主要收益场景</td>
+<td>B类口语化问题 HR@3 83%→100%</td>
+<td>无正面收益</td>
+</tr>
+</tbody></table>
+<p><strong>Expand 失败的根因分析</strong>：</p>
+<ul>
+<li>拆解出的子问题可能引入不相关文档（如”英语要求是什么？”→ 检索到考试违纪文档中关于英语考试作弊的段落）</li>
+<li>6个子问题的检索结果经过 RRF 融合后，噪声淹没了正确信号</li>
+<li>拆解粒度与检索需求不匹配：当前 prompt 设计的拆解太细，产生了冗余查询</li>
+</ul>
+<hr>
+<h2 id="6-Cross-Encoder-重排序"><a href="#6-Cross-Encoder-重排序" class="headerlink" title="6. Cross-Encoder 重排序"></a>6. Cross-Encoder 重排序</h2><h3 id="6-1-Bi-Encoder-vs-Cross-Encoder"><a href="#6-1-Bi-Encoder-vs-Cross-Encoder" class="headerlink" title="6.1 Bi-Encoder vs Cross-Encoder"></a>6.1 Bi-Encoder vs Cross-Encoder</h3><p>这是一个经典架构对比：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Bi-Encoder (Embedding模型):</span><br><span class="line">  query → [Encoder] → vec_q ─┐</span><br><span class="line">                               ├─ cos(vec_q, vec_d) → 分数</span><br><span class="line">  doc  → [Encoder] → vec_d ─┘</span><br><span class="line">  特点: 快（向量预计算），但 query 和 doc 之间无逐 token 交互</span><br><span class="line"></span><br><span class="line">Cross-Encoder (Reranker):</span><br><span class="line">  [CLS] query [SEP] doc [SEP] → [Transformer] → 分数</span><br><span class="line">  特点: 慢（每对都要过一遍Transformer），但 query-doc 深度交互，更精确</span><br></pre></td></tr></table></figure>
+
+<p><strong>管道设计</strong>：粗排用 Bi-Encoder（ChromaDB, 10个候选），精排用 Cross-Encoder（10选3）。这是标准的 <strong>Retrieve-then-Rerank</strong> 范式。</p>
+<h3 id="6-2-懒加载单例实现"><a href="#6-2-懒加载单例实现" class="headerlink" title="6.2 懒加载单例实现"></a>6.2 懒加载单例实现</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># reranker.py — 模块级单例缓存</span></span><br><span class="line">_reranker_model = <span class="literal">None</span>  <span class="comment"># 全局变量</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">_load_reranker_model</span>(<span class="params">model_name</span>):</span><br><span class="line">    <span class="keyword">global</span> _reranker_model</span><br><span class="line">    <span class="keyword">if</span> _reranker_model <span class="keyword">is</span> <span class="literal">None</span>:  <span class="comment"># 只加载一次</span></span><br><span class="line">        <span class="keyword">from</span> sentence_transformers <span class="keyword">import</span> CrossEncoder</span><br><span class="line">        _reranker_model = CrossEncoder(model_name)</span><br><span class="line">    <span class="keyword">return</span> _reranker_model</span><br></pre></td></tr></table></figure>
+
+<p>为什么用模块级全局变量而不是类属性？因为 Streamlit 的 re-run 机制会反复实例化 Reranker 类，如果用实例属性会每次重新加载 1.1GB 模型。模块级单例确保了<strong>第一次加载后，后续所有调用都命中缓存</strong>。</p>
+<h3 id="6-3-三级降级策略"><a href="#6-3-三级降级策略" class="headerlink" title="6.3 三级降级策略"></a>6.3 三级降级策略</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">rerank</span>(<span class="params">self, query, documents, k=<span class="number">3</span></span>):</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> documents:           <span class="comment"># 空输入 → 返回空</span></span><br><span class="line">        <span class="keyword">return</span> []</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(documents) &lt;= k:     <span class="comment"># 不够截断 → 直接返回</span></span><br><span class="line">        <span class="keyword">return</span> documents</span><br><span class="line">    model = <span class="variable language_">self</span>._get_model()</span><br><span class="line">    <span class="keyword">if</span> model <span class="keyword">is</span> <span class="literal">None</span>:           <span class="comment"># 模型加载失败 → 降级为原始排序</span></span><br><span class="line">        <span class="keyword">return</span> documents[:k]</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="comment"># Cross-Encoder 打分 + 排序</span></span><br><span class="line">        ...</span><br><span class="line">    <span class="keyword">except</span> Exception:</span><br><span class="line">        <span class="keyword">return</span> documents[:k]    <span class="comment"># 任何异常 → 降级</span></span><br></pre></td></tr></table></figure>
+
+<p>这种防御性设计保证了：<strong>Reranker 是一个可选增强组件，它的故障不会导致整个管道崩溃。</strong></p>
+<h3 id="6-4-为什么在此项目中-Reranker-效果不佳？"><a href="#6-4-为什么在此项目中-Reranker-效果不佳？" class="headerlink" title="6.4 为什么在此项目中 Reranker 效果不佳？"></a>6.4 为什么在此项目中 Reranker 效果不佳？</h3><table>
+<thead>
+<tr>
+<th>配置</th>
+<th>HR@3</th>
+<th>P@3</th>
+<th>耗时</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Hybrid (基线)</td>
+<td><strong>93.3%</strong></td>
+<td><strong>84.4%</strong></td>
+<td>0.02s</td>
+</tr>
+<tr>
+<td>Hybrid + Reranker</td>
+<td>90.0%</td>
+<td>77.8%</td>
+<td><strong>+6.43s</strong></td>
+</tr>
+</tbody></table>
+<p>三个原因：</p>
+<ol>
+<li><strong>基线已经很高</strong>（93.3%），几乎没有优化空间</li>
+<li><strong>截断损失</strong>：Top-10 → Top-3，有时候正确答案刚好在第4-10位被截掉了</li>
+<li><strong>跨文档瓶颈</strong>：对于跨文档问题，正确答案根本不在 Top-10 里，Reranker 无能为力</li>
+</ol>
+<p><strong>关键认知</strong>：Reranker 不是银弹——它在基线较低、候选集噪音大时效果最好。当前系统的瓶颈在<strong>检索广度</strong>（跨文档）而非<strong>检索精度</strong>。</p>
+<hr>
+<h2 id="7-生成器与-Prompt-工程"><a href="#7-生成器与-Prompt-工程" class="headerlink" title="7. 生成器与 Prompt 工程"></a>7. 生成器与 Prompt 工程</h2><h3 id="API-封装"><a href="#API-封装" class="headerlink" title="API 封装"></a>API 封装</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Generator</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, api_key=<span class="literal">None</span></span>):</span><br><span class="line">        <span class="variable language_">self</span>.client = OpenAI(api_key=api_key, base_url=<span class="string">&quot;https://api.deepseek.com&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">    @retry(<span class="params">stop=stop_after_attempt(<span class="params"><span class="number">3</span></span>), wait=wait_exponential(<span class="params"><span class="built_in">min</span>=<span class="number">2</span>, <span class="built_in">max</span>=<span class="number">10</span></span>)</span>)</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">generate_stream</span>(<span class="params">self, system_prompt, user_prompt</span>):</span><br><span class="line">        <span class="comment"># 流式生成：逐 chunk yield，用于 Chat UI 的打字效果</span></span><br><span class="line"></span><br><span class="line"><span class="meta">    @retry(<span class="params">stop=stop_after_attempt(<span class="params"><span class="number">3</span></span>), wait=wait_exponential(<span class="params"><span class="built_in">min</span>=<span class="number">2</span>, <span class="built_in">max</span>=<span class="number">10</span></span>)</span>)</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">generate</span>(<span class="params">self, system_prompt, user_prompt</span>):</span><br><span class="line">        <span class="comment"># 非流式生成：直接返回完整文本，用于 Rewrite/Expand/Judge</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>重试策略</strong>：Tenacity 库，最多3次，指数退避（2s → 4s → 10s），处理网络波动。</p>
+<h3 id="四种-Prompt-模板"><a href="#四种-Prompt-模板" class="headerlink" title="四种 Prompt 模板"></a>四种 Prompt 模板</h3><table>
+<thead>
+<tr>
+<th>模板</th>
+<th>角色</th>
+<th>输出格式</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>build_qa_prompt</code></td>
+<td>专业政策问答助手</td>
+<td>自然语言 + <code>[来源: 文件名]</code></td>
+<td>主问答</td>
+</tr>
+<tr>
+<td><code>build_rewrite_prompt</code></td>
+<td>政策文档检索优化专家</td>
+<td>2-3行编号列表</td>
+<td>Query Rewriting</td>
+</tr>
+<tr>
+<td><code>build_expand_prompt</code></td>
+<td>查询分解专家</td>
+<td>3-5行编号列表</td>
+<td>Multi-Query Expansion</td>
+</tr>
+<tr>
+<td><code>build_judge_prompt</code></td>
+<td>RAG 质量评审员</td>
+<td>JSON <code>&#123;faithfulness, relevance, completeness, reason&#125;</code></td>
+<td>LLM-as-Judge</td>
+</tr>
+</tbody></table>
+<p><strong>核心 QA Prompt 设计思路</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">System: 你是一个专业的政策问答助手。请严格基于以下【参考资料】回答问题。</span><br><span class="line">规则：</span><br><span class="line">1. 如果参考资料足够，给出准确、简洁的回答</span><br><span class="line">2. 如果参考资料不足，明确说明&quot;文档中未提及&quot;</span><br><span class="line">3. 不要编造信息</span><br><span class="line">4. 在回答末尾用 [来源: 文件名] 的形式标注引用</span><br><span class="line"></span><br><span class="line">【参考资料】：</span><br><span class="line">[1] ...(检索到的chunk1)...</span><br><span class="line">[2] ...(检索到的chunk2)...</span><br><span class="line">[3] ...(检索到的chunk3)...</span><br></pre></td></tr></table></figure>
+
+<p><strong>关键参数</strong>：<code>temperature=0.1</code>（低温度保证回答确定性，政策问答不能有创造性），<code>max_tokens=1024</code>（足够覆盖大多数政策回答）。</p>
+<hr>
+<h2 id="8-评估体系"><a href="#8-评估体系" class="headerlink" title="8. 评估体系"></a>8. 评估体系</h2><h3 id="8-1-测试数据集设计"><a href="#8-1-测试数据集设计" class="headerlink" title="8.1 测试数据集设计"></a>8.1 测试数据集设计</h3><p>30道题，5个类别，每类6题，从易到难覆盖不同检索场景：</p>
+<table>
+<thead>
+<tr>
+<th>类别</th>
+<th>标签</th>
+<th>示例</th>
+<th>挑战</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>A</td>
+<td>精准事实查询</td>
+<td>“一等奖学金的金额是多少？”</td>
+<td>单文档，唯一答案</td>
+</tr>
+<tr>
+<td>B</td>
+<td>口语化&#x2F;术语转换</td>
+<td>“被处分了还能拿奖学金吗？”</td>
+<td>口语→官方术语映射</td>
+</tr>
+<tr>
+<td>C</td>
+<td>条件排除性查询</td>
+<td>“有不及格课程能否申请保研？”</td>
+<td>排除条款</td>
+</tr>
+<tr>
+<td>D</td>
+<td><strong>跨文档关联</strong></td>
+<td>“考试作弊被记过还能申请奖学金吗？”</td>
+<td><strong>需同时查两份文档</strong></td>
+</tr>
+<tr>
+<td>E</td>
+<td>复杂多维度</td>
+<td>“保研需要什么条件？流程是什么？”</td>
+<td>多条款组合</td>
+</tr>
+</tbody></table>
+<h3 id="8-2-检索指标"><a href="#8-2-检索指标" class="headerlink" title="8.2 检索指标"></a>8.2 检索指标</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># metrics.py</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Hit Rate@K: Top-K中是否至少有一个相关文档（每个query: 0或1 → 平均）</span></span><br><span class="line">hit_rate = <span class="built_in">any</span>(doc <span class="keyword">in</span> relevant_docs <span class="keyword">for</span> doc <span class="keyword">in</span> retrieved[:k])</span><br><span class="line"></span><br><span class="line"><span class="comment"># MRR (Mean Reciprocal Rank): 第一个相关文档排名的倒数</span></span><br><span class="line">mrr = <span class="number">1</span> / rank_of_first_relevant  <span class="comment"># 如果没找到则为0</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Precision@K: Top-K中相关文档的比例</span></span><br><span class="line">precision = count(relevant ∩ retrieved[:k]) / k</span><br></pre></td></tr></table></figure>
+
+<h3 id="8-3-消融实验设计-—-7组配置"><a href="#8-3-消融实验设计-—-7组配置" class="headerlink" title="8.3 消融实验设计 — 7组配置"></a>8.3 消融实验设计 — 7组配置</h3><p>消融实验的核心思想：<strong>逐一开关组件，量化每个组件的边际贡献</strong>。</p>
+<table>
+<thead>
+<tr>
+<th>编号</th>
+<th>配置</th>
+<th>检索策略</th>
+<th>查询预处理</th>
+<th>Reranker</th>
+<th>目的</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>①</td>
+<td>Vector</td>
+<td>Vector</td>
+<td>关闭</td>
+<td>关闭</td>
+<td><strong>基线</strong></td>
+</tr>
+<tr>
+<td>②</td>
+<td>BM25</td>
+<td>BM25</td>
+<td>关闭</td>
+<td>关闭</td>
+<td>纯关键词效果</td>
+</tr>
+<tr>
+<td>③</td>
+<td><strong>Hybrid</strong></td>
+<td>Hybrid(RRF)</td>
+<td>关闭</td>
+<td>关闭</td>
+<td><strong>RRF融合基线</strong></td>
+</tr>
+<tr>
+<td>④</td>
+<td>+Rewrite</td>
+<td>Hybrid</td>
+<td>Rewrite</td>
+<td>关闭</td>
+<td>Query Rewriting贡献</td>
+</tr>
+<tr>
+<td>⑤</td>
+<td>+Expand</td>
+<td>Hybrid</td>
+<td>Expand</td>
+<td>关闭</td>
+<td>Multi-Query Expansion贡献</td>
+</tr>
+<tr>
+<td>⑥</td>
+<td>+Reranker</td>
+<td>Hybrid</td>
+<td>关闭</td>
+<td>开启</td>
+<td>Cross-Encoder贡献</td>
+</tr>
+<tr>
+<td>⑦</td>
+<td>全功能</td>
+<td>Hybrid</td>
+<td>Rewrite</td>
+<td>开启</td>
+<td>上限探索</td>
+</tr>
+</tbody></table>
+<h3 id="8-4-LLM-as-Judge-生成质量评估"><a href="#8-4-LLM-as-Judge-生成质量评估" class="headerlink" title="8.4 LLM-as-Judge 生成质量评估"></a>8.4 LLM-as-Judge 生成质量评估</h3><p>因为政策问答没有标准答案（同一问题可以有多种正确表述），我使用 LLM-as-Judge 从三个维度评分（1-5分）：</p>
+<ul>
+<li><strong>Faithfulness（忠实度）</strong>: 回答是否完全基于参考资料，不编造</li>
+<li><strong>Relevance（相关性）</strong>: 是否切题</li>
+<li><strong>Completeness（完整性）</strong>: 是否覆盖了问题的所有方面</li>
+</ul>
+<p>Judge Prompt 要求输出 JSON 格式：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span><span class="attr">&quot;faithfulness&quot;</span><span class="punctuation">:</span> <span class="number">5</span><span class="punctuation">,</span> <span class="attr">&quot;relevance&quot;</span><span class="punctuation">:</span> <span class="number">4</span><span class="punctuation">,</span> <span class="attr">&quot;completeness&quot;</span><span class="punctuation">:</span> <span class="number">3</span><span class="punctuation">,</span> <span class="attr">&quot;reason&quot;</span><span class="punctuation">:</span> <span class="string">&quot;...&quot;</span><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>解析时用正则 <code>\&#123;[^&#123;&#125;]*\&#125;</code> 提取 JSON 对象，如果解析失败则 fallback 为0——这是一种保守策略，避免 Judge 异常数据污染整体评分。</p>
+<hr>
+<h2 id="9-实验结果与关键发现"><a href="#9-实验结果与关键发现" class="headerlink" title="9. 实验结果与关键发现"></a>9. 实验结果与关键发现</h2><h3 id="9-1-检索指标对比"><a href="#9-1-检索指标对比" class="headerlink" title="9.1 检索指标对比"></a>9.1 检索指标对比</h3><table>
+<thead>
+<tr>
+<th>配置</th>
+<th>HR@1</th>
+<th>HR@3</th>
+<th>HR@5</th>
+<th>MRR</th>
+<th>P@3</th>
+<th>耗时&#x2F;题</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>① Vector</td>
+<td>0.900</td>
+<td>0.900</td>
+<td>0.967</td>
+<td>0.917</td>
+<td>0.844</td>
+<td>0.02s</td>
+</tr>
+<tr>
+<td>② BM25</td>
+<td>0.733</td>
+<td>0.900</td>
+<td>0.933</td>
+<td>0.819</td>
+<td>0.689</td>
+<td><strong>0.00s</strong></td>
+</tr>
+<tr>
+<td>③ <strong>Hybrid</strong></td>
+<td><strong>0.900</strong></td>
+<td><strong>0.933</strong></td>
+<td>0.933</td>
+<td><strong>0.917</strong></td>
+<td>0.844</td>
+<td>0.02s</td>
+</tr>
+<tr>
+<td>④ +Rewrite</td>
+<td>0.900</td>
+<td>0.933</td>
+<td>0.933</td>
+<td>0.917</td>
+<td><strong>0.878</strong></td>
+<td>1.35s</td>
+</tr>
+<tr>
+<td>⑤ +Expand</td>
+<td>0.700</td>
+<td>0.867</td>
+<td>0.933</td>
+<td>0.800</td>
+<td>0.722</td>
+<td>1.95s</td>
+</tr>
+<tr>
+<td>⑥ +Reranker</td>
+<td>0.833</td>
+<td>0.900</td>
+<td>0.933</td>
+<td>0.875</td>
+<td>0.778</td>
+<td>6.45s</td>
+</tr>
+<tr>
+<td>⑦ 全功能</td>
+<td>0.833</td>
+<td>0.900</td>
+<td>0.933</td>
+<td>0.873</td>
+<td>0.767</td>
+<td>2.75s</td>
+</tr>
+</tbody></table>
+<h3 id="9-2-生成质量对比（LLM-as-Judge-满分5分）"><a href="#9-2-生成质量对比（LLM-as-Judge-满分5分）" class="headerlink" title="9.2 生成质量对比（LLM-as-Judge, 满分5分）"></a>9.2 生成质量对比（LLM-as-Judge, 满分5分）</h3><table>
+<thead>
+<tr>
+<th>配置</th>
+<th>Faithfulness</th>
+<th>Relevance</th>
+<th>Completeness</th>
+<th>Overall</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>① Vector</td>
+<td><strong>4.97</strong></td>
+<td><strong>4.93</strong></td>
+<td><strong>4.73</strong></td>
+<td><strong>4.88</strong></td>
+</tr>
+<tr>
+<td>③ Hybrid</td>
+<td>4.87</td>
+<td>4.90</td>
+<td>4.67</td>
+<td>4.81</td>
+</tr>
+<tr>
+<td>④ +Rewrite</td>
+<td>4.87</td>
+<td>4.77</td>
+<td>4.30</td>
+<td>4.64</td>
+</tr>
+</tbody></table>
+<h3 id="9-3-按类别-HR-3-分析"><a href="#9-3-按类别-HR-3-分析" class="headerlink" title="9.3 按类别 HR@3 分析"></a>9.3 按类别 HR@3 分析</h3><table>
+<thead>
+<tr>
+<th>配置</th>
+<th>A-精确事实</th>
+<th>B-口语化</th>
+<th>C-条件排除</th>
+<th><strong>D-跨文档</strong></th>
+<th>E-复杂问题</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>③ Hybrid</td>
+<td>1.000</td>
+<td><strong>1.000</strong></td>
+<td>1.000</td>
+<td><strong>0.667</strong></td>
+<td>1.000</td>
+</tr>
+<tr>
+<td>④ +Rewrite</td>
+<td>1.000</td>
+<td><strong>1.000</strong></td>
+<td>1.000</td>
+<td><strong>0.667</strong></td>
+<td>1.000</td>
+</tr>
+<tr>
+<td>⑥ +Reranker</td>
+<td>1.000</td>
+<td>0.833</td>
+<td>1.000</td>
+<td><strong>0.667</strong></td>
+<td>1.000</td>
+</tr>
+</tbody></table>
+<p><strong>看 D 列——所有配置都是 66.7%，这是架构性瓶颈，不是某个组件的问题。</strong></p>
+<h3 id="9-4-六大关键发现"><a href="#9-4-六大关键发现" class="headerlink" title="9.4 六大关键发现"></a>9.4 六大关键发现</h3><p><strong>① Hybrid(RRF融合) 是推荐默认配置</strong></p>
+<ul>
+<li>HR@3 &#x3D; **93.3%**，比纯向量检索高3.3%，比纯 BM25 高3.3%</li>
+<li>几乎没有额外延迟（+0.02s）</li>
+<li>RRF 融合不需要调权重，零超参</li>
+</ul>
+<p><strong>② Query Rewriting 有边际精度收益</strong></p>
+<ul>
+<li>P@3 从 84.4% → <strong>87.8%</strong> (+3.4%)</li>
+<li>主要收益在 B 类口语化问题：HR@3 从 83.3% → 100%</li>
+<li><strong>建议：对口语化查询场景开启 Rewrite</strong></li>
+</ul>
+<p><strong>③ Multi-Query Expansion 弊大于利</strong></p>
+<ul>
+<li>HR@3 从 93.3% → 86.7% (-6.6%)，P@3 从 84.4% → 72.2% (-12.2%)</li>
+<li>拆解的子问题引入噪声，RRF 无法完全过滤</li>
+<li><strong>不推荐在当前场景使用</strong></li>
+</ul>
+<p><strong>④ Cross-Encoder Reranker 未达预期</strong></p>
+<ul>
+<li>基线已高（93.3%），优化空间有限</li>
+<li>Top-10 → Top-3 截断有时损失正确答案</li>
+<li>冷启动 6.45s 延迟对用户体验不友好</li>
+</ul>
+<p><strong>⑤ 跨文档检索是系统最大瓶颈</strong></p>
+<ul>
+<li>所有 7 种配置在 D 类问题上都是 <strong>66.7% HR@3</strong>——无一例外</li>
+<li>这不是组件问题，而是<strong>架构性局限</strong>：当前系统每次只从单个向量空间检索 Top-K，没有”找到文档A → 提取关键信息 → 检索文档B”的能力</li>
+<li><strong>需要多跳检索（Multi-hop Retrieval）或 GraphRAG 级别方案</strong></li>
+</ul>
+<p><strong>⑥ 更简单的管道反而生成质量更高</strong></p>
+<ul>
+<li>Vector Only 的生成 Overall <strong>4.88&#x2F;5</strong> &gt; Hybrid+Rewrite 的 4.64&#x2F;5</li>
+<li>原因：更简洁的检索管道产生更干净的上下文，噪声更少</li>
+<li><strong>RAG 中”少即是多”——过度引入组件可能适得其反</strong></li>
+</ul>
+<h3 id="9-5-组件贡献量化"><a href="#9-5-组件贡献量化" class="headerlink" title="9.5 组件贡献量化"></a>9.5 组件贡献量化</h3><table>
+<thead>
+<tr>
+<th>组件</th>
+<th>ΔHR@3</th>
+<th>ΔP@3</th>
+<th>Δ生成Overall</th>
+<th>耗时成本</th>
+<th>结论</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>BM25 → Hybrid (RRF)</td>
+<td><strong>+3.3%</strong></td>
+<td><strong>+15.5%</strong></td>
+<td>—</td>
+<td>+0.02s</td>
+<td>✅ 最大收益</td>
+</tr>
+<tr>
+<td>Query Rewriting</td>
+<td>0%</td>
+<td><strong>+3.4%</strong></td>
+<td>-0.24</td>
+<td>+1.33s</td>
+<td>⚠️ 有边际收益</td>
+</tr>
+<tr>
+<td>Multi-Query Expand</td>
+<td><strong>-6.6%</strong></td>
+<td>-12.2%</td>
+<td>—</td>
+<td>+1.93s</td>
+<td>❌ 不推荐</td>
+</tr>
+<tr>
+<td>Cross-Encoder Reranker</td>
+<td>-3.3%</td>
+<td>-6.6%</td>
+<td>—</td>
+<td>+6.43s</td>
+<td>❌ 暂不需要</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="10-系统有效性分析（Can-Do-Cannot-Do）"><a href="#10-系统有效性分析（Can-Do-Cannot-Do）" class="headerlink" title="10. 系统有效性分析（Can Do &#x2F; Cannot Do）"></a>10. 系统有效性分析（Can Do &#x2F; Cannot Do）</h2><h3 id="它能做什么-✅"><a href="#它能做什么-✅" class="headerlink" title="它能做什么 ✅"></a>它能做什么 ✅</h3><table>
+<thead>
+<tr>
+<th>场景</th>
+<th>表现</th>
+<th>证据</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>单项政策事实查询</strong></td>
+<td>HR@3&#x3D;100%, 回答准确</td>
+<td>A类&#x2F;C类满分</td>
+</tr>
+<tr>
+<td><strong>口语化查询</strong></td>
+<td>Hybrid+Rewrite 100%</td>
+<td>B类 HR@3: 83%→100%</td>
+</tr>
+<tr>
+<td><strong>条件排除性查询</strong></td>
+<td>理解”不及格→不能保研”的逻辑</td>
+<td>C类满分</td>
+</tr>
+<tr>
+<td><strong>单文档内多条件综合</strong></td>
+<td>整合同一文档多个chunk</td>
+<td>E类满分</td>
+</tr>
+</tbody></table>
+<h3 id="它不能做什么-❌"><a href="#它不能做什么-❌" class="headerlink" title="它不能做什么 ❌"></a>它不能做什么 ❌</h3><table>
+<thead>
+<tr>
+<th>场景</th>
+<th>表现</th>
+<th>根因</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>跨文档推理</strong></td>
+<td>HR@3&#x3D;66.7%</td>
+<td>单文档检索架构局限</td>
+</tr>
+<tr>
+<td><strong>新旧政策对比</strong></td>
+<td>无法自动 diff</td>
+<td>缺乏文档关联理解</td>
+</tr>
+<tr>
+<td><strong>未提及信息的推断</strong></td>
+<td>倾向”硬答”而非拒答</td>
+<td>缺乏”不知道”检测机制</td>
+</tr>
+<tr>
+<td><strong>长流程完整性</strong></td>
+<td>Completeness&#x3D;3&#x2F;5</td>
+<td>chunk_size 过小切断流程</td>
+</tr>
+</tbody></table>
+<h3 id="综合评级"><a href="#综合评级" class="headerlink" title="综合评级"></a>综合评级</h3><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>评分</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>回答准确性</td>
+<td>⭐⭐⭐⭐⭐</td>
+<td>找到正确文档后几乎完全正确</td>
+</tr>
+<tr>
+<td>响应速度</td>
+<td>⭐⭐⭐⭐⭐</td>
+<td>0.02s&#x2F;题，可支撑实时交互</td>
+</tr>
+<tr>
+<td>口语理解</td>
+<td>⭐⭐⭐⭐</td>
+<td>Hybrid+Rewrite 覆盖大部分场景</td>
+</tr>
+<tr>
+<td>复杂推理</td>
+<td>⭐⭐⭐</td>
+<td>单文档内OK，跨文档弱</td>
+</tr>
+<tr>
+<td>完整性</td>
+<td>⭐⭐⭐⭐</td>
+<td>多数完整，长流程偶有遗漏</td>
+</tr>
+<tr>
+<td>诚实性</td>
+<td>⭐⭐</td>
+<td>对无答案问题倾向”硬答”</td>
+</tr>
+<tr>
+<td><strong>综合实用度</strong></td>
+<td>⭐⭐⭐⭐</td>
+<td><strong>单文档事实查询已具备生产可用性</strong></td>
+</tr>
+</tbody></table>
+<h3 id="一句话总结"><a href="#一句话总结" class="headerlink" title="一句话总结"></a>一句话总结</h3><blockquote>
+<p><strong>能解决 80% 的单文档问题，但 20% 的跨文档关键难题仍需改进。</strong></p>
+</blockquote>
+<hr>
+<h2 id="11-开发中的5个实战问题"><a href="#11-开发中的5个实战问题" class="headerlink" title="11. 开发中的5个实战问题"></a>11. 开发中的5个实战问题</h2><p>面试官常问”你遇到过什么困难？”——准备 2-3 个回答，每个用时 2 分钟讲清楚现象→根因→修复→教训。</p>
+<h3 id="问题1：PDF文件名中文引号编码不匹配"><a href="#问题1：PDF文件名中文引号编码不匹配" class="headerlink" title="问题1：PDF文件名中文引号编码不匹配"></a>问题1：PDF文件名中文引号编码不匹配</h3><p><strong>现象</strong>：上传5份PDF时，文件名含中文书名号的文件无法被 <code>os.path.exists()</code> 识别。</p>
+<p><strong>根因</strong>：Python 源码中硬编码的字符串使用 ASCII 直引号，而实际文件名使用 Unicode 弯引号（Smart Quotes），两者是不同字符。</p>
+<p><strong>修复</strong>：改用 <code>os.listdir()</code> 动态遍历目录匹配文件名，不硬编码字符串。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 错误做法</span></span><br><span class="line">files = [<span class="string">&quot;附件1：东大团发〔2026〕3号：...五四奖章...pdf&quot;</span>]  <span class="comment"># 引号不匹配</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 正确做法</span></span><br><span class="line"><span class="keyword">for</span> filename <span class="keyword">in</span> os.listdir(PDFS_DIR):</span><br><span class="line">    <span class="keyword">if</span> <span class="string">&quot;五四奖章&quot;</span> <span class="keyword">in</span> filename:</span><br><span class="line">        <span class="comment"># 动态匹配</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>教训</strong>：处理中文特殊字符时，永远不要硬编码文件名；始终用 <code>os.listdir()</code> 动态枚举。</p>
+<h3 id="问题2：Windows终端GBK编码不支持Emoji"><a href="#问题2：Windows终端GBK编码不支持Emoji" class="headerlink" title="问题2：Windows终端GBK编码不支持Emoji"></a>问题2：Windows终端GBK编码不支持Emoji</h3><p><strong>现象</strong>：Python 脚本中使用 ✅❌⚠️ 进行日志输出时，报 <code>UnicodeEncodeError: &#39;gbk&#39; codec can&#39;t encode character</code>。</p>
+<p><strong>根因</strong>：Windows 中文版终端默认编码是 GBK，不支持 Emoji 字符。</p>
+<p><strong>修复</strong>：将所有 Emoji 替换为纯文本标记 <code>[OK]</code> <code>[FAIL]</code> <code>[WARN]</code>。</p>
+<p><strong>教训</strong>：跨平台开发时考虑终端编码差异；生产代码避免使用 Emoji 作为关键信息载体。</p>
+<h3 id="问题3：eval-dataset-jsonl-中-source-doc-匹配失败"><a href="#问题3：eval-dataset-jsonl-中-source-doc-匹配失败" class="headerlink" title="问题3：eval_dataset.jsonl 中 source_doc 匹配失败"></a>问题3：eval_dataset.jsonl 中 source_doc 匹配失败</h3><p><strong>现象</strong>：评估时 <code>source_doc: &quot;推免&quot;</code> 始终无法匹配到任何检索结果，评估得分为0。</p>
+<p><strong>根因</strong>：实际文件名是”计算机科学与工程学院2023年推荐优秀应届本科毕业生<strong>免试攻读</strong>研究生遴选实施细则.pdf”，包含”推荐”和”免试”但不包含连续子串”推免”。匹配逻辑是 <code>source_doc in filename</code> 的子串检查。</p>
+<p><strong>修复</strong>：将所有 <code>&quot;source_doc&quot;: &quot;推免&quot;</code> 替换为 <code>&quot;source_doc&quot;: &quot;免试攻读&quot;</code>，并用脚本逐题验证30道题全部匹配成功。</p>
+<p><strong>教训</strong>：测试数据中的匹配字段必须是文件名中实际出现的<strong>连续子串</strong>。</p>
+<h3 id="问题4：Reranker冷启动延迟"><a href="#问题4：Reranker冷启动延迟" class="headerlink" title="问题4：Reranker冷启动延迟"></a>问题4：Reranker冷启动延迟</h3><p><strong>现象</strong>：Hybrid+Reranker 配置首次查询延迟高达 <strong>6.45秒</strong>（正常查询仅 0.02s）。</p>
+<p><strong>根因</strong>：<code>sentence_transformers.CrossEncoder</code> 首次加载时需从 HuggingFace 下载 BAAI&#x2F;bge-reranker-base 模型（约 <strong>1.1GB</strong>）。</p>
+<p><strong>修复</strong>：这是正常行为，无法消除。通过模块级全局变量 <code>_reranker_model</code> 实现懒加载+缓存，保证加载一次后所有后续查询不再重复加载（延迟降至 2-3s）。</p>
+<p><strong>教训</strong>：大模型加载应使用懒加载 + 缓存模式；在 Streamlit 中特别注意 re-run 导致的重复加载。</p>
+<h3 id="问题5：conda-run-不支持多行Python脚本"><a href="#问题5：conda-run-不支持多行Python脚本" class="headerlink" title="问题5：conda run 不支持多行Python脚本"></a>问题5：conda run 不支持多行Python脚本</h3><p><strong>现象</strong>：<code>conda run -n ultrarag python -c &quot;多行代码&quot;</code> 报错 <code>AssertionError: Support for scripts where arguments contain newlines not implemented</code>。</p>
+<p><strong>根因</strong>：conda 的命令行参数解析器无法处理包含换行符的 <code>-c</code> 参数。</p>
+<p><strong>修复</strong>：将 Python 脚本写入临时文件后执行。</p>
+<p><strong>教训</strong>：conda run 有脚本限制，复杂任务用 <code>conda activate + python script.py</code>。</p>
+<hr>
+<h2 id="12-关键代码解读"><a href="#12-关键代码解读" class="headerlink" title="12. 关键代码解读"></a>12. 关键代码解读</h2><p>本节展示6段最重要的代码实现，每段都值得在面试中深入讨论。</p>
+<h3 id="12-1-HybridRetriever-—-RRF-融合核心"><a href="#12-1-HybridRetriever-—-RRF-融合核心" class="headerlink" title="12.1 HybridRetriever — RRF 融合核心"></a>12.1 HybridRetriever — RRF 融合核心</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">retrieve</span>(<span class="params">self, query: <span class="built_in">str</span>, k: <span class="built_in">int</span> = <span class="number">3</span></span>) -&gt; <span class="type">List</span>[Document]:</span><br><span class="line">    <span class="comment"># 粗排阶段取 VECTOR_RETRIEVE_K=10（而非最终的3），给RRF更多候选</span></span><br><span class="line">    vector_results = <span class="variable language_">self</span>.vector_retriever.retrieve(query, k=<span class="number">10</span>)</span><br><span class="line">    bm25_results  = <span class="variable language_">self</span>.bm25_retriever.retrieve(query, k=<span class="number">10</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># RRF 融合：用 page_content[:50] 做去重键</span></span><br><span class="line">    content_to_doc = &#123;&#125;</span><br><span class="line">    fused_scores = &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> rank, doc <span class="keyword">in</span> <span class="built_in">enumerate</span>(vector_results):</span><br><span class="line">        key = doc.page_content[:<span class="number">50</span>]          <span class="comment"># 前50字符 = 近似去重键</span></span><br><span class="line">        content_to_doc[key] = doc</span><br><span class="line">        fused_scores[key] = fused_scores.get(key, <span class="number">0</span>) + <span class="number">1.0</span> / (<span class="number">60</span> + rank + <span class="number">1</span>)</span><br><span class="line">        <span class="comment"># rank从0开始，转为从1开始: 1/(60+1), 1/(60+2), ...</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> rank, doc <span class="keyword">in</span> <span class="built_in">enumerate</span>(bm25_results):</span><br><span class="line">        key = doc.page_content[:<span class="number">50</span>]</span><br><span class="line">        content_to_doc[key] = doc</span><br><span class="line">        fused_scores[key] = fused_scores.get(key, <span class="number">0</span>) + <span class="number">1.0</span> / (<span class="number">60</span> + rank + <span class="number">1</span>)</span><br><span class="line">        <span class="comment"># 同一个doc如果在两个检索器中都出现，分数累加</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 按融合分数降序排列，取 Top-K</span></span><br><span class="line">    sorted_keys = <span class="built_in">sorted</span>(fused_scores, key=<span class="keyword">lambda</span> k: fused_scores[k], reverse=<span class="literal">True</span>)</span><br><span class="line">    <span class="keyword">return</span> [content_to_doc[key] <span class="keyword">for</span> key <span class="keyword">in</span> sorted_keys[:k]]</span><br></pre></td></tr></table></figure>
+
+<p><strong>设计要点</strong>：</p>
+<ul>
+<li>粗排多取（10个）→ 精排少取（3个）：给 RRF 更大的”候选池”</li>
+<li>同一个 key 的文档在两个检索器中的分数<strong>累加</strong>，实现了多路信号增强</li>
+<li><code>1/(60+rank+1)</code> 保证了排名越靠前（rank越小），贡献越大</li>
+</ul>
+<h3 id="12-2-rrf-merge-—-独立多查询融合"><a href="#12-2-rrf-merge-—-独立多查询融合" class="headerlink" title="12.2 rrf_merge — 独立多查询融合"></a>12.2 rrf_merge — 独立多查询融合</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">rrf_merge</span>(<span class="params">query_results: <span class="type">Dict</span>[<span class="built_in">str</span>, <span class="type">List</span>[Document]], k: <span class="built_in">int</span> = <span class="number">3</span></span>) -&gt; <span class="type">List</span>[Document]:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;多路检索结果的RRF融合。与 HybridRetriever 相同算法，不同输入。&quot;&quot;&quot;</span></span><br><span class="line">    content_to_doc = &#123;&#125;</span><br><span class="line">    fused_scores = &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> query, docs <span class="keyword">in</span> query_results.items():       <span class="comment"># 多查询 → 多路结果</span></span><br><span class="line">        <span class="keyword">for</span> rank, doc <span class="keyword">in</span> <span class="built_in">enumerate</span>(docs):</span><br><span class="line">            key = doc.page_content[:<span class="number">80</span>]             <span class="comment"># 80字符（比50更保守）</span></span><br><span class="line">            content_to_doc[key] = doc</span><br><span class="line">            fused_scores[key] = fused_scores.get(key, <span class="number">0</span>) + <span class="number">1.0</span>/(<span class="number">60</span> + rank + <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    sorted_keys = <span class="built_in">sorted</span>(fused_scores, key=fused_scores.__getitem__, reverse=<span class="literal">True</span>)</span><br><span class="line">    <span class="keyword">return</span> [content_to_doc[key] <span class="keyword">for</span> key <span class="keyword">in</span> sorted_keys[:k]]</span><br></pre></td></tr></table></figure>
+
+<p><strong>设计要点</strong>：</p>
+<ul>
+<li>与 HybridRetriever 共享同一个 RRF 算法，使用场景不同（多查询融合 vs 多检索器融合）</li>
+<li>去重键用80字符而非50字符，因为多查询场景下游离文本更多，需要更长的键来区分</li>
+<li><code>fused_scores.__getitem__</code> 是 Python 惯用写法，比 <code>lambda x: d[x]</code> 更简洁高效</li>
+</ul>
+<h3 id="12-3-retrieve-enhanced-—-增强检索调度器"><a href="#12-3-retrieve-enhanced-—-增强检索调度器" class="headerlink" title="12.3 retrieve_enhanced — 增强检索调度器"></a>12.3 retrieve_enhanced — 增强检索调度器</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">retrieve_enhanced</span>(<span class="params">self, retriever, query, mode=<span class="string">&quot;none&quot;</span>, search_k=<span class="number">10</span>, final_k=<span class="number">3</span></span>):</span><br><span class="line">    <span class="keyword">if</span> mode == <span class="string">&quot;none&quot;</span>:</span><br><span class="line">        <span class="keyword">return</span> retriever.retrieve(query, k=final_k)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 生成多查询（Rewrite 或 Expand）</span></span><br><span class="line">    queries = <span class="variable language_">self</span>.rewrite(query) <span class="keyword">if</span> mode == <span class="string">&quot;rewrite&quot;</span> <span class="keyword">else</span> <span class="variable language_">self</span>.expand(query)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 分别检索 → RRF 融合</span></span><br><span class="line">    all_results = &#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> q <span class="keyword">in</span> queries:</span><br><span class="line">        docs = retriever.retrieve(q, k=search_k)</span><br><span class="line">        <span class="keyword">if</span> docs:</span><br><span class="line">            all_results[q] = docs</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> all_results:  <span class="comment"># 所有增强查询都失败 → 回退到直接检索</span></span><br><span class="line">        <span class="keyword">return</span> retriever.retrieve(query, k=final_k)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> rrf_merge(all_results, k=final_k)</span><br></pre></td></tr></table></figure>
+
+<p><strong>设计要点</strong>：</p>
+<ul>
+<li>三种模式统一入口，调用方只需切换 <code>mode</code> 字符串</li>
+<li>如果所有增强查询都没结果，回退到直接检索（防御性设计）</li>
+</ul>
+<h3 id="12-4-Reranker-单例-三级降级"><a href="#12-4-Reranker-单例-三级降级" class="headerlink" title="12.4 Reranker 单例 + 三级降级"></a>12.4 Reranker 单例 + 三级降级</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">_reranker_model = <span class="literal">None</span>  <span class="comment"># 模块级全局单例</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">_load_reranker_model</span>(<span class="params">model_name</span>):</span><br><span class="line">    <span class="keyword">global</span> _reranker_model</span><br><span class="line">    <span class="keyword">if</span> _reranker_model <span class="keyword">is</span> <span class="literal">None</span>:  <span class="comment"># 只在第一次调用时加载</span></span><br><span class="line">        <span class="keyword">from</span> sentence_transformers <span class="keyword">import</span> CrossEncoder</span><br><span class="line">        _reranker_model = CrossEncoder(model_name)</span><br><span class="line">    <span class="keyword">return</span> _reranker_model</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">rerank</span>(<span class="params">self, query, documents, k=<span class="number">3</span></span>):</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> documents:              <span class="comment"># 降级1: 空输入</span></span><br><span class="line">        <span class="keyword">return</span> []</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(documents) &lt;= k:        <span class="comment"># 降级2: 不够截断</span></span><br><span class="line">        <span class="keyword">return</span> documents</span><br><span class="line">    model = <span class="variable language_">self</span>._get_model()</span><br><span class="line">    <span class="keyword">if</span> model <span class="keyword">is</span> <span class="literal">None</span>:              <span class="comment"># 降级3: 模型加载失败</span></span><br><span class="line">        <span class="keyword">return</span> documents[:k]</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        pairs = [[query, doc.page_content] <span class="keyword">for</span> doc <span class="keyword">in</span> documents]</span><br><span class="line">        scores = model.predict(pairs, show_progress_bar=<span class="literal">False</span>)</span><br><span class="line">        scored = <span class="built_in">list</span>(<span class="built_in">zip</span>(documents, scores))</span><br><span class="line">        scored.sort(key=<span class="keyword">lambda</span> x: x[<span class="number">1</span>], reverse=<span class="literal">True</span>)</span><br><span class="line">        <span class="keyword">return</span> [doc <span class="keyword">for</span> doc, _ <span class="keyword">in</span> scored[:k]]</span><br><span class="line">    <span class="keyword">except</span> Exception:              <span class="comment"># 降级4: 运行时异常</span></span><br><span class="line">        <span class="keyword">return</span> documents[:k]</span><br></pre></td></tr></table></figure>
+
+<h3 id="12-5-DocumentManager-upload-pdf-—-文档全生命周期"><a href="#12-5-DocumentManager-upload-pdf-—-文档全生命周期" class="headerlink" title="12.5 DocumentManager.upload_pdf — 文档全生命周期"></a>12.5 DocumentManager.upload_pdf — 文档全生命周期</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">upload_pdf</span>(<span class="params">self, file_bytes: <span class="built_in">bytes</span>, original_filename: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">    doc_id = <span class="built_in">str</span>(uuid.uuid4())</span><br><span class="line">    save_path = os.path.join(PDFS_DIR, <span class="string">f&quot;<span class="subst">&#123;doc_id&#125;</span>_<span class="subst">&#123;original_filename&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(save_path, <span class="string">&quot;wb&quot;</span>) <span class="keyword">as</span> f:    <span class="comment"># 1. 保存PDF</span></span><br><span class="line">        f.write(file_bytes)</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        loader = PyPDFLoader(save_path)</span><br><span class="line">        docs = loader.load()            <span class="comment"># 2. 加载PDF</span></span><br><span class="line">        splits = <span class="variable language_">self</span>.chunker.chunk(docs)  <span class="comment"># 3. 切片</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> split <span class="keyword">in</span> splits:            <span class="comment"># 4. 注入元数据</span></span><br><span class="line">            split.metadata[<span class="string">&quot;doc_id&quot;</span>] = doc_id</span><br><span class="line">            split.metadata[<span class="string">&quot;filename&quot;</span>] = original_filename</span><br><span class="line"></span><br><span class="line">        vectorstore = <span class="variable language_">self</span>._get_vectorstore()</span><br><span class="line">        vectorstore.add_documents(splits)  <span class="comment"># 5. 写入Chroma</span></span><br><span class="line">        vectorstore.persist()</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 6. SQLite 记录</span></span><br><span class="line">        conn.execute(<span class="string">&quot;INSERT INTO documents (...) VALUES (...)&quot;</span>)</span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        <span class="keyword">if</span> os.path.exists(save_path):   <span class="comment"># 失败时清理文件</span></span><br><span class="line">            os.remove(save_path)</span><br><span class="line">        <span class="keyword">raise</span> e</span><br></pre></td></tr></table></figure>
+
+<h3 id="12-6-Evaluator-evaluate-generation-—-LLM-as-Judge"><a href="#12-6-Evaluator-evaluate-generation-—-LLM-as-Judge" class="headerlink" title="12.6 Evaluator.evaluate_generation — LLM-as-Judge"></a>12.6 Evaluator.evaluate_generation — LLM-as-Judge</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">evaluate_generation</span>(<span class="params">self, retriever, dataset, k=<span class="number">3</span></span>):</span><br><span class="line">    <span class="keyword">for</span> item <span class="keyword">in</span> dataset:</span><br><span class="line">        <span class="comment"># 1. 检索上下文</span></span><br><span class="line">        docs = retriever.retrieve(query, k=k)</span><br><span class="line">        context = <span class="string">&quot;\n&quot;</span>.join([<span class="string">f&quot;[<span class="subst">&#123;i+<span class="number">1</span>&#125;</span>] <span class="subst">&#123;d.page_content&#125;</span>&quot;</span> <span class="keyword">for</span> i, d <span class="keyword">in</span> <span class="built_in">enumerate</span>(docs)])</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 2. 生成回答</span></span><br><span class="line">        answer = <span class="variable language_">self</span>.generator.generate(*<span class="variable language_">self</span>.generator.build_qa_prompt(context, query))</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 3. LLM-as-Judge 评分</span></span><br><span class="line">        judge_result = <span class="variable language_">self</span>.generator.generate(</span><br><span class="line">            *<span class="variable language_">self</span>.generator.build_judge_prompt(query, context, answer))</span><br><span class="line">        scores = <span class="variable language_">self</span>._parse_judge_result(judge_result)  <span class="comment"># JSON提取</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="13-设计模式与工程实践"><a href="#13-设计模式与工程实践" class="headerlink" title="13. 设计模式与工程实践"></a>13. 设计模式与工程实践</h2><table>
+<thead>
+<tr>
+<th>设计模式</th>
+<th>应用位置</th>
+<th>为什么用它</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>策略模式</strong></td>
+<td><code>Retriever(ABC)</code> 抽象基类 + 3个实现</td>
+<td>新增检索策略只需实现 <code>retrieve()</code>，不改调用方</td>
+</tr>
+<tr>
+<td><strong>工厂模式</strong></td>
+<td><code>create_retriever(strategy, doc_manager)</code></td>
+<td>UI 下拉框字符串 → 后端类实例，解耦前端配置和后端实现</td>
+</tr>
+<tr>
+<td><strong>组合模式</strong></td>
+<td><code>HybridRetriever</code> 包含 Vector + BM25 实例</td>
+<td>组合优于继承：混合检索是两个检索器的组合，不是”是一种”</td>
+</tr>
+<tr>
+<td><strong>模块级单例</strong></td>
+<td><code>_reranker_model</code> 全局变量</td>
+<td>Streamlit re-run 会反复实例化类，全局变量保证跨实例共享</td>
+</tr>
+<tr>
+<td><strong>模板方法</strong></td>
+<td><code>BaseChunker(ABC)</code> + 未来可扩展 <code>SemanticChunker</code></td>
+<td>固定切片流程，切换实现即可</td>
+</tr>
+<tr>
+<td><strong>防御性编程</strong></td>
+<td>Reranker 三级降级、所有 LLM 调用 try&#x2F;except + 回退</td>
+<td>可选组件的故障不应导致整体崩溃</td>
+</tr>
+<tr>
+<td><strong>集中配置</strong></td>
+<td><code>config.py</code> 单一文件</td>
+<td>所有常量单一来源，避免魔法数散落各处</td>
+</tr>
+</tbody></table>
+<p>面试中可以这样回答：”我在项目中刻意使用了多种设计模式。比如策略模式让三种检索器可以无缝切换，工厂模式让前端下拉框可以驱动后端实例化，模块级单例解决了 Streamlit re-run 导致重复加载模型的问题…”</p>
+<hr>
+<h2 id="14-后续优化方向"><a href="#14-后续优化方向" class="headerlink" title="14. 后续优化方向"></a>14. 后续优化方向</h2><table>
+<thead>
+<tr>
+<th>优先级</th>
+<th>方向</th>
+<th>解决的问题</th>
+<th>方案</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>P0</strong></td>
+<td>多跳检索</td>
+<td>跨文档瓶颈（66.7%→目标90%+）</td>
+<td>先检索文档A → 提取关键术语 → 二次检索文档B</td>
+</tr>
+<tr>
+<td><strong>P0</strong></td>
+<td>chunk_size 优化</td>
+<td>长流程完整性不足</td>
+<td>300→500 或按章节语义切片</td>
+</tr>
+<tr>
+<td>P1</td>
+<td>Expand Prompt 优化</td>
+<td>Expand 引入噪声</td>
+<td>限制子问题数量(≤3) + 加质量过滤</td>
+</tr>
+<tr>
+<td>P1</td>
+<td>拒答检测</td>
+<td>对未知问题”硬答”</td>
+<td>加”文档未提及”分类器</td>
+</tr>
+<tr>
+<td>P2</td>
+<td>GraphRAG</td>
+<td>跨文档推理、实体关系</td>
+<td>构建政策实体关系图 + 社区检测</td>
+</tr>
+<tr>
+<td>P2</td>
+<td>对话记忆</td>
+<td>支持追问</td>
+<td>多轮对话上下文管理</td>
+</tr>
+<tr>
+<td>P3</td>
+<td>Self-RAG</td>
+<td>自适应检索质量</td>
+<td>LLM 自检检索质量 → 决定是否重新检索</td>
+</tr>
+<tr>
+<td>P3</td>
+<td>异步并行检索</td>
+<td>Rewrite&#x2F;Expand 延迟</td>
+<td>多个查询并行检索而非串行</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="15-面试常见问题-Q-A（速查表）"><a href="#15-面试常见问题-Q-A（速查表）" class="headerlink" title="15. 面试常见问题 Q&amp;A（速查表）"></a>15. 面试常见问题 Q&amp;A（速查表）</h2><blockquote>
+<p><strong>面试前 5 分钟快速扫一遍这个表。</strong></p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>面试问题</th>
+<th>30秒回答要点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><strong>简单介绍一下你的项目</strong></td>
+<td>面向东北大学政策文档的RAG智能问答系统。学生用自然语言问”保研要什么条件”，系统从5份PDF中检索+DeepSeek生成回答。HR@3&#x3D;93.3%，生成质量4.88&#x2F;5。做了7组消融实验量化每个组件的贡献。技术栈：Streamlit+ChromaDB+DeepSeek+BGE+CrossEncoder。</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>为什么用RAG而不是微调？</strong></td>
+<td>①零训练成本 vs 微调需要GPU；②政策更新只需重新上传PDF；③每次回答带来源引用，可追溯；④幻觉更可控。对政策问答这种高准确性+频繁更新的场景，RAG更适合。</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>系统架构是什么？</strong></td>
+<td>三层：Streamlit UI → RAG Core → Evaluation。RAG Core含6个模块：DocumentManager(文档管理) → Chunker(切片) → QueryProcessor(查询增强) → Retriever(检索) → Reranker(重排序) → Generator(生成)。数据流：查询→可选改写→多策略检索→可选重排序→注入prompt→LLM生成→来源引用。</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>RRF是什么？为什么用它？</strong></td>
+<td>Reciprocal Rank Fusion。公式：score(d)&#x3D;Σ1&#x2F;(60+rank_i(d))。核心原因：向量相似度和BM25分数处于不同数域，不能直接加权。RRF只用排名，天然尺度无关。k&#x3D;60来自原始论文经验最优值。Hybrid HR@3&#x3D;93.3%，比单一策略高3.3%。</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>三种检索策略各适用什么场景？</strong></td>
+<td>Vector：语义匹配好，”保研”能匹配”推免”，但精确关键词弱。BM25：精确匹配政策编号和专有名词好，无语义理解。Hybrid(RRF)：各取所长，通用推荐配置。</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>Rewrite和Expand的区别？为什么Expand效果更差？</strong></td>
+<td>Rewrite：口语→官方术语，2-3个改写版本。Expand：复杂问题→3-5个子问题。Expand差的原因：子问题引入无关文档噪声，RRF无法完全过滤；拆解粒度太细产生冗余。数据上：Rewrite P@3+3.4%，Expand <a href="mailto:&#72;&#82;&#x40;&#x33;&#x2d;&#54;&#x2e;&#x36;">&#72;&#82;&#x40;&#x33;&#x2d;&#54;&#x2e;&#x36;</a>%。</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>Reranker为什么没起作用？</strong></td>
+<td>三个原因：①基线已高(93.3%)无优化空间；②Top-10→Top-3截断可能丢失正确答案；③跨文档瓶颈意味着正确答案本就不在Top-10里。Reranker在精度低、噪声大的场景才有效，这里不是。</td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>消融实验怎么设计的？</strong></td>
+<td>7组配置，逐一开关组件：Vector(基线) → BM25 → Hybrid → +Rewrite → +Expand → +Reranker → 全功能。30题×5类别，检索指标(HR&#x2F;MRR&#x2F;P)+生成质量(LLM-as-Judge 3维)。量化每个组件的边际贡献。</td>
+</tr>
+<tr>
+<td>9</td>
+<td><strong>LLM-as-Judge怎么做？可靠吗？</strong></td>
+<td>三个维度1-5分：Faithfulness(忠实度)、Relevance(相关性)、Completeness(完整性)。Judge prompt要求JSON输出，regex提取。保守fallback：解析失败→0分。局限：Judge也是LLM，可能不完美。但对多配置的相对比较是有效的。</td>
+</tr>
+<tr>
+<td>10</td>
+<td><strong>跨文档检索为什么是瓶颈？怎么解决？</strong></td>
+<td>所有配置都是66.7%——架构性瓶颈。根因：系统是单文档检索，无法”从文档A提取信息→检索文档B”。解法：多跳检索（先检索→提取关键术语→二次检索）或GraphRAG（构建政策实体关系图）。</td>
+</tr>
+<tr>
+<td>11</td>
+<td><strong>遇到过什么技术困难？</strong></td>
+<td>①PDF文件名中文引号编码不匹配→os.listdir()动态匹配；②Windows GBK不支持Emoji→纯文本标记；③source_doc子串匹配失败→使用实际连续子串；④Reranker冷启动6.45s→懒加载单例；⑤conda run不支持多行脚本→临时文件。</td>
+</tr>
+<tr>
+<td>12</td>
+<td><strong>系统能上线吗？有什么局限？</strong></td>
+<td>单文档事实查询已可上线(Hit Rate 100%)，跨文档需人工兜底。4个做不到：跨文档推理、新旧对比、未提及推断、长流程完整性。建议：单项政策咨询可上线，UI标注”仅供参考，以官方文件为准”。</td>
+</tr>
+<tr>
+<td>13</td>
+<td><strong>为什么简单的Vector在生成质量上反而最高？</strong></td>
+<td>Vector Overall&#x3D;4.88&#x2F;5 &gt; Hybrid+Rewrite&#x3D;4.64&#x2F;5。原因：更简洁的管道→更干净的上下文→更少噪声。RAG中”少即是多”。增加组件不一定提升质量，关键是上下文质量而非数量。</td>
+</tr>
+<tr>
+<td>14</td>
+<td><strong>用了哪些设计模式？</strong></td>
+<td>策略模式(Retriever ABC)、工厂模式(create_retriever)、组合模式(HybridRetriever包含两个检索器)、模块级单例(_reranker_model)、模板方法(BaseChunker ABC)。防御性编程贯穿：每个可选组件都有降级策略。</td>
+</tr>
+<tr>
+<td>15</td>
+<td><strong>如果重新做，你会怎么改进？</strong></td>
+<td>①从简单开始，数据驱动加组件(现在的顺序是对的)；②先解决跨文档问题(多跳检索)；③测试集设计时统一source_doc字段；④chunk_size先做ablation找到最优值(而不是拍300)；⑤加拒答检测。</td>
+</tr>
+<tr>
+<td>16</td>
+<td><strong>BM25和向量检索的互补关系？</strong></td>
+<td>经典互补：向量擅长语义匹配(保研≈推免)，BM25擅长精确匹配(政策编号、人名)。政策文档场景两个都重要——这就是为什么Hybrid最好。BM25查”东大计算机院字〔2022〕4号”精准，向量查”奖学金多少钱”语义准确。</td>
+</tr>
+<tr>
+<td>17</td>
+<td><strong>chunk_size为什么选300？</strong></td>
+<td>中文政策文档经验值：300字符≈4-5句中文≈一个政策条款。太小切断信息(长流程问题Completeness&#x3D;3&#x2F;5)，太大精度下降。Overlap&#x3D;50≈1句，成本几乎为零但防止边界切断。后续优化方向之一。</td>
+</tr>
+<tr>
+<td>18</td>
+<td><strong>怎么处理检索结果去重？</strong></td>
+<td>两种：HybridRetriever用page_content[:50]做键(dict自动去重)；rrf_merge用[:80]。为什么不用hash？因为它是近似去重——内容相近但metadata不同的块也被视为相同。对政策文档来说足够可靠。</td>
+</tr>
+<tr>
+<td>19</td>
+<td><strong>Generator的retry策略怎么设计的？</strong></td>
+<td>Tenacity库：最多3次重试，指数退避(wait_exponential min&#x3D;2s max&#x3D;10s)。实际退避：2s→4s→8s。处理网络波动和API临时不可用。流式和非流式都用了相同的重试策略。</td>
+</tr>
+<tr>
+<td>20</td>
+<td><strong>这个项目最大的技术亮点是什么？</strong></td>
+<td>①RRF双重应用(检索策略融合+多查询融合)；②完整的消融实验评估体系(30题×5类×7组)；③LLM-as-Judge生成质量评估；④懒加载单例+三级降级的防御性设计；⑤”能做什么&#x2F;不能做什么”的诚实评估。</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="16-总结与反思"><a href="#16-总结与反思" class="headerlink" title="16. 总结与反思"></a>16. 总结与反思</h2><h3 id="我学到了什么"><a href="#我学到了什么" class="headerlink" title="我学到了什么"></a>我学到了什么</h3><ol>
+<li><strong>RAG 的核心是检索质量，不是生成质量。</strong> 检索对了，生成几乎不可能错（生成质量 4.6-4.9&#x2F;5 可以证明）；检索错了，生成再强也白搭。</li>
+<li><strong>消融实验是评估 RAG 系统的金标准。</strong> 不做消融实验，你永远不知道哪个组件真正起作用。本项目最意外的发现——Reranker 和 Expand 反而降低性能——就是消融实验揭示的。</li>
+<li><strong>“少即是多”在 RAG 中特别适用。</strong> 更简单的管道产生更干净的上下文，最终生成质量更高。</li>
+<li><strong>系统的”不能做什么”比”能做什么”更重要。</strong> 诚实分析系统边界（§10）是面试中最有说服力的部分——它表明你了解系统局限，有工程判断力。</li>
+</ol>
+<h3 id="如果重做，会怎么改"><a href="#如果重做，会怎么改" class="headerlink" title="如果重做，会怎么改"></a>如果重做，会怎么改</h3><ol>
+<li>坚持”从简单开始，数据驱动加组件”——这个顺序是对的，但我会先对 chunk_size 做 ablation</li>
+<li>设计测试集时统一 source_doc 字段规范，避免匹配失败</li>
+<li>从一开始就考虑跨文档架构（多跳检索），而不是事后发现瓶颈</li>
+<li>加入拒答检测机制，提升诚实性评分</li>
+</ol>
+<h3 id="核心感悟"><a href="#核心感悟" class="headerlink" title="核心感悟"></a>核心感悟</h3><blockquote>
+<p><strong>RAG 80% 是检索工程，20% 是生成工程。</strong></p>
+</blockquote>
+<p>检索策略的选择、文档切片的粒度、多路融合的算法——这些”检索工程”决定了系统的上限。Prompt 工程和生成质量优化是在这个上限之下做文章。一个 HR@3&#x3D;93.3% 的检索管道 + 最简单的 prompt 强过一个 HR@3&#x3D;70% 的检索管道 + 精心设计的 prompt。</p>
+<h3 id="项目的可迁移价值"><a href="#项目的可迁移价值" class="headerlink" title="项目的可迁移价值"></a>项目的可迁移价值</h3><ul>
+<li><strong>评估方法论</strong>（消融实验设计 + LLM-as-Judge）可复用到任何 RAG 项目</li>
+<li><strong>RRF 融合模式</strong>是语言无关的，中文政策文档有效，英文文档同样有效</li>
+<li><strong>“Can Do &#x2F; Cannot Do”分析法</strong>是面试中展示工程判断力的利器</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/RAG/" rel="tag"># RAG</a>
+              <a href="/tags/%E6%A3%80%E7%B4%A2%E5%A2%9E%E5%BC%BA%E7%94%9F%E6%88%90/" rel="tag"># 检索增强生成</a>
+              <a href="/tags/%E4%BF%A1%E6%81%AF%E6%A3%80%E7%B4%A2/" rel="tag"># 信息检索</a>
+              <a href="/tags/%E5%90%91%E9%87%8F%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag"># 向量数据库</a>
+              <a href="/tags/%E6%B6%88%E8%9E%8D%E5%AE%9E%E9%AA%8C/" rel="tag"># 消融实验</a>
+              <a href="/tags/LLM-as-Judge/" rel="tag"># LLM-as-Judge</a>
+              <a href="/tags/%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87/" rel="tag"># 面试准备</a>
+              <a href="/tags/%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93/" rel="tag"># 项目总结</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/06/10/HNSW%E7%90%86%E8%A7%A3/" rel="prev" title="HNSW理解">
+                  <i class="fa fa-angle-left"></i> HNSW理解
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2024 – 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">查志渊</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>
