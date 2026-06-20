@@ -20,15 +20,15 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
 
-    <meta name="description" content="机器学习的一些基础概念基本范式 监督学习：有标签，比如猫狗分类的照片，已经标注好是猫还是狗，让模型识别。 无监督学习：无标签，比如聚类，将数据分成不同的簇。 半监督学习：有标签和无标签的混合体，比如只标注了一部分数据的分类问题。 自监督学习：模型自己寻找标签，比如通过对比学习来学习图片的特征。 强化学习：模型通过与环境的交互来学习最优的行为策略。这个就没有标签，就是把模型扔到一个环境，做对了给奖励">
+    <meta name="description" content="机器学习的一些基础概念这篇文章要讲的是机器学习里最核心的那批基础概念——不是某一个算法的细节，而是所有算法都绕不开的共同语言。搞清楚了这些，后面去学任何具体模型，都能快速抓住它的设计动机和优缺点。  一、机器学习的基本范式“范式”这个词听着唬人，通俗讲就是：模型到底是怎么学东西的——数据长什么样子、老师给不给答案、是一次学完还是一直在学。 不同的范式，决定了你后面整个技术路线的选择。 1.1 监督">
 <meta property="og:type" content="article">
 <meta property="og:title" content="机器学习-基础概念">
 <meta property="og:url" content="http://example.com/2026/06/18/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/index.html">
 <meta property="og:site_name" content="渊渟岳峙的技术笔记">
-<meta property="og:description" content="机器学习的一些基础概念基本范式 监督学习：有标签，比如猫狗分类的照片，已经标注好是猫还是狗，让模型识别。 无监督学习：无标签，比如聚类，将数据分成不同的簇。 半监督学习：有标签和无标签的混合体，比如只标注了一部分数据的分类问题。 自监督学习：模型自己寻找标签，比如通过对比学习来学习图片的特征。 强化学习：模型通过与环境的交互来学习最优的行为策略。这个就没有标签，就是把模型扔到一个环境，做对了给奖励">
+<meta property="og:description" content="机器学习的一些基础概念这篇文章要讲的是机器学习里最核心的那批基础概念——不是某一个算法的细节，而是所有算法都绕不开的共同语言。搞清楚了这些，后面去学任何具体模型，都能快速抓住它的设计动机和优缺点。  一、机器学习的基本范式“范式”这个词听着唬人，通俗讲就是：模型到底是怎么学东西的——数据长什么样子、老师给不给答案、是一次学完还是一直在学。 不同的范式，决定了你后面整个技术路线的选择。 1.1 监督">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-06-17T16:08:03.000Z">
-<meta property="article:modified_time" content="2026-06-18T07:19:04.153Z">
+<meta property="article:modified_time" content="2026-06-20T16:38:15.038Z">
 <meta property="article:author" content="查志渊">
 <meta property="article:tag" content="机器学习">
 <meta name="twitter:card" content="summary">
@@ -130,7 +130,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5"><span class="nav-number">1.</span> <span class="nav-text">机器学习的一些基础概念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E8%8C%83%E5%BC%8F"><span class="nav-number">1.1.</span> <span class="nav-text">基本范式</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5"><span class="nav-number">1.</span> <span class="nav-text">机器学习的一些基础概念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%9F%BA%E6%9C%AC%E8%8C%83%E5%BC%8F"><span class="nav-number">1.1.</span> <span class="nav-text">一、机器学习的基本范式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0%EF%BC%88Supervised-Learning%EF%BC%89"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.1 监督学习（Supervised Learning）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-%E6%97%A0%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0%EF%BC%88Unsupervised-Learning%EF%BC%89"><span class="nav-number">1.1.2.</span> <span class="nav-text">1.2 无监督学习（Unsupervised Learning）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-%E5%8D%8A%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0%EF%BC%88Semi-supervised-Learning%EF%BC%89"><span class="nav-number">1.1.3.</span> <span class="nav-text">1.3 半监督学习（Semi-supervised Learning）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4-%E8%87%AA%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0%EF%BC%88Self-supervised-Learning%EF%BC%89"><span class="nav-number">1.1.4.</span> <span class="nav-text">1.4 自监督学习（Self-supervised Learning）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-5-%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%EF%BC%88Reinforcement-Learning%EF%BC%89"><span class="nav-number">1.1.5.</span> <span class="nav-text">1.5 强化学习（Reinforcement Learning）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-6-%E6%89%B9%E9%87%8F%E5%AD%A6%E4%B9%A0-vs-%E5%9C%A8%E7%BA%BF%E5%AD%A6%E4%B9%A0"><span class="nav-number">1.1.6.</span> <span class="nav-text">1.6 批量学习 vs 在线学习</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-7-%E5%BD%92%E7%BA%B3%E5%AD%A6%E4%B9%A0-vs-%E8%BD%AC%E5%AF%BC%E5%AD%A6%E4%B9%A0"><span class="nav-number">1.1.7.</span> <span class="nav-text">1.7 归纳学习 vs 转导学习</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B"><span class="nav-number">1.2.</span> <span class="nav-text">二、特征工程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%EF%BC%88Feature-Selection%EF%BC%89"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1 特征选择（Feature Selection）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E7%89%B9%E5%BE%81%E6%8F%90%E5%8F%96%EF%BC%88Feature-Extraction%EF%BC%89"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.2 特征提取（Feature Extraction）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-%E7%89%B9%E5%BE%81%E5%8F%98%E6%8D%A2%EF%BC%88Feature-Transformation%EF%BC%89"><span class="nav-number">1.2.3.</span> <span class="nav-text">2.3 特征变换（Feature Transformation）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E6%A8%A1%E5%9E%8B%E7%9A%84%E2%80%9D%E5%A5%BD%E2%80%9D%E4%B8%8E%E2%80%9D%E4%B8%8D%E5%A5%BD%E2%80%9D%E2%80%94%E2%80%94%E6%B3%9B%E5%8C%96%E3%80%81%E6%8B%9F%E5%90%88%E3%80%81%E5%81%8F%E5%B7%AE%E4%B8%8E%E6%96%B9%E5%B7%AE"><span class="nav-number">1.3.</span> <span class="nav-text">三、模型的”好”与”不好”——泛化、拟合、偏差与方差</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E6%B3%9B%E5%8C%96%E8%83%BD%E5%8A%9B%EF%BC%88Generalization%EF%BC%89"><span class="nav-number">1.3.1.</span> <span class="nav-text">3.1 泛化能力（Generalization）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E6%AC%A0%E6%8B%9F%E5%90%88%EF%BC%88Underfitting%EF%BC%89"><span class="nav-number">1.3.2.</span> <span class="nav-text">3.2 欠拟合（Underfitting）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-%E8%BF%87%E6%8B%9F%E5%90%88%EF%BC%88Overfitting%EF%BC%89"><span class="nav-number">1.3.3.</span> <span class="nav-text">3.3 过拟合（Overfitting）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-%E5%81%8F%E5%B7%AE%EF%BC%88Bias%EF%BC%89%E4%B8%8E%E6%96%B9%E5%B7%AE%EF%BC%88Variance%EF%BC%89"><span class="nav-number">1.3.4.</span> <span class="nav-text">3.4 偏差（Bias）与方差（Variance）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E9%98%B2%E6%AD%A2%E8%BF%87%E6%8B%9F%E5%90%88%E7%9A%84%E6%AD%A6%E5%99%A8"><span class="nav-number">1.4.</span> <span class="nav-text">四、防止过拟合的武器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-%E6%AD%A3%E5%88%99%E5%8C%96%EF%BC%88Regularization%EF%BC%89"><span class="nav-number">1.4.1.</span> <span class="nav-text">4.1 正则化（Regularization）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-%E5%A5%A5%E5%8D%A1%E5%A7%86%E5%89%83%E5%88%80%E5%8E%9F%E5%88%99%EF%BC%88Occam%E2%80%99s-Razor%EF%BC%89"><span class="nav-number">1.4.2.</span> <span class="nav-text">4.2 奥卡姆剃刀原则（Occam’s Razor）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-%E7%8B%AC%E7%AB%8B%E5%90%8C%E5%88%86%E5%B8%83%E5%81%87%E8%AE%BE%EF%BC%88i-i-d-Assumption%EF%BC%89"><span class="nav-number">1.4.3.</span> <span class="nav-text">4.3 独立同分布假设（i.i.d. Assumption）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-%E6%B2%A1%E6%9C%89%E5%85%8D%E8%B4%B9%E5%8D%88%E9%A4%90%E5%AE%9A%E7%90%86%EF%BC%88No-Free-Lunch-Theorem-NFL%EF%BC%89"><span class="nav-number">1.4.4.</span> <span class="nav-text">4.4 没有免费午餐定理（No Free Lunch Theorem, NFL）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E3%80%81%E8%BF%99%E4%BA%9B%E6%A6%82%E5%BF%B5%E4%B9%8B%E9%97%B4%E7%9A%84%E5%85%B3%E7%B3%BB%E2%80%94%E2%80%94%E4%B8%80%E5%BC%A0%E8%84%91%E5%9B%BE"><span class="nav-number">1.5.</span> <span class="nav-text">五、这些概念之间的关系——一张脑图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AD%E3%80%81%E5%B8%B8%E8%A7%81%E5%9B%B0%E6%83%91%E4%B8%8E%E8%A7%A3%E7%AD%94"><span class="nav-number">1.6.</span> <span class="nav-text">六、常见困惑与解答</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Q1%EF%BC%9A%E5%88%86%E7%B1%BB%E5%92%8C%E5%9B%9E%E5%BD%92%E5%88%B0%E5%BA%95%E6%80%8E%E4%B9%88%E5%8C%BA%E5%88%86%EF%BC%9F%E8%83%BD%E4%B8%8D%E8%83%BD%E7%BB%99%E4%B8%80%E4%B8%AA%E6%9C%80%E7%AE%80%E5%8D%95%E7%9A%84%E5%88%A4%E6%96%AD%E6%96%B9%E6%B3%95%EF%BC%9F"><span class="nav-number">1.6.1.</span> <span class="nav-text">Q1：分类和回归到底怎么区分？能不能给一个最简单的判断方法？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Q2%EF%BC%9A%E8%87%AA%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0%E5%92%8C%E6%97%A0%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0%E5%88%B0%E5%BA%95%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB%EF%BC%9F%E4%B8%8D%E9%83%BD%E6%98%AF%E2%80%9D%E6%B2%A1%E6%A0%87%E7%AD%BE%E2%80%9D%E5%90%97%EF%BC%9F"><span class="nav-number">1.6.2.</span> <span class="nav-text">Q2：自监督学习和无监督学习到底有什么区别？不都是”没标签”吗？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Q3%EF%BC%9A%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%E3%80%81%E7%89%B9%E5%BE%81%E6%8F%90%E5%8F%96%E3%80%81%E7%89%B9%E5%BE%81%E5%8F%98%E6%8D%A2%E2%80%94%E2%80%94%E4%B8%89%E4%B8%AA%E2%80%9D%E7%89%B9%E5%BE%81%E2%80%9D%E5%BC%80%E5%A4%B4%E7%9A%84%E6%A6%82%E5%BF%B5%E6%80%8E%E4%B9%88%E5%88%86%E6%B8%85%E6%A5%9A%EF%BC%9F"><span class="nav-number">1.6.3.</span> <span class="nav-text">Q3：特征选择、特征提取、特征变换——三个”特征”开头的概念怎么分清楚？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Q4%EF%BC%9A%E6%A0%87%E5%87%86%E5%8C%96%E5%92%8C%E5%BD%92%E4%B8%80%E5%8C%96%E5%88%B0%E5%BA%95%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E7%94%A8%E5%93%AA%E4%B8%AA%EF%BC%9F"><span class="nav-number">1.6.4.</span> <span class="nav-text">Q4：标准化和归一化到底什么时候用哪个？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Q5%EF%BC%9A%E6%80%8E%E4%B9%88%E5%9C%A8%E5%AE%9E%E9%99%85%E8%AE%AD%E7%BB%83%E4%B8%AD%E5%88%A4%E6%96%AD%E5%88%B0%E5%BA%95%E6%98%AF%E6%AC%A0%E6%8B%9F%E5%90%88%E8%BF%98%E6%98%AF%E8%BF%87%E6%8B%9F%E5%90%88%EF%BC%9F"><span class="nav-number">1.6.5.</span> <span class="nav-text">Q5：怎么在实际训练中判断到底是欠拟合还是过拟合？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Q6%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88-L1-%E6%AD%A3%E5%88%99%E5%8C%96%E8%83%BD%E4%BA%A7%E7%94%9F%E7%A8%80%E7%96%8F%E8%A7%A3%EF%BC%8C%E8%80%8C-L2-%E4%B8%8D%E8%A1%8C%EF%BC%9F%E9%9D%A2%E8%AF%95%E5%BF%85%E9%97%AE%E3%80%82"><span class="nav-number">1.6.6.</span> <span class="nav-text">Q6：为什么 L1 正则化能产生稀疏解，而 L2 不行？面试必问。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Q7%EF%BC%9ANFL-%E5%AE%9A%E7%90%86%E6%98%AF%E4%B8%8D%E6%98%AF%E8%AF%B4%E2%80%9D%E6%89%80%E6%9C%89%E7%AE%97%E6%B3%95%E9%83%BD%E4%B8%80%E6%A0%B7%E5%A5%BD%E2%80%9D%EF%BC%9F"><span class="nav-number">1.6.7.</span> <span class="nav-text">Q7：NFL 定理是不是说”所有算法都一样好”？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Q8%EF%BC%9Ai-i-d-%E4%B8%8D%E6%BB%A1%E8%B6%B3%E7%9A%84%E6%97%B6%E5%80%99%EF%BC%8C%E5%90%8E%E6%9E%9C%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F%E8%AF%A5%E6%80%8E%E4%B9%88%E5%A4%84%E7%90%86%EF%BC%9F"><span class="nav-number">1.6.8.</span> <span class="nav-text">Q8：i.i.d. 不满足的时候，后果是什么？该怎么处理？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Q9%EF%BC%9A%E8%AE%AD%E7%BB%83%E9%9B%86%E3%80%81%E9%AA%8C%E8%AF%81%E9%9B%86%E3%80%81%E6%B5%8B%E8%AF%95%E9%9B%86%E6%80%8E%E4%B9%88%E5%88%92%E5%88%86%EF%BC%9F%E6%9C%89%E4%BB%80%E4%B9%88%E5%9D%91%EF%BC%9F"><span class="nav-number">1.6.9.</span> <span class="nav-text">Q9：训练集、验证集、测试集怎么划分？有什么坑？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Q10%EF%BC%9A%E5%88%B0%E5%BA%95%E2%80%9D%E5%8D%8A%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0%E2%80%9D%E5%92%8C%E2%80%9D%E8%BD%AC%E5%AF%BC%E5%AD%A6%E4%B9%A0%E2%80%9D%E6%98%AF%E4%BB%80%E4%B9%88%E5%85%B3%E7%B3%BB%EF%BC%9F"><span class="nav-number">1.6.10.</span> <span class="nav-text">Q10：到底”半监督学习”和”转导学习”是什么关系？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%83%E3%80%81%E8%BF%99%E4%BA%9B%E6%A6%82%E5%BF%B5%E4%B9%8B%E9%97%B4%E7%9A%84%E5%85%B3%E7%B3%BB%E2%80%94%E2%80%94%E4%B8%80%E5%BC%A0%E8%84%91%E5%9B%BE"><span class="nav-number">1.7.</span> <span class="nav-text">七、这些概念之间的关系——一张脑图</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -214,9 +214,15 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2026-06-18 00:08:03 / 修改时间：15:19:04" itemprop="dateCreated datePublished" datetime="2026-06-18T00:08:03+08:00">2026-06-18</time>
+      <time title="创建时间：2026-06-18 00:08:03" itemprop="dateCreated datePublished" datetime="2026-06-18T00:08:03+08:00">2026-06-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2026-06-21 00:38:15" itemprop="dateModified" datetime="2026-06-21T00:38:15+08:00">2026-06-21</time>
     </span>
 
   
@@ -228,15 +234,553 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h1 id="机器学习的一些基础概念"><a href="#机器学习的一些基础概念" class="headerlink" title="机器学习的一些基础概念"></a>机器学习的一些基础概念</h1><h2 id="基本范式"><a href="#基本范式" class="headerlink" title="基本范式"></a>基本范式</h2><ol>
-<li>监督学习：有标签，比如猫狗分类的照片，已经标注好是猫还是狗，让模型识别。</li>
-<li>无监督学习：无标签，比如聚类，将数据分成不同的簇。</li>
-<li>半监督学习：有标签和无标签的混合体，比如只标注了一部分数据的分类问题。</li>
-<li>自监督学习：模型自己寻找标签，比如通过对比学习来学习图片的特征。</li>
-<li>强化学习：模型通过与环境的交互来学习最优的行为策略。这个就没有标签，就是把模型扔到一个环境，做对了给奖励，错了惩罚，跟训狗一样。</li>
-<li>批量学习和在线学习：批量学习是一口气学完，不再学习新知识，在线学习是不断更新，容易被污染。</li>
-<li>归纳学习和转导学习：归纳学习是总结出一个规律，然后适用于所有。转导学习就是只需要用有标签的数据去猜出没有标签的数据。</li>
+    <div class="post-body" itemprop="articleBody"><h1 id="机器学习的一些基础概念"><a href="#机器学习的一些基础概念" class="headerlink" title="机器学习的一些基础概念"></a>机器学习的一些基础概念</h1><p>这篇文章要讲的是机器学习里最核心的那批基础概念——不是某一个算法的细节，而是<strong>所有算法都绕不开的共同语言</strong>。搞清楚了这些，后面去学任何具体模型，都能快速抓住它的设计动机和优缺点。</p>
+<hr>
+<h2 id="一、机器学习的基本范式"><a href="#一、机器学习的基本范式" class="headerlink" title="一、机器学习的基本范式"></a>一、机器学习的基本范式</h2><p>“范式”这个词听着唬人，通俗讲就是：<strong>模型到底是怎么学东西的——数据长什么样子、老师给不给答案、是一次学完还是一直在学。</strong> 不同的范式，决定了你后面整个技术路线的选择。</p>
+<h3 id="1-1-监督学习（Supervised-Learning）"><a href="#1-1-监督学习（Supervised-Learning）" class="headerlink" title="1.1 监督学习（Supervised Learning）"></a>1.1 监督学习（Supervised Learning）</h3><p><strong>一句话：数据自带标准答案，模型照着学。</strong></p>
+<p>每条训练数据由两部分组成：一个输入 $x$（也叫特征、属性）和一个标签 $y$（也叫目标、标注）。模型的任务就是找到一个函数 $f$，使得对于没见过的数据，$f(x)$ 尽可能接近真实的 $y$。</p>
+<p>一个具体的例子：</p>
+<table>
+<thead>
+<tr>
+<th align="left">输入 $x$</th>
+<th align="left">标签 $y$</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">一张猫的图片</td>
+<td align="left"><code>&quot;猫&quot;</code></td>
+</tr>
+<tr>
+<td align="left">一张狗的图片</td>
+<td align="left"><code>&quot;狗&quot;</code></td>
+</tr>
+<tr>
+<td align="left">一套房子的面积、楼层、地段</td>
+<td align="left">成交价 350 万</td>
+</tr>
+<tr>
+<td align="left">一封邮件的内容</td>
+<td align="left"><code>&quot;垃圾邮件&quot;</code></td>
+</tr>
+</tbody></table>
+<ul>
+<li>标签是<strong>离散的类别</strong> → 这叫<strong>分类</strong>（Classification）。猫狗识别、垃圾邮件过滤都是分类。</li>
+<li>标签是<strong>连续的数值</strong> → 这叫<strong>回归</strong>（Regression）。预测房价、预测温度都是回归。</li>
+</ul>
+<p>监督学习的核心矛盾在于：模型不仅要记住训练数据里的规律，还要能推广到没见过的新数据上——<strong>背答案没用，得真学会解题思路</strong>。</p>
+<h3 id="1-2-无监督学习（Unsupervised-Learning）"><a href="#1-2-无监督学习（Unsupervised-Learning）" class="headerlink" title="1.2 无监督学习（Unsupervised Learning）"></a>1.2 无监督学习（Unsupervised Learning）</h3><p><strong>一句话：没有标准答案，模型自己去发现数据里的结构。</strong></p>
+<p>数据只有输入 $x$，没有标签 $y$。模型要自己去找这些数据里隐藏的规律——哪些样本长得比较像，哪些维度比较重要。</p>
+<p>几种典型场景：</p>
+<ul>
+<li><strong>聚类（Clustering）</strong>：把相似的样本归到一组，组内差异尽量小，组间差异尽量大。比如把用户按购买行为分成”价格敏感型””品牌忠诚型””冲动消费型”——你事先不知道有哪些类型，是聚类帮你发现的。</li>
+<li><strong>降维（Dimensionality Reduction）</strong>：数据可能有几百维，但真正有信息的维度其实没那么多。降维就是把高维数据压缩到低维空间，同时尽量保留原始信息。主成分分析（PCA）就是最经典的降维方法。</li>
+<li><strong>关联规则（Association Rules）</strong>：发现数据里频繁共同出现的模式。比如”买尿布的人也买啤酒”——这就是从无标签数据里挖出来的关联。</li>
+</ul>
+<p>无监督学习比监督学习更难评估好坏——因为没有标准答案可以对照，很多时候要靠人在中间判断”这个聚类结果合不合理”。</p>
+<h3 id="1-3-半监督学习（Semi-supervised-Learning）"><a href="#1-3-半监督学习（Semi-supervised-Learning）" class="headerlink" title="1.3 半监督学习（Semi-supervised Learning）"></a>1.3 半监督学习（Semi-supervised Learning）</h3><p><strong>一句话：少量有标签 + 大量无标签数据混着用。</strong></p>
+<p>工业场景里最常见的情况：标注数据很贵（一张医学影像需要专家花几分钟判断，一条翻译需要双语人员仔细校对），但无标签数据很便宜。</p>
+<p>半监督学习的直觉是：无标签数据虽然不知道答案，但它能告诉模型<strong>数据本身的分布长什么样</strong>。比如你只有 100 张标好的猫狗图，但你有 10000 张没标的——模型可以先从那 10000 张里学会”一般来说一张图片长什么样、有什么纹理规律”，再用 100 张有标的数据去区分猫和狗。这比从 100 张里硬学效果好得多。</p>
+<h3 id="1-4-自监督学习（Self-supervised-Learning）"><a href="#1-4-自监督学习（Self-supervised-Learning）" class="headerlink" title="1.4 自监督学习（Self-supervised Learning）"></a>1.4 自监督学习（Self-supervised Learning）</h3><p><strong>一句话：不用人来标，模型自己给自己造标签。</strong></p>
+<p>这是近年大模型的核心训练方式。思路很巧妙：</p>
+<ol>
+<li>拿原始数据，比如一句话 “我明天要去北京”</li>
+<li>故意遮掉一部分，比如 “我明天要去 [MASK]”</li>
+<li>让模型预测被遮掉的是什么</li>
+<li>标签其实就在数据本身——你不需要人来标，正确答案就是”北京”</li>
 </ol>
+<p>再比如图像中的对比学习（Contrastive Learning）：同一张照片做两种随机裁剪和数据增强（旋转、变色），这两份裁剪过的图片是同一样本的两个视角——模型要学到”这两张图是同一个东西”，同时和别的图区分开。</p>
+<p>GPT 预测下一个词、BERT 的完形填空、SimCLR 的图像对比学习，都是自监督学习的经典应用。</p>
+<h3 id="1-5-强化学习（Reinforcement-Learning）"><a href="#1-5-强化学习（Reinforcement-Learning）" class="headerlink" title="1.5 强化学习（Reinforcement Learning）"></a>1.5 强化学习（Reinforcement Learning）</h3><p><strong>一句话：把模型扔到环境里，做对了奖励，做错了惩罚，模型靠自己试错找到最优策略。</strong></p>
+<p>强化学习跟前几个范式有本质区别：</p>
+<ul>
+<li>没有”输入-标签”这个数据结构。</li>
+<li>模型（叫智能体 Agent）在一个环境里行动，环境会根据行为反馈一个<strong>奖励信号</strong>（奖励或惩罚）。</li>
+<li>模型的目标不是拟合训练数据，而是<strong>最大化长期累积奖励</strong>。</li>
+</ul>
+<p>就像训狗——你说”坐下”，狗坐下了就给块肉干，不坐就不给。狗不需要你手把手教它”坐下的分解动作”，它自己会试，试到对的为止。</p>
+<p>强化学习的关键挑战在于<strong>奖励延迟</strong>：一个好行为可能要很久之后才能看到回报。比如下围棋，一步妙棋的效果可能要几十步之后才体现——怎么把远期的功劳正确归因到近期的决策上，这是强化学习最核心的问题。AlphaGo、自动驾驶、ChatGPT 的 RLHF 对齐，背后都是强化学习。</p>
+<h3 id="1-6-批量学习-vs-在线学习"><a href="#1-6-批量学习-vs-在线学习" class="headerlink" title="1.6 批量学习 vs 在线学习"></a>1.6 批量学习 vs 在线学习</h3><p><strong>批量学习（Batch Learning）</strong></p>
+<p>把所有训练数据一次性喂给模型，学完了就完事，部署上线后模型不再更新。好处是稳定可控——你线上跑的模型是什么状态，清清楚楚。坏处是跟不上数据的变化——用户的喜好变了、来了新的商品，旧的模型无能为力。要更新就只能拿到新数据后从头重训一遍，代价大。</p>
+<p><strong>在线学习（Online Learning）</strong></p>
+<p>模型持续接收新数据，不断微调。好处是能适应数据分布的变化（这在推荐系统里特别重要——用户口味是会变的）。坏处是脆弱：一旦有人恶意灌入异常数据，模型可能就被带歪了。此外，如果新数据和旧数据差异太大，模型可能<strong>灾难性遗忘</strong>——学会了新的就忘了旧的。</p>
+<h3 id="1-7-归纳学习-vs-转导学习"><a href="#1-7-归纳学习-vs-转导学习" class="headerlink" title="1.7 归纳学习 vs 转导学习"></a>1.7 归纳学习 vs 转导学习</h3><p>这两个概念比较微妙，但面试偶尔会考。</p>
+<p><strong>归纳学习（Inductive Learning）</strong></p>
+<p>从训练数据里总结出一个普适的规律（一个函数 $f$），然后用这个规律去预测<strong>所有</strong>新样本。这是最常见的机器学习方式——训练一个模型，然后拿来预测任何没见过的人。</p>
+<p><strong>转导学习（Transductive Learning）</strong></p>
+<p>不追求总结普适规律。目标非常朴素：训练时已经见到了测试数据（但没有标签），要做的就是<strong>把这些特定测试数据的标签推断出来</strong>。有点像”就事论事”——我就知道这几个无标样本跟那些有标样本长得像，所以我把它们归到一类。</p>
+<p>半监督学习中有不少方法是转导学习的思路——你手里有 100 个有标样本和 1000 个无标样本，你就是想把那 1000 个推断出来，而不是训练一个通用模型。</p>
+<hr>
+<h2 id="二、特征工程"><a href="#二、特征工程" class="headerlink" title="二、特征工程"></a>二、特征工程</h2><p>数据到手，几乎不可能直接扔给模型。你得先处理一下——去掉没用的、组合出新的、把格式统一了。这一步叫<strong>特征工程</strong>。它是整个机器学习流水线里最耗时间但也最决定上限的环节。<strong>数据和特征决定了模型性能的上限，模型和算法只是在逼近这个上限。</strong></p>
+<h3 id="2-1-特征选择（Feature-Selection）"><a href="#2-1-特征选择（Feature-Selection）" class="headerlink" title="2.1 特征选择（Feature Selection）"></a>2.1 特征选择（Feature Selection）</h3><p><strong>做什么：</strong> 从原始特征中挑出一部分真正有用的，扔掉无关和冗余的。</p>
+<p>为什么要扔掉特征？</p>
+<ol>
+<li><strong>计算效率</strong>：特征多了模型就跑得慢。</li>
+<li><strong>防止过拟合</strong>：乱七八糟的特征一多，模型就有更多机会去”死记硬背”噪声。</li>
+<li><strong>可解释性</strong>：10 个特征的结果比 1000 个特征容易解释得多。</li>
+</ol>
+<p>怎么选？几种思路：</p>
+<ul>
+<li><strong>过滤式（Filter）</strong>：不看模型，纯用统计学指标筛——比如算每个特征和标签的相关系数，选相关度高的、扔掉几乎不变的。</li>
+<li><strong>包裹式（Wrapper）</strong>：反复训练模型，试不同的特征组合看效果，选效果最好的那个子集。比过滤式更准，但计算开销大很多。</li>
+<li><strong>嵌入式（Embedded）</strong>：把特征选择融进模型训练过程里。比如 L1 正则化（Lasso）会自动把不重要的特征权重压成 0，相当于边训练边做特征选择。</li>
+</ul>
+<h3 id="2-2-特征提取（Feature-Extraction）"><a href="#2-2-特征提取（Feature-Extraction）" class="headerlink" title="2.2 特征提取（Feature Extraction）"></a>2.2 特征提取（Feature Extraction）</h3><p><strong>做什么：</strong> 从原始特征里”造”出新的、更有表达力的特征。</p>
+<p>原始特征直接喂给模型不一定是最优的——有时候组合一下、变换一下，让信息更容易被模型捕捉。</p>
+<p>一个直观的例子：你有”身高”和”体重”两个特征，单独看都能提供一定信息，但<strong>计算 BMI（身体质量指数）&#x3D; 体重(kg) &#x2F; 身高(m)²</strong>，这个新特征可能更能反映一个人的体型特征——模型只要看一个数就能获取”胖瘦”的信息，而不用自己去琢磨身高和体重之间到底是什么关系。</p>
+<p>再比如计算机视觉中，CNN 的前几层本质上就是在做特征提取——从原始像素里提取出边缘 → 纹理 → 局部形状 → 物体部件，一层比一层抽象。</p>
+<p>特征提取和特征选择的区别在于：选择是”挑”，特征是那些老面孔；提取是”造”，特征是你新创造出来的。</p>
+<h3 id="2-3-特征变换（Feature-Transformation）"><a href="#2-3-特征变换（Feature-Transformation）" class="headerlink" title="2.3 特征变换（Feature Transformation）"></a>2.3 特征变换（Feature Transformation）</h3><p><strong>做什么：</strong> 把特征的数值范围、格式统一到模型好处理的形式。</p>
+<p>这个问题在真实数据里无处不在。同一个数据集里：</p>
+<ul>
+<li>房屋面积：50 ~ 100 平方米</li>
+<li>距离地铁站：1000 米</li>
+<li>卧室数量：1 ~ 5 间</li>
+</ul>
+<p>如果不处理，1000 这个距离值在计算欧氏距离的时候会极大程度地主导向量相似度，面积的贡献几乎被淹没了——不是距离不重要，只是量纲差异让模型失去了公平看待的能力。</p>
+<p>三类常见操作：</p>
+<p><strong>(1) 标准化（Standardization）</strong></p>
+<p>把每个数值特征缩放到均值为 0、标准差为 1 的分布：</p>
+<p>$$x’ &#x3D; \frac{x - \mu}{\sigma}$$</p>
+<p>处理后所有特征处于同一个”起跑线”上。适用于基于距离的模型（SVM、KNN、逻辑回归）和需要梯度下降的模型。</p>
+<p><strong>(2) 归一化（Normalization）</strong></p>
+<p>把每个特征缩放到 [0, 1]（或 [-1, 1]）区间：</p>
+<p>$$x’ &#x3D; \frac{x - x_{\min}}{x_{\max} - x_{\min}}$$</p>
+<p>适合对输入数据范围敏感的模型（如神经网络的输入层）。</p>
+<p><strong>(3) 类别特征编码（Categorical Encoding）</strong></p>
+<p>有些特征不是数字，而是类别——性别（男&#x2F;女）、城市（北京&#x2F;上海&#x2F;广州）、颜色（红&#x2F;蓝&#x2F;绿）。计算机不能直接拿”男”和”女”做运算，必须转成数字。</p>
+<p>最基础的是<strong>独热编码（One-Hot Encoding）</strong>：</p>
+<table>
+<thead>
+<tr>
+<th align="left">原始值</th>
+<th align="left">性别_男</th>
+<th align="left">性别_女</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">男</td>
+<td align="left">1</td>
+<td align="left">0</td>
+</tr>
+<tr>
+<td align="left">女</td>
+<td align="left">0</td>
+<td align="left">1</td>
+</tr>
+<tr>
+<td align="left">男</td>
+<td align="left">1</td>
+<td align="left">0</td>
+</tr>
+</tbody></table>
+<p>一个类别占一列，是哪个就标 1，其余全 0。简单粗暴，但当类别数量太多时（比如城市有几百个），会导致维度爆炸——这时候就需要用 Embedding 等更高级的手段。</p>
+<hr>
+<h2 id="三、模型的”好”与”不好”——泛化、拟合、偏差与方差"><a href="#三、模型的”好”与”不好”——泛化、拟合、偏差与方差" class="headerlink" title="三、模型的”好”与”不好”——泛化、拟合、偏差与方差"></a>三、模型的”好”与”不好”——泛化、拟合、偏差与方差</h2><h3 id="3-1-泛化能力（Generalization）"><a href="#3-1-泛化能力（Generalization）" class="headerlink" title="3.1 泛化能力（Generalization）"></a>3.1 泛化能力（Generalization）</h3><p><strong>一句话：举一反三的能力。</strong></p>
+<p>训练集相当于模拟考，测试集（和将来线上遇到的新数据）才是真正的高考。一个模型在训练集上做得再好，上手了见到新数据一塌糊涂——说明泛化能力差。</p>
+<p>泛化能力是整个机器学习的<strong>核心目标</strong>。不是为了把训练数据背下来——要背的话直接查表就行了，要机器学习干什么？——而是从训练数据里提取出<strong>能推广</strong>的规律。</p>
+<p>泛化误差 &#x3D; 测试误差 − 训练误差。这个差值越小，泛化能力越强。</p>
+<h3 id="3-2-欠拟合（Underfitting）"><a href="#3-2-欠拟合（Underfitting）" class="headerlink" title="3.2 欠拟合（Underfitting）"></a>3.2 欠拟合（Underfitting）</h3><p><strong>症状：</strong> 训练集表现差，测试集表现也差。</p>
+<p><strong>类比：</strong> 模拟考成绩很差，真考也很差——说明你根本就没学进去。</p>
+<p><strong>原因：</strong> 模型太简单，表达力不够，学不动数据里的规律。就像一个只能画直线的模型，去拟合一条抛物线——不管怎么调参数，它碰都碰不到真实曲线的形状。</p>
+<p><strong>几种典型表现：</strong></p>
+<ul>
+<li>在训练集上的损失一直很高，下不去</li>
+<li>训练曲线和验证曲线都平在一个很高的水平上</li>
+<li>模型预测结果几乎是一个常数（比如不管输入什么猫狗图片，都猜是猫）</li>
+</ul>
+<p><strong>解决方法：</strong></p>
+<ol>
+<li><strong>增加特征</strong>——给模型更多信息。预测房价时加上”是否有学区”这个特征，可能比只用面积和楼层效果好得多。</li>
+<li><strong>换更复杂的模型</strong>——线性模型不行就换决策树，决策树不行就上神经网络。模型复杂度要匹配数据的复杂度。</li>
+<li><strong>减少正则化强度</strong>——正则化系数设太大了，模型被约束得太紧，把”有用的规律”也当成”不必要的复杂度”给砍了。适当减小正则化参数 $\lambda$。</li>
+</ol>
+<h3 id="3-3-过拟合（Overfitting）"><a href="#3-3-过拟合（Overfitting）" class="headerlink" title="3.3 过拟合（Overfitting）"></a>3.3 过拟合（Overfitting）</h3><p><strong>症状：</strong> 训练集表现极好，测试集表现拉胯。</p>
+<p><strong>类比：</strong> 模拟考的卷子背得滚瓜烂熟，但考试换了一套题就不会了——你背的是题目，不是知识。</p>
+<p><strong>原因：</strong> 模型过于复杂，连训练数据里的”噪声”和”偶然性”都学进去了。训练集里可能刚好有几只猫的照片背景是蓝天——过拟合的模型会把”蓝天”也当成判断”猫”的依据，那碰到室内拍的猫就不认识了。</p>
+<p><strong>几种典型表现：</strong></p>
+<ul>
+<li>训练集损失持续下降，但验证集损失不降反升——这是过拟合最经典的信号</li>
+<li>训练准确率 99.9%，测试准确率只有 80%</li>
+<li>模型参数的值非常大——模型在”拼了命地记住”每个训练样本</li>
+</ul>
+<p><strong>解决方法：</strong></p>
+<ol>
+<li><strong>加更多数据</strong>——这是最根本的办法。数据多了，噪声就会被冲淡，模型没那么容易去记住个例。</li>
+<li><strong>正则化（L1&#x2F;L2）</strong>——从损失函数层面约束模型复杂度，下面会细讲。</li>
+<li><strong>Dropout</strong>——训练时随机”关掉”一部分神经元，强迫网络不能依赖某一个特定的神经元通路，每次都必须学到冗余的、更鲁棒的特征。</li>
+<li><strong>早停（Early Stopping）</strong>——监控验证集的损失，一旦验证集损失开始回升就停下训练，不要等到训练集损失降到 0。</li>
+<li><strong>数据增强（Data Augmentation）</strong>——把现有数据做小幅变换（图片翻转、旋转、裁剪、加噪声），创造更多”不一样”的训练样本。</li>
+<li><strong>集成学习</strong>——多训练几个模型，把它们的预测结果取平均（或投票）。不同模型过拟合的方向不一样，取平均后过拟合的噪声互相抵消了。</li>
+</ol>
+<h3 id="3-4-偏差（Bias）与方差（Variance）"><a href="#3-4-偏差（Bias）与方差（Variance）" class="headerlink" title="3.4 偏差（Bias）与方差（Variance）"></a>3.4 偏差（Bias）与方差（Variance）</h3><p>这是理解模型表现最核心的框架，也是面试最喜欢问的知识点之一。偏差和方差帮你从<strong>数学上</strong>搞清楚什么叫欠拟合、什么叫过拟合。</p>
+<p>先给两个直觉：</p>
+<ul>
+<li><strong>偏差</strong>：瞄准的<strong>准确度</strong>——你瞄的地方离靶心有多远。</li>
+<li><strong>方差</strong>：瞄准的<strong>稳定性</strong>——你每次射出去，弹孔之间散不散。</li>
+</ul>
+<p>现在说数学上的定义。假设真实的规律是 $f(x)$，我们训练的模型是 $\hat{f}(x)$。由于训练数据是随机采样的，每次换一拨训练数据，训练出来的 $\hat{f}$ 就不太一样。</p>
+<p><strong>偏差（Bias）</strong></p>
+<blockquote>
+<p>定义：$\text{Bias}[\hat{f}(x)] &#x3D; E[\hat{f}(x)] - f(x)$</p>
+</blockquote>
+<p>解读：把很多次训练的模型的预测结果取平均（$E[\hat{f}(x)]$），然后和真实值 $f(x)$ 作差。</p>
+<p>如果这个差值很大，说明<strong>你的模型整体上就偏离了正确答案</strong>——不管你换什么训练数据，它就是不往真实规律上靠拢。这就是<strong>高偏差 → 欠拟合</strong>。模型太简单，简单到连训练数据都拟合不好，更别提测试了。</p>
+<p><strong>方差（Variance）</strong></p>
+<blockquote>
+<p>定义：$\text{Var}[\hat{f}(x)] &#x3D; E[(\hat{f}(x) - E[\hat{f}(x)])^2]$</p>
+</blockquote>
+<p>解读：每次训练的预测结果，跟所有预测结果的平均值之间的差异程度。</p>
+<p>方差高意味着<strong>模型对训练数据太敏感了</strong>——换一拨训练数据，预测结果就大不一样。你在训练集 A 上训练出来的模型，预测猫的概率是 0.98；换了一组训练集 B（真实规律完全一样，只是样本不同），同一个输入预测猫的概率变成了 0.03。这就是<strong>高方差 → 过拟合</strong>。模型过于灵活，把每次采样带来的随机波动都当规律记住了。</p>
+<p><strong>打靶类比</strong></p>
+<table>
+<thead>
+<tr>
+<th align="left">场景</th>
+<th align="left">偏差</th>
+<th align="left">方差</th>
+<th align="left">弹孔分布</th>
+<th align="left">对应的问题</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">A</td>
+<td align="left">高</td>
+<td align="left">低</td>
+<td align="left">弹孔很集中，但全部偏离靶心</td>
+<td align="left"><strong>欠拟合</strong></td>
+</tr>
+<tr>
+<td align="left">B</td>
+<td align="left">低</td>
+<td align="left">高</td>
+<td align="left">弹孔散得很开，有的在靶心有的歪</td>
+<td align="left"><strong>过拟合</strong></td>
+</tr>
+<tr>
+<td align="left">C</td>
+<td align="left">高</td>
+<td align="left">高</td>
+<td align="left">弹孔又散又偏</td>
+<td align="left">模型又简单又不稳定（最差）</td>
+</tr>
+<tr>
+<td align="left">D</td>
+<td align="left">低</td>
+<td align="left">低</td>
+<td align="left">弹孔又集中又在靶心</td>
+<td align="left"><strong>我们的目标</strong> 🎯</td>
+</tr>
+</tbody></table>
+<p><strong>偏差-方差权衡（Bias-Variance Tradeoff）</strong></p>
+<p>麻烦了：降低偏差往往意味着要用更复杂的模型 → 方差就可能上去。反过来，限制模型复杂度来降低方差 → 偏差又可能升高。</p>
+<blockquote>
+<p>偏差与方差的分解公式：$\text{期望泛化误差} &#x3D; \text{Bias}^2 + \text{Variance} + \text{不可约误差}$</p>
+</blockquote>
+<p>这就是为什么我们不是在找一个”完美”的模型，而是在找一个<strong>偏差和方差之间恰到好处的平衡点</strong>。这个平衡点在哪，取决于你的数据量、数据质量、以及你可以接受的误差范围。</p>
+<hr>
+<h2 id="四、防止过拟合的武器"><a href="#四、防止过拟合的武器" class="headerlink" title="四、防止过拟合的武器"></a>四、防止过拟合的武器</h2><p>上面讲了过拟合是什么以及它的数学本质（高方差），现在把最重要的几种防止过拟合的手段展开来讲——</p>
+<h3 id="4-1-正则化（Regularization）"><a href="#4-1-正则化（Regularization）" class="headerlink" title="4.1 正则化（Regularization）"></a>4.1 正则化（Regularization）</h3><p><strong>核心思想：</strong> 损失函数 &#x3D; 数据拟合损失 + 模型复杂度惩罚。让模型在”拟合训练数据”和”保持简单”之间自己做权衡。</p>
+<p>模型参数越大、越复杂 → 惩罚项就越大 → 损失函数变大 → 模型被逼着把参数压小。那些”可有可无”的特征对应的参数会被压到接近甚至等于 0，相当于自动做了特征筛选。</p>
+<p><strong>L1 正则化（Lasso）</strong></p>
+<p>在损失函数后面加上参数绝对值之和：</p>
+<p>$$\text{Loss}<em>{\text{total}} &#x3D; \text{Loss}</em>{\text{original}} + \lambda \sum_{i} |w_i|$$</p>
+<p>特点：L1 的梯度在非 0 处是常数 $\pm \lambda$，所以很多参数会被<strong>直接推到 0</strong>——产生稀疏解。这意味着 L1 正则化自带<strong>特征选择</strong>功能：不重要的特征对应的参数变成 0，等效于被删掉了。最终模型只依赖少数几个特征，可解释性好。</p>
+<p><strong>L2 正则化（Ridge）</strong></p>
+<p>在损失函数后面加上参数平方和：</p>
+<p>$$\text{Loss}<em>{\text{total}} &#x3D; \text{Loss}</em>{\text{original}} + \lambda \sum_{i} w_i^2$$</p>
+<p>特点：L2 的梯度跟参数值成正比（参数越大，往回拉的力就越大），所以参数会<strong>趋于变小但不会变成 0</strong>。所有特征都会被保留，但每个的权重都被压得很”谦虚”，整体模型更平滑、更不容易被某一个特征带偏。</p>
+<p><strong>L1 vs L2 怎么选？</strong></p>
+<ul>
+<li>如果你怀疑很多特征是没用的，想要自动选特征 → L1</li>
+<li>如果你觉得所有特征或多或少都有用，只是想让模型稳一点 → L2</li>
+<li>不确定？ElasticNet 把两个一起加上。</li>
+</ul>
+<p><strong>为什么正则化能防止过拟合？</strong></p>
+<p>过拟合时模型的参数值通常很大——为了”记住”某个特殊的训练样本，模型会把某些参数调得巨大。正则化直接惩罚大参数，等于告诉模型：”你可以学，但别为了记住每一个样本而把参数搞得太夸张。” 把参数压小，模型的决策边界就变得更平滑，泛化能力自然就上去了。</p>
+<h3 id="4-2-奥卡姆剃刀原则（Occam’s-Razor）"><a href="#4-2-奥卡姆剃刀原则（Occam’s-Razor）" class="headerlink" title="4.2 奥卡姆剃刀原则（Occam’s Razor）"></a>4.2 奥卡姆剃刀原则（Occam’s Razor）</h3><blockquote>
+<p>如无必要，勿增实体。（Entities should not be multiplied beyond necessity.）</p>
+</blockquote>
+<p>这是 14 世纪哲学家奥卡姆的威廉提出的原则。在机器学习里的翻译是：</p>
+<blockquote>
+<p>面对几个都能解释训练数据的模型，<strong>选最简单的那个</strong>。</p>
+</blockquote>
+<p>为什么简单模型更好？</p>
+<ul>
+<li>简单模型参数少 → 能表示的”花活”就少 → 不容易把噪声当规律学进去。</li>
+<li>简单模型更可解释 → 你能理解它在干什么，出了问题也容易排查。</li>
+<li>简单模型更高效 → 训练快、推理快、部署快。</li>
+</ul>
+<p>奥卡姆剃刀是正则化的<strong>哲学基础</strong>——正则化就是在数学上实现”倾向于简单模型”这一偏好。</p>
+<p>当然不能走极端：简单过头就是欠拟合。找一个”刚好够”的复杂度——既能解释数据里的真实规律，又不至于把噪声也装进来——这就是机器学习工程师的核心手艺。</p>
+<h3 id="4-3-独立同分布假设（i-i-d-Assumption）"><a href="#4-3-独立同分布假设（i-i-d-Assumption）" class="headerlink" title="4.3 独立同分布假设（i.i.d. Assumption）"></a>4.3 独立同分布假设（i.i.d. Assumption）</h3><p>全称：<strong>Independent and Identically Distributed</strong></p>
+<p>这是绝大多数机器学习算法的<strong>基本前提</strong>。如果这个假设不成立，再花哨的模型都可能白搭。</p>
+<p><strong>独立（Independent）</strong></p>
+<p>每个样本之间互不影响。抛硬币——第一次的结果不影响第二次。有独立假设，我们才能堂堂正正地用概率乘法（$P(A \cap B) &#x3D; P(A)P(B)$）来拆解似然函数，才能用批量梯度下降（随机抽一个 batch 代表整体）。</p>
+<p>实际中严格独立常常不满足——比如股票价格前后相关、视频帧连续、用户购买行为有序列依赖。这时候普通的 i.i.d. 模型就不够用了，需要上时间序列模型、RNN&#x2F;Transformer 等考虑依赖关系的模型。</p>
+<p><strong>同分布（Identically Distributed）</strong></p>
+<p>所有样本都是从<strong>同一个概率分布</strong>里采出来的。训练集和测试集的数据分布应该一样。</p>
+<p>如果训练集全是白天的街景照片，测试集全是夜景——模型表现差不是模型的问题，是数据分布变了。这叫<strong>分布偏移（Distribution Shift）</strong>，是机器学习上线后最常见的失败原因之一。</p>
+<blockquote>
+<p><strong>部署之前先确认：你的训练数据和将来要用的场景，是不是”同一个世界”？</strong> 不是的话，要么重新收集有代表性的训练数据，要么用 Domain Adaptation 等技术来弥合分布差异。</p>
+</blockquote>
+<h3 id="4-4-没有免费午餐定理（No-Free-Lunch-Theorem-NFL）"><a href="#4-4-没有免费午餐定理（No-Free-Lunch-Theorem-NFL）" class="headerlink" title="4.4 没有免费午餐定理（No Free Lunch Theorem, NFL）"></a>4.4 没有免费午餐定理（No Free Lunch Theorem, NFL）</h3><blockquote>
+<p>在所有可能的问题上，所有算法的平均表现是一样的。</p>
+</blockquote>
+<p>这句话来自 Wolpert 和 Macready 在 1997 年提出的定理。听起来很反直觉，但严谨来说它就是对的。</p>
+<p><strong>什么意思？</strong> 算法 A 在某类问题上比算法 B 好，那么在另一些问题上算法 B 必定优于算法 A——不存在一个”通吃一切”的最强算法。</p>
+<p><strong>给我们的启示：</strong></p>
+<ol>
+<li><strong>别幻想万能药</strong>。如果有人告诉你他的算法在所有场景下都是最好的，要么他不懂 NFL 定理，要么他在忽悠你。</li>
+<li><strong>选算法的真正依据不是”哪个算法最先进”，而是你的具体数据和任务</strong>。你对问题的<strong>先验知识</strong>——数据的结构、噪声特性、特征之间的关系——才是选对算法的关键。</li>
+<li><strong>对深度学习也要保持清醒</strong>。深度学习在图像、语音、NLP 上确实统治级表现，但拿到表格数据上（比如一个小型的结构化数据集），XGBoost 经常完胜。这不是说谁更好，只是说不同算法在不同数据结构上的”偏好”不同。</li>
+</ol>
+<p>NFL 定理的价值在于<strong>破除对某个算法的迷信</strong>，让你回归到对数据和问题本身的理解上。</p>
+<hr>
+<h2 id="五、这些概念之间的关系——一张脑图"><a href="#五、这些概念之间的关系——一张脑图" class="headerlink" title="五、这些概念之间的关系——一张脑图"></a>五、这些概念之间的关系——一张脑图</h2><p>把这些概念串起来，它们不是一个一个孤立的定义，而是一张互相牵制的网：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">模型太简单 ──────────────────→ 欠拟合 ──→ 高偏差</span><br><span class="line">    │                                      │</span><br><span class="line">    │   解法：加特征/换复杂模型/减正则化     │</span><br><span class="line">    │                                      │</span><br><span class="line">    ↓                                      ↓</span><br><span class="line">合适的复杂度 ─────────────────→ 低偏差 + 低方差 ← 我们的目标 🎯</span><br><span class="line">    ↑                                      ↑</span><br><span class="line">    │                                      │</span><br><span class="line">    │   解法：正则化/奥卡姆剃刀/Dropout     │</span><br><span class="line">    │      早停/数据增强/加样本             │</span><br><span class="line">    │                                      │</span><br><span class="line">模型太复杂 ──────────────────→ 过拟合 ──→ 高方差</span><br></pre></td></tr></table></figure>
+
+<p>一切基于一个前提：<strong>i.i.d. 假设成立</strong>。训练集和测试集是同一个世界，独立取样。</p>
+<p>即便 i.i.d. 成立，<strong>NFL 定理</strong>提醒我们：没有一个算法天然比另一个更好。你的数据长什么样、你的任务要什么、你能接受多大的误差——这些才是决定选什么算法的因素。</p>
+<hr>
+<h2 id="六、常见困惑与解答"><a href="#六、常见困惑与解答" class="headerlink" title="六、常见困惑与解答"></a>六、常见困惑与解答</h2><p>这一节把最容易混淆的概念放在一起对比讲。很多问题面试会考，工作中也会反复遇到。</p>
+<h3 id="Q1：分类和回归到底怎么区分？能不能给一个最简单的判断方法？"><a href="#Q1：分类和回归到底怎么区分？能不能给一个最简单的判断方法？" class="headerlink" title="Q1：分类和回归到底怎么区分？能不能给一个最简单的判断方法？"></a>Q1：分类和回归到底怎么区分？能不能给一个最简单的判断方法？</h3><p><strong>一句话：看标签是离散还是连续。</strong></p>
+<ul>
+<li><strong>分类</strong>：标签是类别，每个值之间没有大小关系。比如猫&#x2F;狗&#x2F;鸟（不能说狗 &gt; 猫）、垃圾邮件&#x2F;正常邮件、疾病 A&#x2F;B&#x2F;C。</li>
+<li><strong>回归</strong>：标签是数值，有大小关系。比如房价 350 万、温度 26.5°C、年龄 28 岁。</li>
+</ul>
+<p>但有些情况比较微妙。比如预测一个用户会给电影打几星（1~5 星）？</p>
+<ul>
+<li>视作<strong>分类</strong>（5 个类别，每个星级一个类）——假设星和星之间没有数量关系，把每个星级当成独立标签。好处是模型不用假设”4 星和 5 星之间的差距跟 1 星和 2 星一样大”。</li>
+<li>视作<strong>回归</strong>（预测一个连续值，四舍五入到整数）——假设星级是有序的、距离等距的。好处是可以用更简单的模型和更少的参数。</li>
+</ul>
+<p>哪种更好，<strong>取决于数据和业务</strong>，没有绝对答案。电商推荐里通常当回归做，因为可以把预测的浮点数直接用来排序。</p>
+<h3 id="Q2：自监督学习和无监督学习到底有什么区别？不都是”没标签”吗？"><a href="#Q2：自监督学习和无监督学习到底有什么区别？不都是”没标签”吗？" class="headerlink" title="Q2：自监督学习和无监督学习到底有什么区别？不都是”没标签”吗？"></a>Q2：自监督学习和无监督学习到底有什么区别？不都是”没标签”吗？</h3><p>这个问题非常容易混淆。核心区别在于**有没有人为构造的”监督信号”**。</p>
+<table>
+<thead>
+<tr>
+<th align="left"></th>
+<th align="left">无监督学习</th>
+<th align="left">自监督学习</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">输入</td>
+<td align="left">只有原始数据 $x$</td>
+<td align="left">原始数据 $x$</td>
+</tr>
+<tr>
+<td align="left">有没有”答案”</td>
+<td align="left">没有，模型自己在数据里找结构</td>
+<td align="left"><strong>有</strong>——答案是数据自己造的（遮住的词、旋转的角度）</td>
+</tr>
+<tr>
+<td align="left">典型任务</td>
+<td align="left">聚类、降维、密度估计</td>
+<td align="left">BERT 完形填空、GPT 下一个词预测、SimCLR 图像对比</td>
+</tr>
+<tr>
+<td align="left">目标</td>
+<td align="left">发现数据的内在结构</td>
+<td align="left">学到好的数据表示（Representation），供下游任务用</td>
+</tr>
+</tbody></table>
+<p>打个比方：无监督学习是<strong>把一堆乐高倒在地上，让小朋友自己发现”这些能拼成城堡，那些能拼成车”<strong>；自监督学习是</strong>把城堡搭好，然后抽掉几块，让小朋友猜抽掉的是哪块</strong>——后者的训练方式其实更接近监督学习（有明确的对错标准），只是”老师”不是人，是数据自己。</p>
+<blockquote>
+<p>自监督学习近年来最重要，因为它是 GPT、BERT、CLIP 等大模型的预训练方式——不需要昂贵的人工标注，就能在海量原始数据上训练出极强的底座模型。</p>
+</blockquote>
+<h3 id="Q3：特征选择、特征提取、特征变换——三个”特征”开头的概念怎么分清楚？"><a href="#Q3：特征选择、特征提取、特征变换——三个”特征”开头的概念怎么分清楚？" class="headerlink" title="Q3：特征选择、特征提取、特征变换——三个”特征”开头的概念怎么分清楚？"></a>Q3：特征选择、特征提取、特征变换——三个”特征”开头的概念怎么分清楚？</h3><p>这是新⼿最容易绕进去的一组概念。用一张表把它们的关系理清：</p>
+<table>
+<thead>
+<tr>
+<th align="left"></th>
+<th align="left">特征选择</th>
+<th align="left">特征提取</th>
+<th align="left">特征变换</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>做什么</strong></td>
+<td align="left">从原始特征中<strong>挑</strong>一部分</td>
+<td align="left">从原始特征<strong>造</strong>新特征</td>
+<td align="left">把原始特征<strong>映射</strong>到统一范围&#x2F;格式</td>
+</tr>
+<tr>
+<td align="left"><strong>特征数量</strong></td>
+<td align="left">变少</td>
+<td align="left">可能变少，可能不变</td>
+<td align="left">不变</td>
+</tr>
+<tr>
+<td align="left"><strong>是否改变含义</strong></td>
+<td align="left">不改变（还是原来那个特征）</td>
+<td align="left">改变（新特征跟原来不同）</td>
+<td align="left">不改变（还是那个特征，只是数值范围变了）</td>
+</tr>
+<tr>
+<td align="left"><strong>典型操作</strong></td>
+<td align="left">去掉无关特征</td>
+<td align="left">BMI &#x3D; 体重&#x2F;身高²</td>
+<td align="left">标准化、归一化、独热编码</td>
+</tr>
+<tr>
+<td align="left"><strong>目的</strong></td>
+<td align="left">减少冗余、防止过拟合</td>
+<td align="left">增强特征表达能力</td>
+<td align="left">消除量纲差异、适配模型要求</td>
+</tr>
+</tbody></table>
+<p><strong>记忆技巧</strong>：选择是”裁员”（哪些人留下），提取是”升职”（几个人合并成一个更强的人），变换是”换工装”（人没变，换了身统一的衣服）。</p>
+<h3 id="Q4：标准化和归一化到底什么时候用哪个？"><a href="#Q4：标准化和归一化到底什么时候用哪个？" class="headerlink" title="Q4：标准化和归一化到底什么时候用哪个？"></a>Q4：标准化和归一化到底什么时候用哪个？</h3><p>这两个词经常被混着说，但其实有明确的使用场景区别。</p>
+<table>
+<thead>
+<tr>
+<th align="left"></th>
+<th align="left">标准化（Standardization）</th>
+<th align="left">归一化（Normalization）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">公式</td>
+<td align="left">$\frac{x-\mu}{\sigma}$</td>
+<td align="left">$\frac{x-x_{\min}}{x_{\max}-x_{\min}}$</td>
+</tr>
+<tr>
+<td align="left">结果分布</td>
+<td align="left">均值 0、标准差 1</td>
+<td align="left">[0, 1] 或 [-1, 1]</td>
+</tr>
+<tr>
+<td align="left">是否受异常值影响</td>
+<td align="left">受一定影响（异常值会拉偏均值和标准差）</td>
+<td align="left">极度敏感（一个异常值会让整体缩到一个很小的区间）</td>
+</tr>
+</tbody></table>
+<p><strong>什么时候用标准化？</strong></p>
+<ul>
+<li>数据近似服从正态分布（或至少是对称分布）</li>
+<li>模型基于距离计算（SVM、KNN、K-means、逻辑回归）</li>
+<li>需要使用梯度下降优化的模型（神经网络、线性回归）</li>
+</ul>
+<p><strong>什么时候用归一化？</strong></p>
+<ul>
+<li>数据范围已知且没有极端异常值</li>
+<li>需要 [0, 1] 输出的场景（如图像像素值归一化到 [0, 1] 喂给 CNN）</li>
+<li>某些对输入范围敏感的激活函数（Sigmoid、Tanh）</li>
+</ul>
+<p><strong>一个简单的优先策略</strong>：不确定的时候，先标准化。标准化对异常值的容忍度更高，大多数场景下都是安全的默认选择。</p>
+<h3 id="Q5：怎么在实际训练中判断到底是欠拟合还是过拟合？"><a href="#Q5：怎么在实际训练中判断到底是欠拟合还是过拟合？" class="headerlink" title="Q5：怎么在实际训练中判断到底是欠拟合还是过拟合？"></a>Q5：怎么在实际训练中判断到底是欠拟合还是过拟合？</h3><p>看三条线：</p>
+<p><strong>判断信号 1：训练集和验证集的表现差距</strong></p>
+<ul>
+<li>训练 loss 高，验证 loss 也高，两者差距小 → <strong>欠拟合</strong></li>
+<li>训练 loss 很低，验证 loss 明显比他高，差距很大 → <strong>过拟合</strong></li>
+</ul>
+<p><strong>判断信号 2：学习曲线（Loss Curve）的走势</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Loss ↑                    Loss ↑</span><br><span class="line">    |   train_loss ----       |            valid_loss  ／</span><br><span class="line">    |   valid_loss ────       |            train_loss ──</span><br><span class="line">    |                         |</span><br><span class="line">    └─────────────→ epoch     └─────────────→ epoch</span><br><span class="line">       欠拟合：两条线都高             过拟合：验证 loss 开始反弹</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>两条线都平在一个高位，降不下去了 → <strong>欠拟合</strong></li>
+<li>训练 loss 继续下降，验证 loss 开始回升（形成”分叉”） → <strong>过拟合，应该立刻早停</strong></li>
+</ul>
+<p><strong>判断信号 3：测试集上的偏差-方差表现</strong></p>
+<ul>
+<li>换多组训练集，模型预测结果都和真实值差很多 → 高偏差 → <strong>欠拟合</strong></li>
+<li>换多组训练集，预测结果波动很大 → 高方差 → <strong>过拟合</strong></li>
+</ul>
+<blockquote>
+<p>实际上，欠拟合和过拟合<strong>可能同时存在</strong>——比如深度神经网络在某些区域学不动（高偏差），在另一些区域又对噪声敏感（高方差）。不是说一个模型只有一个毛病。</p>
+</blockquote>
+<h3 id="Q6：为什么-L1-正则化能产生稀疏解，而-L2-不行？面试必问。"><a href="#Q6：为什么-L1-正则化能产生稀疏解，而-L2-不行？面试必问。" class="headerlink" title="Q6：为什么 L1 正则化能产生稀疏解，而 L2 不行？面试必问。"></a>Q6：为什么 L1 正则化能产生稀疏解，而 L2 不行？面试必问。</h3><p>这是面试极爱问的问题。从两个角度理解：</p>
+<p><strong>（1）数学角度——看梯度</strong></p>
+<ul>
+<li>L1 的惩罚项是 $\lambda \sum |w_i|$，求导后的梯度是常数 $\lambda$（当 $w &gt; 0$ 时）或 $-\lambda$（当 $w &lt; 0$ 时）。不管参数 $w$ 多大或多小，往回拉的力始终是常数。当 $w$ 靠近 0 时，这个恒定的力会<strong>直接把它推过 0</strong>，停下来就是 0。</li>
+<li>L2 的惩罚项是 $\lambda \sum w_i^2$，求导后的梯度是 $2\lambda w$。梯度跟 $w$ 本身大小成正比——$w$ 越接近 0，往回拉的力就越小。所以参数会被压得很小，但<strong>永远不会被精确推到 0</strong>。</li>
+</ul>
+<p><strong>（2）几何角度——看约束区域</strong></p>
+<p>想象在二维参数空间 $(w_1, w_2)$ 里，损失函数的等高线是椭圆，正则化项的约束区域是一个中心在原点的形状：</p>
+<ul>
+<li>L1 约束：$|w_1| + |w_2| \le C$ → 是一个<strong>菱形</strong>（四个尖角在坐标轴上）</li>
+<li>L2 约束：$w_1^2 + w_2^2 \le C$ → 是一个<strong>圆形</strong>（没有尖角）</li>
+</ul>
+<p>损失函数等高线和约束区域的<strong>第一个交点</strong>就是最优解。对于 L1，交点极大概率落在菱形的尖角上——尖角在坐标轴上，意味着 $w_1&#x3D;0$ 或 $w_2&#x3D;0$。对于 L2，圆形没有尖角，交点几乎不可能精准落在坐标轴上。</p>
+<p><strong>一句话总结</strong>：L1 的约束形状有”棱角”，把解逼到了坐标轴（稀疏）；L2 的约束形状是光滑的，解落在某个”圆润”的位置上（非稀疏）。</p>
+<h3 id="Q7：NFL-定理是不是说”所有算法都一样好”？"><a href="#Q7：NFL-定理是不是说”所有算法都一样好”？" class="headerlink" title="Q7：NFL 定理是不是说”所有算法都一样好”？"></a>Q7：NFL 定理是不是说”所有算法都一样好”？</h3><p><strong>不是。这是一个常见的误读。</strong></p>
+<p>NFL 定理的精确表述是：<strong>在所有可能的问题上</strong>，所有优化算法的平均表现相同。关键词是”所有可能的问题”——包括那些完全随机、没有任何规律的”问题”在内。</p>
+<p>但在实际问题里，我们面对的不是”所有可能的问题”，而是<strong>某一类有规律的问题</strong>——图片分类、文本翻译、推荐排序，这些任务有明确的结构和规律。NFL 定理成立的前提是你对问题的分布一无所知，一旦你对问题有先验知识（知道图像有局部相关性、知道文本有语法规则），某些算法就会系统性优于另一些。</p>
+<blockquote>
+<p><strong>NFL 定理想告诉你的不是”别挑算法了都一样”，而是”没有放之四海皆准的最强算法，你得理解你的数据”。</strong></p>
+</blockquote>
+<p>这也是为什么在图像领域 CNN&#x2F;Transformer 统治一切，但在表格数据上 XGBoost 经常是最优解——不同数据有不同结构，匹配的算法自然不同。</p>
+<h3 id="Q8：i-i-d-不满足的时候，后果是什么？该怎么处理？"><a href="#Q8：i-i-d-不满足的时候，后果是什么？该怎么处理？" class="headerlink" title="Q8：i.i.d. 不满足的时候，后果是什么？该怎么处理？"></a>Q8：i.i.d. 不满足的时候，后果是什么？该怎么处理？</h3><p>i.i.d. 假设被违反有两种情况：</p>
+<p><strong>情况一：数据不独立（有依赖关系）</strong></p>
+<p>例子：股票价格（今天的和昨天的相关）、视频帧（前后帧高度相关）。</p>
+<p>后果：如果硬套 i.i.d. 模型——比如用普通回归预测股价——你会发现训练准确率虚高，但上线后完全不能用。因为模型学会了”用昨天的数据拟合今天的价格”，却没学到序列真正的动力学。</p>
+<p>怎么处理：</p>
+<ul>
+<li>用明确建模时间依赖的模型：RNN、LSTM、Transformer、状态空间模型</li>
+<li>用时间序列交叉验证（不能随机打乱，必须按时间顺序切分）</li>
+</ul>
+<p><strong>情况二：数据不同分布（分布偏移）</strong></p>
+<p>例子：用上海用户的训练数据去预测北京用户；用白天的自动驾驶数据去跑夜路。</p>
+<p>后果：模型在训练集和测试集上的表现天差地别——不是因为过拟合，而是因为<strong>测试集的”世界规则”跟训练集不一样</strong>。</p>
+<p>怎么处理：</p>
+<ul>
+<li><strong>从源头解决</strong>：确保训练数据覆盖了目标场景的多样性（白天 + 夜晚、不同城市、不同季节）。</li>
+<li><strong>Domain Adaptation</strong>：通过学习域不变特征，让模型在不同分布的数据上表现一致。</li>
+<li><strong>Domain Generalization</strong>：训练时就刻意让模型面对多域数据，逼它学到更本质的规律而非某个域的特定特征。</li>
+<li><strong>持续监控</strong>：上线后持续追踪模型表现，一旦发现分布偏移及时重训或调整。</li>
+</ul>
+<blockquote>
+<p><strong>经验之谈</strong>：大部分机器学习项目并不是死在模型不够新、不够炫，而是死在了<strong>训练数据和线上数据不是同一个世界</strong>。花在理解数据和确认 i.i.d. 上的时间，从来没有浪费的。</p>
+</blockquote>
+<h3 id="Q9：训练集、验证集、测试集怎么划分？有什么坑？"><a href="#Q9：训练集、验证集、测试集怎么划分？有什么坑？" class="headerlink" title="Q9：训练集、验证集、测试集怎么划分？有什么坑？"></a>Q9：训练集、验证集、测试集怎么划分？有什么坑？</h3><p><strong>标准做法</strong>：</p>
+<table>
+<thead>
+<tr>
+<th align="left">集合</th>
+<th align="left">用途</th>
+<th align="left">占比（经验值）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">训练集</td>
+<td align="left">用来训练模型参数</td>
+<td align="left">60% ~ 80%</td>
+</tr>
+<tr>
+<td align="left">验证集</td>
+<td align="left">用来调超参数、选模型、做早停</td>
+<td align="left">10% ~ 20%</td>
+</tr>
+<tr>
+<td align="left">测试集</td>
+<td align="left">只在最后用一次，评估最终泛化性能</td>
+<td align="left">10% ~ 20%</td>
+</tr>
+</tbody></table>
+<p><strong>几个常见坑：</strong></p>
+<p><strong>坑 1：用测试集调参。</strong> 测试集是”期末考试”，一辈子只能考一次。如果反复在测试集上调超参，那测试集就变成了验证集——你真正需要的”无偏估计”就丢了。正确做法：只用验证集调参，测试集锁着不动。</p>
+<p><strong>坑 2：数据泄露（Data Leakage）。</strong> 在划分训练&#x2F;验证&#x2F;测试之前就做了特征标准化（用全体数据的均值和标准差），导致训练集里”偷看”到了测试集的信息。正确做法：<strong>先在训练集上算均值和标准差，再用同样的值去标准化验证集和测试集。</strong></p>
+<p><strong>坑 3：分类问题中不按类别比例划分。</strong> 如果数据极度不平衡（比如 5% 是正样本），随机划分可能导致某个集合里正样本特别少甚至一个没有。正确做法：<strong>分层抽样（Stratified Split）</strong>——每个集合里各类别的比例保持一致。</p>
+<p><strong>坑 4：时间序列数据随机打乱。</strong> 如果用未来的数据训练模型去预测过去，效果再好也是假的。正确做法：<strong>按时间顺序切分</strong>——训练集是最早的时间段，验证集居中，测试集是最新的时间段。</p>
+<h3 id="Q10：到底”半监督学习”和”转导学习”是什么关系？"><a href="#Q10：到底”半监督学习”和”转导学习”是什么关系？" class="headerlink" title="Q10：到底”半监督学习”和”转导学习”是什么关系？"></a>Q10：到底”半监督学习”和”转导学习”是什么关系？</h3><p>这两个概念有重叠，但不完全等同。</p>
+<p><strong>半监督学习</strong>是一个大框架——利用无标签数据来帮助监督学习。它可以分成两类：</p>
+<ul>
+<li><strong>归纳式半监督学习</strong>：目标是训练一个能预测<strong>所有新样本</strong>的通用模型。训练时用了有标签和无标签数据混着学，但最终产出一个普适的分类器。</li>
+<li><strong>转导式半监督学习</strong>：目标是推断<strong>训练时已经见过的那些无标签样本</strong>的标签，不追求训练一个通用模型。</li>
+</ul>
+<p>转导学习不一定非要半监督——你可以全监督地做转导（不过那就没什么意义了）。但在机器学习的历史里，转导学习确实大多出现在半监督场景。</p>
+<blockquote>
+<p><strong>一句话区分</strong>：归纳学习 &#x3D; 学规律然后预测世界（要通用模型）；转导学习 &#x3D; 我只想推断我手里这些没标的数据（就事论事）。</p>
+</blockquote>
+<hr>
+<h2 id="七、这些概念之间的关系——一张脑图"><a href="#七、这些概念之间的关系——一张脑图" class="headerlink" title="七、这些概念之间的关系——一张脑图"></a>七、这些概念之间的关系——一张脑图</h2><p>把这些概念串起来，它们不是一个一个孤立的定义，而是一张互相牵制的网：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">模型太简单 ──────────────────→ 欠拟合 ──→ 高偏差</span><br><span class="line">    │                                      │</span><br><span class="line">    │   解法：加特征/换复杂模型/减正则化     │</span><br><span class="line">    │                                      │</span><br><span class="line">    ↓                                      ↓</span><br><span class="line">合适的复杂度 ─────────────────→ 低偏差 + 低方差 ← 我们的目标 🎯</span><br><span class="line">    ↑                                      ↑</span><br><span class="line">    │                                      │</span><br><span class="line">    │   解法：正则化/奥卡姆剃刀/Dropout     │</span><br><span class="line">    │      早停/数据增强/加样本             │</span><br><span class="line">    │                                      │</span><br><span class="line">模型太复杂 ──────────────────→ 过拟合 ──→ 高方差</span><br></pre></td></tr></table></figure>
+
+<p>一切基于一个前提：<strong>i.i.d. 假设成立</strong>。训练集和测试集是同一个世界，独立取样。</p>
+<p>即便 i.i.d. 成立，<strong>NFL 定理</strong>提醒我们：没有一个算法天然比另一个更好。你的数据长什么样、你的任务要什么、你能接受多大的误差——这些才是决定选什么算法的因素。</p>
+<hr>
+<p>下一篇我会写机器学习要用到的数学基础——线性代数里真正用得上的部分、概率论的信息论视角，以及微积分为什么是整个反向传播的根基。</p>
 
     </div>
 
