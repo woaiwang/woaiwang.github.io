@@ -139,7 +139,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-count">10</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -150,7 +150,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-count">15</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -172,6 +172,246 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/06/18/%E7%BB%9D%E4%B8%96%E6%AD%A6%E5%8A%9F%E4%B9%8BCMake%E6%98%AF%E4%BB%80%E4%B9%88/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="查志渊">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="渊渟岳峙的技术笔记">
+      <meta itemprop="description" content="磨炼自己的一点点技术">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=" | 渊渟岳峙的技术笔记">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2026/06/18/%E7%BB%9D%E4%B8%96%E6%AD%A6%E5%8A%9F%E4%B9%8BCMake%E6%98%AF%E4%BB%80%E4%B9%88/" class="post-title-link" itemprop="url">绝世武功之CMake是什么</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2026-06-18 16:26:58" itemprop="dateCreated datePublished" datetime="2026-06-18T16:26:58+08:00">2026-06-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2026-06-20 14:29:06" itemprop="dateModified" datetime="2026-06-20T14:29:06+08:00">2026-06-20</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>在踏入C++开发的江湖时，很多初学者都会迷失在各种环境配置和编译报错之中。今天，我们就来聊聊这门名为“CMake”的绝世武功，看看它是如何一统构建江湖的。</p>
+<h2 id="01-内功心法：一段-cpp-文件的奇妙漂流"><a href="#01-内功心法：一段-cpp-文件的奇妙漂流" class="headerlink" title="01 内功心法：一段 .cpp 文件的奇妙漂流"></a>01 内功心法：一段 <code>.cpp</code> 文件的奇妙漂流</h2><p>在说 CMake 之前，我们必须先弄懂底层逻辑：一个普通的 <code>.cpp</code> 文本文件，是如何摇身一变成为能在电脑上运行的 <code>.exe</code> 可执行文件的？</p>
+<p>这中间经历了<strong>四大境界</strong>：</p>
+<ol>
+<li>**预处理 (Preprocessing)**：去粕存精。将源文件中的宏定义展开，替换 <code>#include</code> 包含的头文件内容，并去除所有注释。</li>
+<li><strong>编译 (Compilation)<strong>：点石成金。经过词法分析、语法分析、语义分析及代码优化，将C++源代码翻译成底层的</strong>汇编语言</strong>。</li>
+<li><strong>汇编 (Assembly)<strong>：铸成零件。把枯燥的汇编语言转化为机器能直接读懂的二进制指令，生成</strong>目标文件（<code>.o</code> 或 <code>.obj</code>）</strong>。</li>
+<li><strong>链接 (Linking)<strong>：拼装成型。将多个目标文件，以及系统库函数（如用到 <code>std::cout</code> 需链接标准库），缝合在一起，最终生成可跨出江湖的</strong>可执行文件。</strong></li>
+</ol>
+<blockquote>
+<p>🎬 <strong>通俗点说：</strong><br>如果把开发软件比作拍电影，<strong>“编译器”</strong>就是摄影师，它把每个 <code>.cpp</code> 剧本拍成独立的、有残缺的胶片（目标文件）；而<strong>“链接器”</strong>则是剪辑师，它把所有残缺的胶片按顺序剪接在一起，补全缺失的画面（比如系统库库），最终封装成一部完整的电影（可执行文件）。</p>
+</blockquote>
+<hr>
+<h2 id="02-兵器谱：Make-与-CMake-的前世今生"><a href="#02-兵器谱：Make-与-CMake-的前世今生" class="headerlink" title="02 兵器谱：Make 与 CMake 的前世今生"></a>02 兵器谱：Make 与 CMake 的前世今生</h2><p>明白了编译链接原理，我们再来看看 <strong>Make</strong> 和 <strong>CMake</strong> 这两位重量级兵器。</p>
+<p>在早期的江湖中，如果项目只有一两个文件，我们可以通过手敲 <code>g++ main.cpp -o main</code> 命令来生成程序。但随着项目变得庞大，拥有几百上千个源文件时，手敲命令显然不现实。于是，<strong>Make</strong> 诞生了。</p>
+<p><strong>Make</strong> 是一个自动化构建工具，它读取一个叫 <code>Makefile</code> 的配置文件。你可以把 <code>Makefile</code> 看作是一本<strong>“施工动作说明书”</strong>，里面写明了哪个文件先编译、哪个后编译。Make 会拿着这本说明书老老实实去干活。</p>
+<p>但好景不长，程序员们发现 <strong>手动编写 <code>Makefile</code> 极其反人类且痛苦</strong>，尤其是跨平台的时候：在 Linux 下我们要写 <code>Makefile</code>，在 Windows 下用 Visual Studio 又得搞 <code>.sln</code> 工程文件… 难道每换一次系统都要重写一次说明书？</p>
+<p>此时，一代宗师 <strong>CMake</strong> 登场了：</p>
+<blockquote>
+<p>💡 <strong>CMake 的核心定义：</strong><br>CMake 是一个<strong>跨平台</strong>的<strong>自动化构建系统生成工具</strong>。注意，它本身并不直接去编译你的代码，而是根据你的旨意（<code>CMakeLists.txt</code>），自动为你生成本平台适用的构建说明书（例如 Linux 下的 <code>Makefile</code>、Windows 下的 <code>Visual Studio 工程</code>）。</p>
+</blockquote>
+<p>简而言之：<strong>Make 是照着图纸砌砖的泥瓦匠，而 CMake 则是画出这套图纸的顶级建筑设计师。</strong></p>
+<hr>
+<h2 id="03-为什么要修炼-CMake？"><a href="#03-为什么要修炼-CMake？" class="headerlink" title="03 为什么要修炼 CMake？"></a>03 为什么要修炼 CMake？</h2><p>几乎所有知名开源 C++ 项目（如 OpenCV, LLVM, Qt 等）都在使用 CMake。修炼它，能为你带来以下增益：</p>
+<ul>
+<li>✅ <strong>跨平台利器</strong>：写一份 <code>CMakeLists.txt</code>，就能在 Linux, Windows, macOS 畅通无阻，甚至可以一键生成嵌入式构建脚本。</li>
+<li>✅ <strong>模块化管理</strong>：当项目膨胀，如何管理错综复杂的源文件、第三方库、头文件路径？CMake 让你如臂使指。</li>
+<li>✅ <strong>IDE 完美契合</strong>：与 CLion、VS Code、Visual Studio 等现代 IDE 丝滑整合。</li>
+<li>✅ <strong>支持多流派构建体系</strong>：不拘泥于 Make，还支持极其神速的 Ninja 或 MSBuild。</li>
+<li>✅ <strong>大厂 CI&#x2F;CD 标配</strong>：在持续集成和自动化部署（如 GitHub Actions）中，CMake 是绝对的主流。</li>
+</ul>
+<hr>
+<h2 id="04-初窥门径：Hello-CMake-实战"><a href="#04-初窥门径：Hello-CMake-实战" class="headerlink" title="04 初窥门径：Hello CMake 实战"></a>04 初窥门径：Hello CMake 实战</h2><p>光说不练假把式，我们来实操一个最简案例。准备一个空文件夹，在里面创建以下两个文件：</p>
+<p><strong>文件一：<code>main.cpp</code></strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;绝世武功，初窥门径：Hello CMake!&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>**文件二：<code>CMakeLists.txt</code>**（名字必须一字不差）</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 规定宗门规矩：指定运行此脚本所需的 CMake 最低版本</span></span><br><span class="line"><span class="keyword">cmake_minimum_required</span>(VERSION <span class="number">3.10</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. 挂出招牌：定义项目的名称、版本、使用的语言（默认为 C/C++）</span></span><br><span class="line"><span class="keyword">project</span>(HelloCMake)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 3. 锻造兵器：告诉 CMake，我需要用 main.cpp 生成一个名为 hello_cmake 的可执行程序</span></span><br><span class="line"><span class="keyword">add_executable</span>(hello_cmake main.cpp)</span><br></pre></td></tr></table></figure>
+
+<p><strong>代码解析：</strong><br>这三行代码就是 CMake 的“三板斧”。它清晰地表达了你的意图：用哪里的原料（<code>main.cpp</code>），打造成什么样的兵器（名为 <code>hello_cmake</code> 的程序）。</p>
+<hr>
+<h2 id="05-见证奇迹：构建流程与物料拆解"><a href="#05-见证奇迹：构建流程与物料拆解" class="headerlink" title="05 见证奇迹：构建流程与物料拆解"></a>05 见证奇迹：构建流程与物料拆解</h2><p>接下来，我们要依靠 CMake 发挥它的魔力了。打开终端，依次执行两步标准打法（<strong>Out-of-source build 外部构建法</strong>）：</p>
+<h3 id="第一步：运功配置（图纸生成）"><a href="#第一步：运功配置（图纸生成）" class="headerlink" title="第一步：运功配置（图纸生成）"></a>第一步：运功配置（图纸生成）</h3><p>在当前目录下输入：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cmake -S . -B build</span><br></pre></td></tr></table></figure>
+<p><em>(释义：<code>-S .</code> 告诉 CMake 源码在当前目录，<code>-B build</code> 告诉 CMake 把生成的构建文件都放到 <code>build</code> 文件夹下面。避免污染干净的源码区。)</em><br><img src="/image-1.png" alt="alt text"><br><img src="/image-4.png" alt="alt text"><br><strong>这时会发生什么？</strong><br>控制台会输出一连串的检测信息（比如找到了什么编译器，C++版本是什么等）。随后，你的文件夹里会凭空多出一个 <code>build</code> 目录。<br>打开 <code>build</code> 目录瞧瞧，里面满是 CMake 生成的“秘籍”：</p>
+<ul>
+<li><code>Makefile</code>：这就是 CMake 呕心沥血为你生成的针对当前平台的<strong>终极施工说明书</strong>。</li>
+<li><code>CMakeCache.txt</code>：这是 CMake 的缓存账本。如果你后续需要改一些高级配置（比如指定用 clang 还是 gcc），所有的全局变量都存在这里。</li>
+<li><code>CMakeFiles/</code>：这里面是 CMake 工作的草稿纸和各种运行时的检测记录，一般不需要理会。</li>
+</ul>
+<h3 id="第二步：发力出招（实际构建）"><a href="#第二步：发力出招（实际构建）" class="headerlink" title="第二步：发力出招（实际构建）"></a>第二步：发力出招（实际构建）</h3><p>配置完成后，真正开始编译。此时你可以继续用 cmake 统一的命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cmake --build build</span><br></pre></td></tr></table></figure>
+<p><em>(释义：召唤底层构建工具（如 Make），去执行 <code>build</code> 目录下刚生成的施工说明书。相当于在 build 目录下敲 <code>make</code>。)</em><br><img src="/image-2.png" alt="alt text"><br><strong>这时会发生什么？</strong><br>你会看到终端刷出进度的百分比 <code>[ 50%] ... [100%] Built target hello_cmake</code>。你前面提到的<strong>预处理、编译、汇编、链接</strong>就在这几秒钟内悄悄完成了！<br>终于，在 <code>build</code> 目录下，生成了一个绿油油的 <code>hello_cmake</code>（跨平台情况下，Windows里是 <code>hello_cmake.exe</code>）。</p>
+<p>运行它：<code>./build/hello_cmake</code><br>屏幕上将闪烁出：</p>
+<blockquote>
+<p><code>绝世武功，初窥门径：Hello CMake!</code></p>
+</blockquote>
+<hr>
+<p><img src="/image-3.png" alt="alt text"></p>
+<h2 id="06-进阶心法：锻造神兵与融合外功（库的生成与链接）"><a href="#06-进阶心法：锻造神兵与融合外功（库的生成与链接）" class="headerlink" title="06 进阶心法：锻造神兵与融合外功（库的生成与链接）"></a>06 进阶心法：锻造神兵与融合外功（库的生成与链接）</h2><p>在真正的江湖中，很少有人会把所有代码写在一个 <code>main.cpp</code> 里。我们往往需要把一些通用代码打造成“武器库”（Library），供他人调用。在 CMake 中，这叫做<strong>目标（Target）管理</strong>。</p>
+<p>假设我们现在多了一个用于计算的数学库，文件为 <code>math_lib.cpp</code> 和 <code>math_lib.h</code>：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 锻造静态库（STATIC）或动态库（SHARED）</span></span><br><span class="line"><span class="comment"># 告诉 CMake，把 math_lib.cpp 打造成一个名为 math 的库</span></span><br><span class="line"><span class="keyword">add_library</span>(<span class="keyword">math</span> STATIC math_lib.cpp)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. 锻造主程序</span></span><br><span class="line"><span class="keyword">add_executable</span>(hello_cmake main.cpp)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 3. 传授功法（链接）</span></span><br><span class="line"><span class="comment"># 让主程序 hello_cmake 链接 math 库，从而能使用里面的函数</span></span><br><span class="line"><span class="keyword">target_link_libraries</span>(hello_cmake PUBLIC <span class="keyword">math</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 4. 指定头文件搜索路径（可选）</span></span><br><span class="line"><span class="comment"># 告诉使用 math 库的人，头文件该去哪里找</span></span><br><span class="line"><span class="keyword">target_include_directories</span>(<span class="keyword">math</span> PUBLIC <span class="variable">$&#123;CMAKE_CURRENT_SOURCE_DIR&#125;</span>)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>🔥 <strong>大佬级别的认知（Modern CMake 精髓）：</strong><br>早期的 CMake 喜欢用全局指令（如 <code>include_directories</code>、<code>link_directories</code>），这就像在大喇叭里喊各种规矩，极易污染整个项目的工作区。而近些年的“现代 CMake（3.0版本以上）”极力推崇 <strong>Target-based（基于目标）</strong> 的理念。每一个生成的库、可执行文件都是一个独立的 Target，通过 <code>target_xxx</code> 的方式精准控制每一个目标的依赖、权限和头文件路径。这就好比每个门派自己管好自己的地盘规矩，绝不干涉他人，极大降低了大型工程的耦合度！</p>
+</blockquote>
+<hr>
+<h2 id="07-开宗立派：多模块项目的终极奥义"><a href="#07-开宗立派：多模块项目的终极奥义" class="headerlink" title="07 开宗立派：多模块项目的终极奥义"></a>07 开宗立派：多模块项目的终极奥义</h2><p>当你的项目规模达到千百个文件时，把所有源文件塞在根目录绝对是一场灾难。规范的工程往往会“分门别派”，划分为 <code>src</code>、<code>lib</code>、<code>tests</code> 等层级不同的结构。</p>
+<p>此时，你需要祭出杀招：<code>add_subdirectory</code>（添加子目录）。</p>
+<p>一个标准的 C++ 项目结构可能长这样：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">MyProject/</span><br><span class="line">├── CMakeLists.txt         # 宗门总纲：项目总司令部</span><br><span class="line">├── src/</span><br><span class="line">│   ├── CMakeLists.txt     # 分舵规矩：负责生成核心可执行文件</span><br><span class="line">│   └── main.cpp</span><br><span class="line">└── math_lib/</span><br><span class="line">    ├── CMakeLists.txt     # 分舵规矩：负责生成独立的数学库</span><br><span class="line">    ├── math.h</span><br><span class="line">    └── math.cpp</span><br></pre></td></tr></table></figure>
+
+<p><strong>根目录的总纲 <code>CMakeLists.txt</code> 只需要做统筹协调：</strong></p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">cmake_minimum_required</span>(VERSION <span class="number">3.10</span>)</span><br><span class="line"><span class="keyword">project</span>(MyProject)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 招安下属门派，按顺序解析这两个目录里的 CMakeLists.txt</span></span><br><span class="line"><span class="keyword">add_subdirectory</span>(math_lib)</span><br><span class="line"><span class="keyword">add_subdirectory</span>(src)</span><br></pre></td></tr></table></figure>
+<p>通过这种方式，不管项目多么庞大，CMake 都能层层递进，剥洋葱般把复杂的构建过程化繁为简，这也是大厂及著名开源软件（如 OpenCV）在工程结构管理上的基石。</p>
+<hr>
+<h2 id="08-功德圆满"><a href="#08-功德圆满" class="headerlink" title="08 功德圆满"></a>08 功德圆满</h2><p>至此，你已经从一个只懂点 IDE 绿色三角运行按钮的“小白”，彻底打通了 C++ 编译与构建的任督二脉。</p>
+<p>让我们最后默念一遍修武法则：</p>
+<ol>
+<li><strong>理解底层</strong>：源代码 -&gt; 编译 -&gt; 汇编 -&gt; 链接 -&gt; 可执行文件。</li>
+<li><strong>认清工具</strong>：Make 是干活的泥瓦匠，CMake 是画建筑图纸的设计总监。</li>
+<li><strong>三板斧基本功</strong>：<code>cmake_minimum_required</code>、<code>project</code>、<code>add_executable</code>。</li>
+<li><strong>运行口诀</strong>：外部构建，先 <code>cmake -S . -B build</code>（配置图纸）再 <code>cmake --build build</code>（按图施工）。</li>
+<li><strong>进阶心法</strong>：<code>add_library</code>（造库）、<code>target_link_libraries</code>（链接库）、<code>add_subdirectory</code>（多模块切割）。</li>
+</ol>
+<p>CMake 的深渊浩瀚无比，江湖中流传着 <code>find_package</code>（一键召唤第三方庞然大物如 Qt、Boost）、自身独特的语法系统（if&#x2F;else、foreach 控制流）等诸多顶级高难度绝技等待你去探索。</p>
+<p>但只要你深刻领悟了本篇的核心工作流论述，理解了从单文件到多文件的脉络，未来的修仙之途必定是一片坦途。带着这套《CMake 绝世武功》，放手去闯荡纷繁复杂的 C++ 江湖吧！</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/06/18/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="查志渊">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="渊渟岳峙的技术笔记">
+      <meta itemprop="description" content="磨炼自己的一点点技术">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=" | 渊渟岳峙的技术笔记">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2026/06/18/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/" class="post-title-link" itemprop="url">机器学习-基础概念</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2026-06-18 00:08:03 / 修改时间：15:19:04" itemprop="dateCreated datePublished" datetime="2026-06-18T00:08:03+08:00">2026-06-18</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="机器学习的一些基础概念"><a href="#机器学习的一些基础概念" class="headerlink" title="机器学习的一些基础概念"></a>机器学习的一些基础概念</h1><h2 id="基本范式"><a href="#基本范式" class="headerlink" title="基本范式"></a>基本范式</h2><ol>
+<li>监督学习：有标签，比如猫狗分类的照片，已经标注好是猫还是狗，让模型识别。</li>
+<li>无监督学习：无标签，比如聚类，将数据分成不同的簇。</li>
+<li>半监督学习：有标签和无标签的混合体，比如只标注了一部分数据的分类问题。</li>
+<li>自监督学习：模型自己寻找标签，比如通过对比学习来学习图片的特征。</li>
+<li>强化学习：模型通过与环境的交互来学习最优的行为策略。这个就没有标签，就是把模型扔到一个环境，做对了给奖励，错了惩罚，跟训狗一样。</li>
+<li>批量学习和在线学习：批量学习是一口气学完，不再学习新知识，在线学习是不断更新，容易被污染。</li>
+<li>归纳学习和转导学习：归纳学习是总结出一个规律，然后适用于所有。转导学习就是只需要用有标签的数据去猜出没有标签的数据。</li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1404,7 +1644,7 @@
 <tr>
 <td>6</td>
 <td><strong>Rewrite和Expand的区别？为什么Expand效果更差？</strong></td>
-<td>Rewrite：口语→官方术语，2-3个改写版本。Expand：复杂问题→3-5个子问题。Expand差的原因：子问题引入无关文档噪声，RRF无法完全过滤；拆解粒度太细产生冗余。数据上：Rewrite P@3+3.4%，Expand <a href="mailto:&#72;&#82;&#x40;&#x33;&#45;&#54;&#46;&#54;">&#72;&#82;&#x40;&#x33;&#45;&#54;&#46;&#54;</a>%。</td>
+<td>Rewrite：口语→官方术语，2-3个改写版本。Expand：复杂问题→3-5个子问题。Expand差的原因：子问题引入无关文档噪声，RRF无法完全过滤；拆解粒度太细产生冗余。数据上：Rewrite P@3+3.4%，Expand <a href="mailto:&#72;&#x52;&#64;&#x33;&#45;&#x36;&#x2e;&#x36;">&#72;&#x52;&#64;&#x33;&#45;&#x36;&#x2e;&#x36;</a>%。</td>
 </tr>
 <tr>
 <td>7</td>
