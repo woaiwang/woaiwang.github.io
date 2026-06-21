@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="oncall Agent 1.0 — RAG 问答系统核心流程与组件拆解 本文目标：下次打开这篇笔记，就能完整回忆起 oncall Agent 的 RAG 系统是怎么跑起来的——从磁盘上的 txt&#x2F;md 文件，到 Milvus 里存着的向量，再到用户提问后返回答案。 适合阅读场景：刚接触项目、需要理解整体架构、面试前复习。   一、全景速览整个 oncall Agent 的 RAG 系统">
+<meta property="og:type" content="article">
+<meta property="og:title" content="oncall Agent-1.0">
+<meta property="og:url" content="http://example.com/2026/06/21/oncall-Agent-1-0/index.html">
+<meta property="og:site_name" content="渊渟岳峙的技术笔记">
+<meta property="og:description" content="oncall Agent 1.0 — RAG 问答系统核心流程与组件拆解 本文目标：下次打开这篇笔记，就能完整回忆起 oncall Agent 的 RAG 系统是怎么跑起来的——从磁盘上的 txt&#x2F;md 文件，到 Milvus 里存着的向量，再到用户提问后返回答案。 适合阅读场景：刚接触项目、需要理解整体架构、面试前复习。   一、全景速览整个 oncall Agent 的 RAG 系统">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-06-21T06:59:56.000Z">
+<meta property="article:modified_time" content="2026-06-21T08:57:34.200Z">
+<meta property="article:author" content="查志渊">
+<meta property="article:tag" content="oncall项目理解">
+<meta property="article:tag" content="RAG">
+<meta property="article:tag" content="Milvus">
+<meta property="article:tag" content="LangChain">
+<meta property="article:tag" content="向量数据库">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2026/06/21/oncall-Agent-1-0/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2026/06/21/oncall-Agent-1-0/","path":"2026/06/21/oncall-Agent-1-0/","title":"oncall Agent-1.0"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>oncall Agent-1.0 | 渊渟岳峙的技术笔记</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">渊渟岳峙的技术笔记</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">用你喜欢的方式去度过一生</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#oncall-Agent-1-0-%E2%80%94-RAG-%E9%97%AE%E7%AD%94%E7%B3%BB%E7%BB%9F%E6%A0%B8%E5%BF%83%E6%B5%81%E7%A8%8B%E4%B8%8E%E7%BB%84%E4%BB%B6%E6%8B%86%E8%A7%A3"><span class="nav-number">1.</span> <span class="nav-text">oncall Agent 1.0 — RAG 问答系统核心流程与组件拆解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%85%A8%E6%99%AF%E9%80%9F%E8%A7%88"><span class="nav-number">1.1.</span> <span class="nav-text">一、全景速览</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5%E9%80%9F%E6%9F%A5%E8%A1%A8"><span class="nav-number">1.2.</span> <span class="nav-text">二、核心概念速查表</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E7%BB%84%E4%BB%B6%E4%B8%80%E8%A7%88"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1 组件一览</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E5%85%B3%E9%94%AE%E6%9C%AF%E8%AF%AD"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.2 关键术语</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E4%BB%8E%E7%A3%81%E7%9B%98%E6%96%87%E4%BB%B6%E5%88%B0-Milvus-%E5%AD%98%E5%82%A8%EF%BC%9A%E7%B4%A2%E5%BC%95%E5%85%A8%E6%B5%81%E7%A8%8B%E8%AF%A6%E8%A7%A3"><span class="nav-number">1.3.</span> <span class="nav-text">三、从磁盘文件到 Milvus 存储：索引全流程详解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E7%AC%AC%E4%B8%80%E6%AD%A5%EF%BC%9A%E8%AF%BB%E5%8F%96%E7%A3%81%E7%9B%98%E6%96%87%E4%BB%B6"><span class="nav-number">1.3.1.</span> <span class="nav-text">3.1 第一步：读取磁盘文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E7%AC%AC%E4%BA%8C%E6%AD%A5%EF%BC%9A%E5%88%A0%E9%99%A4%E6%97%A7%E6%95%B0%E6%8D%AE-%E2%80%94-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E4%B8%80%E6%AD%A5%E5%9C%A8%E5%88%87%E7%89%87%E4%B9%8B%E5%89%8D%EF%BC%9F"><span class="nav-number">1.3.2.</span> <span class="nav-text">3.2 第二步：删除旧数据 — 为什么这一步在切片之前？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-%E7%AC%AC%E4%B8%89%E6%AD%A5%EF%BC%9A%E6%96%87%E6%A1%A3%E5%88%86%E7%89%87-%E2%80%94-%E9%95%BF%E6%96%87%E6%9C%AC-%E2%86%92-%E5%B0%8F%E5%9D%97"><span class="nav-number">1.3.3.</span> <span class="nav-text">3.3 第三步：文档分片 — 长文本 → 小块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-%E7%AC%AC%E5%9B%9B%E6%AD%A5%EF%BC%9A%E7%94%9F%E6%88%90%E6%96%87%E6%9C%AC%E5%90%91%E9%87%8F%EF%BC%88Embedding%EF%BC%89"><span class="nav-number">1.3.4.</span> <span class="nav-text">3.4 第四步：生成文本向量（Embedding）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-5-%E7%AC%AC%E4%BA%94%E6%AD%A5%EF%BC%9A%E5%AD%98%E5%82%A8%E5%88%B0-Milvus"><span class="nav-number">1.3.5.</span> <span class="nav-text">3.5 第五步：存储到 Milvus</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E4%BB%A3%E7%A0%81%E6%96%87%E4%BB%B6%E9%80%90%E4%B8%AA%E6%8B%86%E8%A7%A3"><span class="nav-number">1.4.</span> <span class="nav-text">四、代码文件逐个拆解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E5%85%A5%E5%8F%A3-%E2%80%94-app-api-file-py"><span class="nav-number">1.4.1.</span> <span class="nav-text">4.1 文件上传入口 — app&#x2F;api&#x2F;file.py</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-%E7%B4%A2%E5%BC%95%E6%B5%81%E7%A8%8B%E7%BC%96%E6%8E%92-%E2%80%94-app-services-vector-index-service-py"><span class="nav-number">1.4.2.</span> <span class="nav-text">4.2 索引流程编排 — app&#x2F;services&#x2F;vector_index_service.py</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-%E6%96%87%E6%A1%A3%E5%88%86%E7%89%87-%E2%80%94-app-services-document-splitter-service-py"><span class="nav-number">1.4.3.</span> <span class="nav-text">4.3 文档分片 — app&#x2F;services&#x2F;document_splitter_service.py</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-%E5%90%91%E9%87%8F%E7%94%9F%E6%88%90-%E2%80%94-app-services-vector-embedding-service-py"><span class="nav-number">1.4.4.</span> <span class="nav-text">4.4 向量生成 — app&#x2F;services&#x2F;vector_embedding_service.py</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-5-%E5%90%91%E9%87%8F%E5%AD%98%E5%82%A8%E7%AE%A1%E7%90%86-%E2%80%94-app-services-vector-store-manager-py"><span class="nav-number">1.4.5.</span> <span class="nav-text">4.5 向量存储管理 — app&#x2F;services&#x2F;vector_store_manager.py</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-6-Milvus-%E5%BA%95%E5%B1%82%E8%BF%9E%E6%8E%A5%E7%AE%A1%E7%90%86-%E2%80%94-app-core-milvus-client-py"><span class="nav-number">1.4.6.</span> <span class="nav-text">4.6 Milvus 底层连接管理 — app&#x2F;core&#x2F;milvus_client.py</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E3%80%81%E5%AE%8C%E6%95%B4%E6%95%B0%E6%8D%AE%E6%B5%81%E7%BA%BF%E8%B7%AF%E5%9B%BE"><span class="nav-number">1.5.</span> <span class="nav-text">五、完整数据流线路图</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-%E7%B4%A2%E5%BC%95%E9%93%BE%E8%B7%AF%EF%BC%88%E4%B8%8A%E4%BC%A0%E6%96%87%E4%BB%B6-%E2%86%92-%E5%8F%AF%E6%A3%80%E7%B4%A2%EF%BC%89"><span class="nav-number">1.5.1.</span> <span class="nav-text">5.1 索引链路（上传文件 → 可检索）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-%E6%A3%80%E7%B4%A2%E9%93%BE%E8%B7%AF%EF%BC%88%E7%94%A8%E6%88%B7%E6%8F%90%E9%97%AE-%E2%86%92-%E5%9B%9E%E7%AD%94%EF%BC%89"><span class="nav-number">1.5.2.</span> <span class="nav-text">5.2 检索链路（用户提问 → 回答）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AD%E3%80%81%E5%85%B3%E9%94%AE%E8%AE%BE%E8%AE%A1%E5%86%B3%E7%AD%96%E9%97%AE%E7%AD%94"><span class="nav-number">1.6.</span> <span class="nav-text">六、关键设计决策问答</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Q1%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E2%80%9D%E5%85%88%E5%88%A0%E5%90%8E%E5%86%99%E2%80%9D%E8%80%8C%E4%B8%8D%E6%98%AF%E2%80%9D%E8%A6%86%E7%9B%96%E2%80%9D%EF%BC%9F"><span class="nav-number">1.6.1.</span> <span class="nav-text">Q1：为什么要”先删后写”而不是”覆盖”？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Q2%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88%E9%80%89%E7%94%A8-IVF-FLAT-%E7%B4%A2%E5%BC%95%E8%80%8C%E4%B8%8D%E6%98%AF%E5%85%B6%E4%BB%96%E7%B4%A2%E5%BC%95%EF%BC%9F"><span class="nav-number">1.6.2.</span> <span class="nav-text">Q2：为什么选用 IVF_FLAT 索引而不是其他索引？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Q3%EF%BC%9Achunk-overlap-100-%E5%92%8C-chunk-size-800-%E6%98%AF%E4%BB%80%E4%B9%88%E5%85%B3%E7%B3%BB%EF%BC%9F"><span class="nav-number">1.6.3.</span> <span class="nav-text">Q3：chunk_overlap&#x3D;100 和 chunk_size&#x3D;800 是什么关系？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Q4%EF%BC%9ALangChain-%E5%9C%A8%E8%BF%99%E5%A5%97%E7%B3%BB%E7%BB%9F%E9%87%8C%E5%88%B0%E5%BA%95%E6%89%AE%E6%BC%94%E4%BB%80%E4%B9%88%E8%A7%92%E8%89%B2%EF%BC%9F"><span class="nav-number">1.6.4.</span> <span class="nav-text">Q4：LangChain 在这套系统里到底扮演什么角色？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Q5%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88-metadata-%E9%87%8C%E8%A6%81%E5%AD%98-source%EF%BC%9F"><span class="nav-number">1.6.5.</span> <span class="nav-text">Q5：为什么 metadata 里要存 _source？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%83%E3%80%81%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%80%BB%E7%BB%93"><span class="nav-number">1.7.</span> <span class="nav-text">七、一句话总结</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">查志渊</p>
+  <div class="site-description" itemprop="description">磨炼自己的一点点技术</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/woaiwang" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;woaiwang" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/06/21/oncall-Agent-1-0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="查志渊">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="渊渟岳峙的技术笔记">
+      <meta itemprop="description" content="磨炼自己的一点点技术">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="oncall Agent-1.0 | 渊渟岳峙的技术笔记">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          oncall Agent-1.0
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2026-06-21 14:59:56 / 修改时间：16:57:34" itemprop="dateCreated datePublished" datetime="2026-06-21T14:59:56+08:00">2026-06-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E9%A1%B9%E7%9B%AE%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">项目笔记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="oncall-Agent-1-0-—-RAG-问答系统核心流程与组件拆解"><a href="#oncall-Agent-1-0-—-RAG-问答系统核心流程与组件拆解" class="headerlink" title="oncall Agent 1.0 — RAG 问答系统核心流程与组件拆解"></a>oncall Agent 1.0 — RAG 问答系统核心流程与组件拆解</h1><blockquote>
+<p><strong>本文目标</strong>：下次打开这篇笔记，就能完整回忆起 oncall Agent 的 RAG 系统是怎么跑起来的——从磁盘上的 txt&#x2F;md 文件，到 Milvus 里存着的向量，再到用户提问后返回答案。</p>
+<p>适合阅读场景：刚接触项目、需要理解整体架构、面试前复习。</p>
+</blockquote>
+<hr>
+<h2 id="一、全景速览"><a href="#一、全景速览" class="headerlink" title="一、全景速览"></a>一、全景速览</h2><p>整个 oncall Agent 的 RAG 系统只做两件事：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────────────────────────┐</span><br><span class="line">│                    阶段一：构建索引                    │</span><br><span class="line">│                                                      │</span><br><span class="line">│  本地文件(txt/md)                                    │</span><br><span class="line">│      │                                               │</span><br><span class="line">│      ▼                                               │</span><br><span class="line">│  读取文件内容                                         │</span><br><span class="line">│      │                                               │</span><br><span class="line">│      ▼                                               │</span><br><span class="line">│  删除 Milvus 中该文件的旧数据（保证更新后不重复）        │</span><br><span class="line">│      │                                               │</span><br><span class="line">│      ▼                                               │</span><br><span class="line">│  文档分片（切成长度合适的小块）                         │</span><br><span class="line">│      │                                               │</span><br><span class="line">│      ▼                                               │</span><br><span class="line">│  文本 → 向量（调用嵌入模型，1024维浮点数向量）          │</span><br><span class="line">│      │                                               │</span><br><span class="line">│      ▼                                               │</span><br><span class="line">│  存入 Milvus（向量 + 原文 + 元数据）                   │</span><br><span class="line">└─────────────────────────────────────────────────────┘</span><br><span class="line"></span><br><span class="line">┌─────────────────────────────────────────────────────┐</span><br><span class="line">│                   阶段二：检索问答                     │</span><br><span class="line">│                                                      │</span><br><span class="line">│  用户提问                                            │</span><br><span class="line">│      │                                               │</span><br><span class="line">│      ▼                                               │</span><br><span class="line">│  问题 → 向量（用同一个嵌入模型）                       │</span><br><span class="line">│      │                                               │</span><br><span class="line">│      ▼                                               │</span><br><span class="line">│  Milvus 相似度检索（找出语义最相近的 Top-K 个分片）     │</span><br><span class="line">│      │                                               │</span><br><span class="line">│      ▼                                               │</span><br><span class="line">│  把检索到的分片拼接到 Prompt 中作为&quot;参考资料&quot;           │</span><br><span class="line">│      │                                               │</span><br><span class="line">│      ▼                                               │</span><br><span class="line">│  大模型基于参考资料生成回答（避免幻觉，可溯源）          │</span><br><span class="line">└─────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="二、核心概念速查表"><a href="#二、核心概念速查表" class="headerlink" title="二、核心概念速查表"></a>二、核心概念速查表</h2><blockquote>
+<p>先搞清楚每个东西是干什么的，后面看代码时才不会迷路。</p>
+</blockquote>
+<h3 id="2-1-组件一览"><a href="#2-1-组件一览" class="headerlink" title="2.1 组件一览"></a>2.1 组件一览</h3><table>
+<thead>
+<tr>
+<th>组件</th>
+<th>一句话定位</th>
+<th>在这个项目里具体干什么</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Docker</strong></td>
+<td>容器化部署工具</td>
+<td>一键启动 Milvus 服务（包含 etcd、MinIO 等依赖），不用手动装一堆东西，保证开发&#x2F;生产环境一致</td>
+</tr>
+<tr>
+<td><strong>Milvus</strong></td>
+<td>专门的向量数据库</td>
+<td>存文本对应的语义向量 + 提供毫秒级向量相似度搜索，是 RAG 检索环节的核心存储引擎</td>
+</tr>
+<tr>
+<td><strong>LangChain</strong></td>
+<td>LLM 应用开发框架</td>
+<td>串联整个 RAG 流程的骨架——封装了文档加载、文本分割、向量化、检索的通用接口，不用从零造轮子</td>
+</tr>
+<tr>
+<td><strong>嵌入模型（Embedding Model）</strong></td>
+<td>文本 → 向量的转换器</td>
+<td>本项目用阿里云 DashScope 的 <code>text-embedding-v4</code>，把任意文本映射成 <strong>1024 维</strong>的浮点数向量；语义越接近的文本，向量之间的”距离”越小</td>
+</tr>
+<tr>
+<td><strong>本地文件（txt&#x2F;md）</strong></td>
+<td>私有知识库</td>
+<td>RAG 的知识来源，存在 <code>./uploads</code> 目录下</td>
+</tr>
+</tbody></table>
+<h3 id="2-2-关键术语"><a href="#2-2-关键术语" class="headerlink" title="2.2 关键术语"></a>2.2 关键术语</h3><table>
+<thead>
+<tr>
+<th>术语</th>
+<th>含义</th>
+<th>为什么重要</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>向量（Vector&#x2F;Embedding）</strong></td>
+<td>文本的数学表示，如 <code>[0.12, -0.34, 0.78, ...]</code>（1024个浮点数）</td>
+<td>让机器能”算”出两段文本的语义相似度——相似度 &#x3D; 向量之间的距离</td>
+</tr>
+<tr>
+<td><strong>分片（Chunk）</strong></td>
+<td>长文本被切成的一个个小段</td>
+<td>嵌入模型有最大输入长度限制；分片太小丢失上下文，太大检索精度下降——需要平衡</td>
+</tr>
+<tr>
+<td><strong>元数据（Metadata）</strong></td>
+<td>附在每个分片上的额外信息，如来源文件路径</td>
+<td>用来按文件删除旧数据（<code>delete_by_source</code>），保证索引更新后不残留旧向量</td>
+</tr>
+<tr>
+<td><strong>Top-K</strong></td>
+<td>检索返回的最相关的前 K 个结果</td>
+<td>K 太小可能漏掉答案，K 太大引入噪声——需要根据场景调参</td>
+</tr>
+<tr>
+<td><strong>相似度搜索</strong></td>
+<td>在向量空间中找出与查询向量”距离最近”的向量</td>
+<td>这是 RAG 检索的核心操作——用向量距离代替关键词匹配</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="三、从磁盘文件到-Milvus-存储：索引全流程详解"><a href="#三、从磁盘文件到-Milvus-存储：索引全流程详解" class="headerlink" title="三、从磁盘文件到 Milvus 存储：索引全流程详解"></a>三、从磁盘文件到 Milvus 存储：索引全流程详解</h2><blockquote>
+<p>这是整个系统最基础也最重要的流程。一句话概括：<strong>把磁盘上的非结构化文本文件，转换成可以快速语义检索的向量数据。</strong></p>
+</blockquote>
+<h3 id="3-1-第一步：读取磁盘文件"><a href="#3-1-第一步：读取磁盘文件" class="headerlink" title="3.1 第一步：读取磁盘文件"></a>3.1 第一步：读取磁盘文件</h3><p><code>VectorIndexService.index_single_file()</code> 读取 <code>./uploads</code> 目录下的 txt&#x2F;md 文件，拿到原始文本内容。</p>
+<h3 id="3-2-第二步：删除旧数据-—-为什么这一步在切片之前？"><a href="#3-2-第二步：删除旧数据-—-为什么这一步在切片之前？" class="headerlink" title="3.2 第二步：删除旧数据 — 为什么这一步在切片之前？"></a>3.2 第二步：删除旧数据 — 为什么这一步在切片之前？</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">原因：如果用户重新上传了同名文件（更新了内容），Milvus 里还残留着旧版本的向量数据，</span><br><span class="line">     检索时新旧数据混在一起，结果就不准了。</span><br></pre></td></tr></table></figure>
+
+<p>做法：通过 <code>vector_store_manager.delete_by_source()</code> 按文件路径（存在 metadata 的 <code>_source</code> 字段里）删除该文件之前的所有向量数据，然后再写入新数据。<strong>先删后写，保证数据永远是最新的。</strong></p>
+<h3 id="3-3-第三步：文档分片-—-长文本-→-小块"><a href="#3-3-第三步：文档分片-—-长文本-→-小块" class="headerlink" title="3.3 第三步：文档分片 — 长文本 → 小块"></a>3.3 第三步：文档分片 — 长文本 → 小块</h3><blockquote>
+<p><strong>不能把整本书直接转成一个向量</strong>：嵌入模型有最大输入 token 数限制，而且太长会导致语义信息被”稀释”，检索精度大幅下降。</p>
+</blockquote>
+<p>本项目使用 <strong>三阶段优化分割策略</strong>（<code>DocumentSplitterService</code>）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">阶段一：按结构切分</span><br><span class="line">  └─ 用 MarkdownHeaderTextSplitter 按 Markdown 标题层级（#、##、###）分割</span><br><span class="line">  └─ 目的：保留文档原有的章节结构，每个分片尽量是一个完整的&quot;语义单元&quot;</span><br><span class="line"></span><br><span class="line">阶段二：按大小切分</span><br><span class="line">  └─ 对阶段一之后仍然太大的分片，用 RecursiveCharacterTextSplitter 按字符数二次切分</span><br><span class="line">  └─ 默认 chunk_size=800, chunk_overlap=100</span><br><span class="line">  └─ 目的：保证每个分片不超过嵌入模型的最大输入长度</span><br><span class="line"></span><br><span class="line">阶段三：合并小碎片</span><br><span class="line">  └─ 合并长度 &lt;300 字符的过小分片</span><br><span class="line">  └─ 目的：减少碎片化，避免一个完整的句子被切成两半，提升检索质量</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>🔑 <strong>chunk_overlap&#x3D;100 是干什么的？</strong> 相邻分片之间有 100 个字符的重叠区。假设关键信息刚好落在分片边界上——“……保研条件如下：（分片结束）1. GPA ≥ 3.5……”——如果没有 overlap，前半句在一个分片，后半句在另一个分片，检索时可能两个都匹配不好。overlap 用很小的成本解决了这个问题。</p>
+</blockquote>
+<p>每个分片被包装成 LangChain 的 <code>Document</code> 对象，<code>metadata[&quot;_source&quot;]</code> 记录来源文件路径，方便后续按文件删除。</p>
+<h3 id="3-4-第四步：生成文本向量（Embedding）"><a href="#3-4-第四步：生成文本向量（Embedding）" class="headerlink" title="3.4 第四步：生成文本向量（Embedding）"></a>3.4 第四步：生成文本向量（Embedding）</h3><p>调用 <code>vector_store_manager.add_documents()</code> 时，LangChain 自动调用 <code>VectorEmbeddingService</code>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">文本分片 → DashScope text-embedding-v4 → 1024维浮点数向量</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>🔑 <strong>什么是嵌入（Embedding）？</strong> 把文本映射到高维向量空间中的一个点。映射的质量取决于嵌入模型——好的模型能让”保研”和”推免”的向量距离很近，但它们和”食堂”的向量距离很远。</p>
+</blockquote>
+<h3 id="3-5-第五步：存储到-Milvus"><a href="#3-5-第五步：存储到-Milvus" class="headerlink" title="3.5 第五步：存储到 Milvus"></a>3.5 第五步：存储到 Milvus</h3><p>最终，每个分片的以下信息被一起存入 Milvus 的 <code>biz</code> 集合：</p>
+<table>
+<thead>
+<tr>
+<th>存入的内容</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>向量（1024维 float 数组）</td>
+<td>用于相似度搜索</td>
+</tr>
+<tr>
+<td>原始文本</td>
+<td>检索命中后返回给用户看的</td>
+</tr>
+<tr>
+<td>元数据（文件路径等）</td>
+<td>用于按来源过滤和删除</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>🔑 <strong>“集合（Collection）”是什么？</strong> 你可以把它类比为关系数据库中的”表”。<code>biz</code> 是这个项目的业务集合名。一个 Collection 里存了所有文件的向量数据，通过 metadata 中的 <code>_source</code> 字段区分来源——这样跨文件检索时不需要跨表查询。</p>
+</blockquote>
+<hr>
+<h2 id="四、代码文件逐个拆解"><a href="#四、代码文件逐个拆解" class="headerlink" title="四、代码文件逐个拆解"></a>四、代码文件逐个拆解</h2><blockquote>
+<p>理解了每个文件是干什么的、为什么这样设计，下次看代码就不会迷路。</p>
+</blockquote>
+<h3 id="4-1-文件上传入口-—-app-api-file-py"><a href="#4-1-文件上传入口-—-app-api-file-py" class="headerlink" title="4.1 文件上传入口 — app/api/file.py"></a>4.1 文件上传入口 — <code>app/api/file.py</code></h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">职责：接收前端上传 → 验证 → 保存 → 触发索引</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>接收前端传来的文件</li>
+<li><strong>验证</strong>：只允许 txt&#x2F;md 格式，大小限制默认 10MB</li>
+<li>保存到本地 <code>./uploads</code> 目录</li>
+<li>保存成功后<strong>自动触发</strong>单个文件的索引流程（调用 <code>VectorIndexService</code>）</li>
+<li>返回上传结果（成功&#x2F;失败 + 错误信息）</li>
+</ul>
+<blockquote>
+<p>💡 <strong>为什么上传完自动触发索引？</strong> 减少用户操作步骤。用户只需上传文件，不用再点”开始索引”。对运维场景来说，这种”上传即索引”的体验比手动触发好很多。</p>
+</blockquote>
+<h3 id="4-2-索引流程编排-—-app-services-vector-index-service-py"><a href="#4-2-索引流程编排-—-app-services-vector-index-service-py" class="headerlink" title="4.2 索引流程编排 — app/services/vector_index_service.py"></a>4.2 索引流程编排 — <code>app/services/vector_index_service.py</code></h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">职责：索引流程的总调度中心</span><br></pre></td></tr></table></figure>
+
+<p>核心逻辑是一个”编排器”（Orchestrator），自己不干活，只负责按顺序调用其他服务：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">index_single_file() 流程：</span><br><span class="line">  1. 读取文件文本内容（I/O 操作）</span><br><span class="line">  2. 调用 vector_store_manager.delete_by_source() 删除旧数据</span><br><span class="line">  3. 调用 document_splitter_service.split_document() 分片</span><br><span class="line">  4. 调用 vector_store_manager.add_documents() 写入 Milvus</span><br><span class="line">  5. 统计结果：总文件数、成功/失败数、耗时、失败文件列表</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>💡 <strong>为什么需要一个专门的编排层？</strong> 把”调度逻辑”和”执行逻辑”分开。如果以后想加一个步骤（比如索引完成后的通知），只需改这一个文件，不用动其他服务。</p>
+</blockquote>
+<h3 id="4-3-文档分片-—-app-services-document-splitter-service-py"><a href="#4-3-文档分片-—-app-services-document-splitter-service-py" class="headerlink" title="4.3 文档分片 — app/services/document_splitter_service.py"></a>4.3 文档分片 — <code>app/services/document_splitter_service.py</code></h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">职责：把大文档变成适合向量化的小块（Chunk）</span><br></pre></td></tr></table></figure>
+
+<p>核心策略就是上面说的三阶段分割（结构切 → 大小切 → 合并碎），这里补充几个设计细节：</p>
+<ul>
+<li><strong>为什么先按标题切？</strong> markdown 的标题天然是语义边界，按标题切能尽可能保证每个 chunk 是一个完整的”小节”，而不是在句子中间硬切。</li>
+<li><strong>chunk_size&#x3D;800 怎么定的？</strong> 经验值。<code>text-embedding-v4</code> 最大支持约 2048 tokens，800 字符（约 400-500 中文 tokens）既在安全区内，又不会太小导致信息碎片化。</li>
+<li><strong>每个分片携带 metadata</strong>：<code>_source</code>（文件路径）是必带的，用于后续按文件删除和来源引用。</li>
+</ul>
+<h3 id="4-4-向量生成-—-app-services-vector-embedding-service-py"><a href="#4-4-向量生成-—-app-services-vector-embedding-service-py" class="headerlink" title="4.4 向量生成 — app/services/vector_embedding_service.py"></a>4.4 向量生成 — <code>app/services/vector_embedding_service.py</code></h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">职责：把文本变成向量</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>封装了<strong>阿里云 DashScope 的 text-embedding-v4</strong> 模型</li>
+<li>输出 <strong>1024 维</strong>浮点数向量</li>
+<li>实现了 <strong>LangChain 标准的 Embeddings 接口</strong>——这意味着上层调用方（vector_store_manager）不需要知道底层用的是哪个嵌入模型，只需要调 <code>embed_documents()</code> &#x2F; <code>embed_query()</code></li>
+</ul>
+<blockquote>
+<p>🔑 <strong>为什么要实现 LangChain 标准接口？</strong> 这是 LangChain 生态的惯用做法。vector_store_manager 通过 LangChain 的抽象接口调用嵌入服务，将来换成 OpenAI embedding 或本地 BGE 模型时，只需换一个实现类，其他代码一行不改。</p>
+</blockquote>
+<h3 id="4-5-向量存储管理-—-app-services-vector-store-manager-py"><a href="#4-5-向量存储管理-—-app-services-vector-store-manager-py" class="headerlink" title="4.5 向量存储管理 — app/services/vector_store_manager.py"></a>4.5 向量存储管理 — <code>app/services/vector_store_manager.py</code></h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">职责：封装 LangChain Milvus VectorStore，提供高层业务 API</span><br></pre></td></tr></table></figure>
+
+<p>这是最重要的服务层，提供三个核心能力：</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>作用</th>
+<th>内部做了什么</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>add_documents(docs)</code></td>
+<td>批量写入向量库</td>
+<td>自动调用 embedding 服务把文本转成向量 → 为每个分片生成唯一 ID → 写入 Milvus</td>
+</tr>
+<tr>
+<td><code>delete_by_source(source)</code></td>
+<td>按来源删除</td>
+<td>在 Milvus 中查询 <code>metadata[&quot;_source&quot;] == source</code> 的所有数据 → 批量删除</td>
+</tr>
+<tr>
+<td><code>similarity_search(query, k)</code></td>
+<td>相似度检索</td>
+<td>把查询文本转成向量 → 在 Milvus 中找 Top-K 最相似的 → 返回 Document 列表</td>
+</tr>
+</tbody></table>
+<h3 id="4-6-Milvus-底层连接管理-—-app-core-milvus-client-py"><a href="#4-6-Milvus-底层连接管理-—-app-core-milvus-client-py" class="headerlink" title="4.6 Milvus 底层连接管理 — app/core/milvus_client.py"></a>4.6 Milvus 底层连接管理 — <code>app/core/milvus_client.py</code></h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">职责：管理 Milvus 的连接和集合（Collection）的创建/加载</span><br></pre></td></tr></table></figure>
+
+<p>核心工作：</p>
+<ol>
+<li><p><strong>连接池管理</strong>：维护与 Milvus 的连接，避免每次请求都重新建连</p>
+</li>
+<li><p><strong>初始化 Collection</strong>：定义 Schema，包含四个核心字段：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>id</code></td>
+<td>VARCHAR（主键）</td>
+<td>唯一标识每个分片</td>
+</tr>
+<tr>
+<td><code>vector</code></td>
+<td>FLOAT_VECTOR(1024)</td>
+<td>存储 1024 维语义向量</td>
+</tr>
+<tr>
+<td><code>content</code></td>
+<td>VARCHAR</td>
+<td>存储原始分片文本</td>
+</tr>
+<tr>
+<td><code>metadata</code></td>
+<td>JSON</td>
+<td>存储文件路径等元数据</td>
+</tr>
+</tbody></table>
+</li>
+<li><p><strong>创建索引</strong>：使用 <strong>IVF_FLAT</strong> 索引类型，<strong>L2 距离</strong>度量</p>
+<blockquote>
+<ul>
+<li><strong>IVF_FLAT</strong>：倒排文件索引。先把向量空间划分成多个”聚类中心”，搜索时只搜最近的几个聚类，而不是全表扫描。大幅加速检索，代价是可能丢失极少量的精度（近似最近邻搜索）。</li>
+<li><strong>L2 距离</strong>：欧几里得距离，即两个向量之间”直线距离”。值越小表示两个向量越接近，语义越相似。</li>
+</ul>
+</blockquote>
+</li>
+<li><p><strong>兼容性修复</strong>：修复了 <code>langchain_milvus</code> 和 <code>pymilvus</code> ORM 之间的兼容性问题</p>
+</li>
+</ol>
+<hr>
+<h2 id="五、完整数据流线路图"><a href="#五、完整数据流线路图" class="headerlink" title="五、完整数据流线路图"></a>五、完整数据流线路图</h2><blockquote>
+<p>把上面所有组件串起来，形成一个端到端的完整链路。</p>
+</blockquote>
+<h3 id="5-1-索引链路（上传文件-→-可检索）"><a href="#5-1-索引链路（上传文件-→-可检索）" class="headerlink" title="5.1 索引链路（上传文件 → 可检索）"></a>5.1 索引链路（上传文件 → 可检索）</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">用户上传文件</span><br><span class="line">    │</span><br><span class="line">    ▼</span><br><span class="line">app/api/file.py</span><br><span class="line">    │ 验证类型（txt/md）、大小（≤10MB）</span><br><span class="line">    │ 保存到 ./uploads</span><br><span class="line">    │ 自动调用 index_single_file()</span><br><span class="line">    ▼</span><br><span class="line">app/services/vector_index_service.py</span><br><span class="line">    │ 读取文件内容</span><br><span class="line">    │ delete_by_source(source)     ←── vector_store_manager</span><br><span class="line">    │ split_document(content)      ←── document_splitter_service</span><br><span class="line">    │ add_documents(chunks)        ←── vector_store_manager</span><br><span class="line">    ▼</span><br><span class="line">app/services/vector_store_manager.py</span><br><span class="line">    │ add_documents() 内部：</span><br><span class="line">    │   1. 调用 vector_embedding_service 把每个 chunk 转成向量</span><br><span class="line">    │   2. 生成唯一 ID</span><br><span class="line">    │   3. 写入 Milvus biz 集合</span><br><span class="line">    ▼</span><br><span class="line">app/core/milvus_client.py</span><br><span class="line">    │ 实际执行 Milvus insert 操作</span><br><span class="line">    ▼</span><br><span class="line">Milvus (Docker 容器) ─── 数据持久化到磁盘卷</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-2-检索链路（用户提问-→-回答）"><a href="#5-2-检索链路（用户提问-→-回答）" class="headerlink" title="5.2 检索链路（用户提问 → 回答）"></a>5.2 检索链路（用户提问 → 回答）</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">用户输入问题</span><br><span class="line">    │</span><br><span class="line">    ▼</span><br><span class="line">app/services/vector_store_manager.py</span><br><span class="line">    │ similarity_search(query, k)</span><br><span class="line">    │   1. 调用 vector_embedding_service 把问题转成向量</span><br><span class="line">    │   2. 在 Milvus 中执行 IVF_FLAT 搜索</span><br><span class="line">    │   3. 返回 Top-K 最相似的分片（Document 列表）</span><br><span class="line">    ▼</span><br><span class="line">Prompt 模板 ─── 把分片文本 + 用户问题拼接成最终 Prompt</span><br><span class="line">    │</span><br><span class="line">    ▼</span><br><span class="line">大模型 ─── 基于上下文生成回答（带来源引用）</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="六、关键设计决策问答"><a href="#六、关键设计决策问答" class="headerlink" title="六、关键设计决策问答"></a>六、关键设计决策问答</h2><blockquote>
+<p>把笔记里 AI 回复的设计要点提炼成 Q&amp;A 形式，方便快速回顾。</p>
+</blockquote>
+<h3 id="Q1：为什么要”先删后写”而不是”覆盖”？"><a href="#Q1：为什么要”先删后写”而不是”覆盖”？" class="headerlink" title="Q1：为什么要”先删后写”而不是”覆盖”？"></a>Q1：为什么要”先删后写”而不是”覆盖”？</h3><p>Milvus 不原生支持”按文件名覆盖”——因为同一个文件可能被切成几十个分片，每个分片是一条独立的向量记录。如果不先删除，旧版本的分片和新版本的分片会并存，检索时可能同时返回新旧内容，产生矛盾。<code>delete_by_source</code> + <code>add_documents</code> 的组合保证了数据更新是原子性的——先全删、再全写。</p>
+<h3 id="Q2：为什么选用-IVF-FLAT-索引而不是其他索引？"><a href="#Q2：为什么选用-IVF-FLAT-索引而不是其他索引？" class="headerlink" title="Q2：为什么选用 IVF_FLAT 索引而不是其他索引？"></a>Q2：为什么选用 IVF_FLAT 索引而不是其他索引？</h3><p>IVF_FLAT 是 Milvus 默认的索引类型，平衡了速度和精度：</p>
+<ul>
+<li><strong>FLAT</strong> 意味着每个聚类内部的向量是”平铺”的——搜索时在聚类内部做的是精确距离计算，不压缩向量</li>
+<li><strong>IVF</strong>（倒排文件）意味着搜索时只搜最近的几个聚类，大幅减少计算量</li>
+<li>对于本项目的中等规模知识库，IVF_FLAT 足够快（毫秒级）且精度高</li>
+</ul>
+<blockquote>
+<p>相比之下，HNSW 索引在图结构上搜索，速度更快但内存占用更大；PQ 索引压缩向量但精度损失较多。IVF_FLAT 是”够用且稳妥”的选择。</p>
+</blockquote>
+<h3 id="Q3：chunk-overlap-100-和-chunk-size-800-是什么关系？"><a href="#Q3：chunk-overlap-100-和-chunk-size-800-是什么关系？" class="headerlink" title="Q3：chunk_overlap&#x3D;100 和 chunk_size&#x3D;800 是什么关系？"></a>Q3：chunk_overlap&#x3D;100 和 chunk_size&#x3D;800 是什么关系？</h3><p>如果一个文档被切出 3 个分片：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">分片1：字符 [0,   800]   ← 和分片2 共享 [700, 800]</span><br><span class="line">分片2：字符 [700, 1500]  ← 和分片1 共享 [700, 800]，和分片3 共享 [1400, 1500]</span><br><span class="line">分片3：字符 [1400, 2200]</span><br></pre></td></tr></table></figure>
+
+<p>100 个字符在中文里大约 2-3 句话。这个冗余量成本几乎为零（只多了 ~12.5% 的存储），但能有效防止关键信息落在分片边界上被”拦腰截断”。</p>
+<h3 id="Q4：LangChain-在这套系统里到底扮演什么角色？"><a href="#Q4：LangChain-在这套系统里到底扮演什么角色？" class="headerlink" title="Q4：LangChain 在这套系统里到底扮演什么角色？"></a>Q4：LangChain 在这套系统里到底扮演什么角色？</h3><p>LangChain 是<strong>胶水框架</strong>，它不提供任何 AI 能力本身，而是提供了统一的接口抽象：</p>
+<ul>
+<li><code>Document</code>：统一的数据结构，所有分片都用它表示</li>
+<li><code>Embeddings</code>：统一的嵌入接口，切换模型只换实现</li>
+<li><code>VectorStore</code>：统一的向量存储接口，切换向量数据库只换实现</li>
+<li><code>TextSplitter</code>：统一的分片接口</li>
+</ul>
+<p>简单说：LangChain 让你的代码不依赖具体实现。今天用 DashScope embedding + Milvus，明天想换成 OpenAI embedding + ChromaDB，只需要换两个实现类，业务逻辑（<code>vector_index_service.py</code>）一行不用改。</p>
+<h3 id="Q5：为什么-metadata-里要存-source？"><a href="#Q5：为什么-metadata-里要存-source？" class="headerlink" title="Q5：为什么 metadata 里要存 _source？"></a>Q5：为什么 metadata 里要存 <code>_source</code>？</h3><p>两个作用：</p>
+<ol>
+<li><strong>按文件删除旧数据</strong>：<code>delete_by_source</code> 靠的就是这个字段来找到”哪些向量属于这个文件”</li>
+<li><strong>检索结果溯源</strong>：用户看到回答后可以看到每条引用来自哪个文件，增强可信度</li>
+</ol>
+<hr>
+<h2 id="七、一句话总结"><a href="#七、一句话总结" class="headerlink" title="七、一句话总结"></a>七、一句话总结</h2><table>
+<thead>
+<tr>
+<th>你要记住的</th>
+<th>一句话</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>整个系统在干什么</td>
+<td>把本地知识库文件（txt&#x2F;md）向量化存入 Milvus，用户提问时从 Milvus 检索相关内容作为上下文，让大模型基于私有知识准确回答</td>
+</tr>
+<tr>
+<td>核心数据流</td>
+<td>文件 → 分段 → 向量化 → Milvus → 查询 → 检索 → 拼接 Prompt → 大模型回答</td>
+</tr>
+<tr>
+<td>6 个核心文件各司何职</td>
+<td><code>file.py</code> 收文件 → <code>index_service.py</code> 编排流程 → <code>splitter_service.py</code> 切文本 → <code>embedding_service.py</code> 转向量 → <code>store_manager.py</code> 管存取 → <code>milvus_client.py</code> 管连接</td>
+</tr>
+<tr>
+<td>最关键的工程细节</td>
+<td>先删后写保证数据一致性、三阶段分片保留语义结构、LangChain 接口解耦具体实现、metadata 实现按文件管理</td>
+</tr>
+</tbody></table>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/oncall%E9%A1%B9%E7%9B%AE%E7%90%86%E8%A7%A3/" rel="tag"># oncall项目理解</a>
+              <a href="/tags/RAG/" rel="tag"># RAG</a>
+              <a href="/tags/Milvus/" rel="tag"># Milvus</a>
+              <a href="/tags/LangChain/" rel="tag"># LangChain</a>
+              <a href="/tags/%E5%90%91%E9%87%8F%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag"># 向量数据库</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/06/18/%E7%BB%9D%E4%B8%96%E6%AD%A6%E5%8A%9F%E4%B9%8BCMake%E6%98%AF%E4%BB%80%E4%B9%88/" rel="prev" title="绝世武功之CMake是什么">
+                  <i class="fa fa-angle-left"></i> 绝世武功之CMake是什么
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2024 – 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">查志渊</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>
