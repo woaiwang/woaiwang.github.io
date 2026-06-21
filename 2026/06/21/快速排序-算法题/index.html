@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="题目 给定整数数组 nums 和整数 k，请返回数组中第 k 个最大的元素。 注意：你需要找的是数组排序后的第 k 个最大的元素，而不是第 k 个不同的元素。 你必须设计并实现时间复杂度为 O(n) 的算法解决此问题。  示例 1： 12输入: nums &#x3D; [3, 2, 1, 5, 6, 4], k &#x3D; 2输出: 5  示例 2： 12输入: nums &#x3D; [3, 2, 3, 1, 2, 4,">
+<meta property="og:type" content="article">
+<meta property="og:title" content="快速排序-算法题">
+<meta property="og:url" content="http://example.com/2026/06/21/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F-%E7%AE%97%E6%B3%95%E9%A2%98/index.html">
+<meta property="og:site_name" content="渊渟岳峙的技术笔记">
+<meta property="og:description" content="题目 给定整数数组 nums 和整数 k，请返回数组中第 k 个最大的元素。 注意：你需要找的是数组排序后的第 k 个最大的元素，而不是第 k 个不同的元素。 你必须设计并实现时间复杂度为 O(n) 的算法解决此问题。  示例 1： 12输入: nums &#x3D; [3, 2, 1, 5, 6, 4], k &#x3D; 2输出: 5  示例 2： 12输入: nums &#x3D; [3, 2, 3, 1, 2, 4,">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-06-21T11:39:10.000Z">
+<meta property="article:modified_time" content="2026-06-21T11:57:48.115Z">
+<meta property="article:author" content="查志渊">
+<meta property="article:tag" content="算法 快排 快速选择 第K大元素">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2026/06/21/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F-%E7%AE%97%E6%B3%95%E9%A2%98/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2026/06/21/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F-%E7%AE%97%E6%B3%95%E9%A2%98/","path":"2026/06/21/快速排序-算法题/","title":"快速排序-算法题"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>快速排序-算法题 | 渊渟岳峙的技术笔记</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">渊渟岳峙的技术笔记</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">用你喜欢的方式去度过一生</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE"><span class="nav-number">1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E9%97%AE%E9%A2%98%E8%BD%AC%E5%8C%96%EF%BC%9A%E7%AC%AC-K-%E5%A4%A7-%E7%AC%AC%E5%87%A0%E4%B8%AA%EF%BC%9F"><span class="nav-number">2.</span> <span class="nav-text">一、问题转化：第 K 大 &#x3D; 第几个？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E6%9C%B4%E7%B4%A0%E8%A7%A3%E6%B3%95%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E8%A1%8C%EF%BC%9F"><span class="nav-number">3.</span> <span class="nav-text">二、朴素解法为什么不行？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3%EF%BC%9A%E5%BF%AB%E9%80%9F%E9%80%89%E6%8B%A9-QuickSelect"><span class="nav-number">4.</span> <span class="nav-text">三、核心思想：快速选择 (QuickSelect)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%A6%82%E6%8B%AC"><span class="nav-number">4.1.</span> <span class="nav-text">3.1 一句话概括</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E7%B1%BB%E6%AF%94%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE"><span class="nav-number">4.2.</span> <span class="nav-text">3.2 类比二分查找</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-%E7%AE%97%E6%B3%95%E6%AD%A5%E9%AA%A4"><span class="nav-number">4.3.</span> <span class="nav-text">3.3 算法步骤</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E5%88%86%E5%8C%BA%E5%87%BD%E6%95%B0-%E2%80%94%E2%80%94-%E7%AE%97%E6%B3%95%E7%9A%84%E7%81%B5%E9%AD%82"><span class="nav-number">5.</span> <span class="nav-text">四、分区函数 —— 算法的灵魂</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-%E5%88%86%E5%8C%BA%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%9B%AE%E6%A0%87"><span class="nav-number">5.1.</span> <span class="nav-text">4.1 分区的基本目标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-%E4%B8%89%E7%A7%8D%E5%88%86%E5%8C%BA%E7%AD%96%E7%95%A5%E5%AF%B9%E6%AF%94"><span class="nav-number">5.2.</span> <span class="nav-text">4.2 三种分区策略对比</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-%E7%AD%96%E7%95%A5-A%EF%BC%9A-base-%E6%94%BE%E5%B7%A6%EF%BC%8C%E2%89%A5-base-%E6%94%BE%E5%8F%B3"><span class="nav-number">5.3.</span> <span class="nav-text">4.3 策略 A：&lt; base 放左，≥ base 放右</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-%E7%AD%96%E7%95%A5-B%EF%BC%9A%E2%89%A4-base-%E6%94%BE%E5%B7%A6%EF%BC%8C-base-%E6%94%BE%E5%8F%B3"><span class="nav-number">5.4.</span> <span class="nav-text">4.4 策略 B：≤ base 放左，&gt; base 放右</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-5-%E7%AD%96%E7%95%A5-C%EF%BC%88%E6%9C%80%E4%BC%98%EF%BC%89%EF%BC%9A%E2%89%A4-base-%E6%94%BE%E5%B7%A6%EF%BC%8C%E2%89%A5-base-%E6%94%BE%E5%8F%B3%EF%BC%8C%E7%9B%B8%E9%81%87%E6%97%B6%E4%BA%A4%E6%8D%A2"><span class="nav-number">5.5.</span> <span class="nav-text">4.5 策略 C（最优）：≤ base 放左，≥ base 放右，相遇时交换</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E3%80%81%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81%E4%B8%8E%E9%80%90%E8%A1%8C%E8%A7%A3%E6%9E%90"><span class="nav-number">6.</span> <span class="nav-text">五、完整代码与逐行解析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-%E5%88%86%E5%8C%BA%E5%87%BD%E6%95%B0%E5%9B%BE%E8%A7%A3"><span class="nav-number">6.1.</span> <span class="nav-text">5.1 分区函数图解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-%E4%B8%BA%E4%BB%80%E4%B9%88%E6%9C%80%E5%90%8E%E4%BA%A4%E6%8D%A2%E7%9A%84%E6%98%AF-j-%E8%80%8C%E4%B8%8D%E6%98%AF-i%EF%BC%9F"><span class="nav-number">6.2.</span> <span class="nav-text">5.2 为什么最后交换的是 j 而不是 i？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AD%E3%80%81%E9%87%8D%E5%A4%8D%E5%85%83%E7%B4%A0%E7%9A%84%E5%9D%91-%E2%80%94%E2%80%94-%E6%B7%B1%E5%85%A5%E5%88%86%E6%9E%90"><span class="nav-number">7.</span> <span class="nav-text">六、重复元素的坑 —— 深入分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#6-1-%E4%B8%BA%E4%BB%80%E4%B9%88%E9%87%8D%E5%A4%8D%E5%85%83%E7%B4%A0%E4%BC%9A%E8%AE%A9%E7%AE%97%E6%B3%95%E9%80%80%E5%8C%96%EF%BC%9F"><span class="nav-number">7.1.</span> <span class="nav-text">6.1 为什么重复元素会让算法退化？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-%E7%AD%96%E7%95%A5-C-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%83%BD%E6%89%9B%E4%BD%8F%EF%BC%9F"><span class="nav-number">7.2.</span> <span class="nav-text">6.2 策略 C 为什么能扛住？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%83%E3%80%81%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%88%86%E6%9E%90"><span class="nav-number">8.</span> <span class="nav-text">七、复杂度分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#7-1-%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6"><span class="nav-number">8.1.</span> <span class="nav-text">7.1 时间复杂度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-2-%E7%A9%BA%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6"><span class="nav-number">8.2.</span> <span class="nav-text">7.2 空间复杂度</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AB%E3%80%81%E9%9A%8F%E6%9C%BA%E5%8C%96%E7%9A%84%E6%84%8F%E4%B9%89"><span class="nav-number">9.</span> <span class="nav-text">八、随机化的意义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B9%9D%E3%80%81%E4%B8%8E%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="nav-number">10.</span> <span class="nav-text">九、与快速排序的关系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%81%E3%80%81%E5%B8%B8%E8%A7%81%E7%96%91%E9%97%AE%E8%A7%A3%E7%AD%94-FAQ"><span class="nav-number">11.</span> <span class="nav-text">十、常见疑问解答 (FAQ)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Q1-%E5%88%86%E5%8C%BA%E6%9D%A1%E4%BB%B6%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E8%83%BD%E7%94%A8"><span class="nav-number">11.1.</span> <span class="nav-text">Q1: 分区条件为什么不能用 &lt;&#x3D; 和 &lt; 的组合？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Q2-%E8%83%BD%E4%B8%8D%E8%83%BD%E7%94%A8%E4%B8%89%E8%B7%AF%E5%88%86%E5%8C%BA%EF%BC%9F"><span class="nav-number">11.2.</span> <span class="nav-text">Q2: 能不能用三路分区？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Q3-%E4%B8%BA%E4%BB%80%E4%B9%88%E6%9C%80%E5%90%8E-swap-nums-left-nums-j-%E4%B8%8D%E4%BC%9A%E5%87%BA%E9%94%99%EF%BC%9F"><span class="nav-number">11.3.</span> <span class="nav-text">Q3: 为什么最后 swap(nums[left], nums[j]) 不会出错？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Q4-%E7%AC%AC-K-%E5%A4%A7%E5%92%8C%E7%AC%AC-K-%E5%B0%8F%E6%9C%89%E4%BB%80%E4%B9%88%E5%85%B3%E7%B3%BB%EF%BC%9F"><span class="nav-number">11.4.</span> <span class="nav-text">Q4: 第 K 大和第 K 小有什么关系？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%81%E4%B8%80%E3%80%81%E6%80%BB%E7%BB%93"><span class="nav-number">12.</span> <span class="nav-text">十一、总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">查志渊</p>
+  <div class="site-description" itemprop="description">磨炼自己的一点点技术</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/woaiwang" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;woaiwang" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/06/21/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F-%E7%AE%97%E6%B3%95%E9%A2%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="查志渊">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="渊渟岳峙的技术笔记">
+      <meta itemprop="description" content="磨炼自己的一点点技术">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="快速排序-算法题 | 渊渟岳峙的技术笔记">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          快速排序-算法题
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2026-06-21 19:39:10 / 修改时间：19:57:48" itemprop="dateCreated datePublished" datetime="2026-06-21T19:39:10+08:00">2026-06-21</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h2><blockquote>
+<p>给定整数数组 <code>nums</code> 和整数 <code>k</code>，请返回数组中第 <code>k</code> 个<strong>最大</strong>的元素。</p>
+<p>注意：你需要找的是数组排序后的第 <code>k</code> 个最大的元素，而不是第 <code>k</code> 个不同的元素。</p>
+<p>你必须设计并实现时间复杂度为 <strong>O(n)</strong> 的算法解决此问题。</p>
+</blockquote>
+<p><strong>示例 1：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入: nums = [3, 2, 1, 5, 6, 4], k = 2</span><br><span class="line">输出: 5</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 2：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入: nums = [3, 2, 3, 1, 2, 4, 5, 5, 6], k = 4</span><br><span class="line">输出: 4</span><br></pre></td></tr></table></figure>
+
+<p><strong>数据范围：</strong></p>
+<table>
+<thead>
+<tr>
+<th align="left">约束</th>
+<th align="left">范围</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">k</td>
+<td align="left">1 ≤ k ≤ nums.length ≤ 10⁵</td>
+</tr>
+<tr>
+<td align="left">nums[i]</td>
+<td align="left">-10⁴ ≤ nums[i] ≤ 10⁴</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="一、问题转化：第-K-大-第几个？"><a href="#一、问题转化：第-K-大-第几个？" class="headerlink" title="一、问题转化：第 K 大 &#x3D; 第几个？"></a>一、问题转化：第 K 大 &#x3D; 第几个？</h2><p>首先明确一点：如果数组是<strong>升序排列</strong>的，那么「第 k 大的元素」就是下标为 <code>n - k</code> 的元素。</p>
+<p>举个例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">nums = [3, 2, 1, 5, 6, 4],  k = 2,  n = 6</span><br><span class="line"></span><br><span class="line">升序排序后: [1, 2, 3, 4, 5, 6]</span><br><span class="line">             0  1  2  3  4  5   ← 下标</span><br><span class="line"></span><br><span class="line">第 1 大 = 6 → 下标 5 = n - 1 ✓</span><br><span class="line">第 2 大 = 5 → 下标 4 = n - 2 ✓</span><br></pre></td></tr></table></figure>
+
+<p>所以问题等价于：<strong>在无序数组中，找到升序后下标为 <code>n - k</code> 的那个元素</strong>。你不需要对整个数组排序，只需要定位到那个位置。</p>
+<blockquote>
+<p><strong>特例：</strong> 如果数组元素全部相同（如 <code>[1,1,1,1,1]</code>），上述结论依然成立——因为「第 k 大」和「第 k 个不同」是两个概念，题目明确要求前者。</p>
+</blockquote>
+<hr>
+<h2 id="二、朴素解法为什么不行？"><a href="#二、朴素解法为什么不行？" class="headerlink" title="二、朴素解法为什么不行？"></a>二、朴素解法为什么不行？</h2><p>最直觉的做法是全排序，然后取 <code>nums[n - k]</code>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sort(nums.begin(), nums.end());   // O(n log n)</span><br><span class="line">return nums[n - k];</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度 <strong>O(n log n)<strong>，不满足题目要求的 O(n)。而且我们做了大量无用功——我们只关心</strong>一个位置</strong>，却把整个数组都排好了。</p>
+<p>有没有办法「部分排序」，只确定目标位置的元素？这就引出了<strong>快速选择算法（QuickSelect）</strong>。</p>
+<hr>
+<h2 id="三、核心思想：快速选择-QuickSelect"><a href="#三、核心思想：快速选择-QuickSelect" class="headerlink" title="三、核心思想：快速选择 (QuickSelect)"></a>三、核心思想：快速选择 (QuickSelect)</h2><h3 id="3-1-一句话概括"><a href="#3-1-一句话概括" class="headerlink" title="3.1 一句话概括"></a>3.1 一句话概括</h3><blockquote>
+<p>像快速排序一样做分区（partition），但每次只递归目标所在的那一侧，另一侧直接丢弃。</p>
+</blockquote>
+<h3 id="3-2-类比二分查找"><a href="#3-2-类比二分查找" class="headerlink" title="3.2 类比二分查找"></a>3.2 类比二分查找</h3><table>
+<thead>
+<tr>
+<th align="left"></th>
+<th align="left">二分查找</th>
+<th align="left">快速选择</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>前提</strong></td>
+<td align="left">数组有序</td>
+<td align="left">数组无序</td>
+</tr>
+<tr>
+<td align="left"><strong>核心操作</strong></td>
+<td align="left">取中间下标，判断目标在左&#x2F;右</td>
+<td align="left">做一次分区，判断目标在左&#x2F;右</td>
+</tr>
+<tr>
+<td align="left"><strong>每次缩小</strong></td>
+<td align="left">丢弃一半</td>
+<td align="left">丢弃一半（平均）</td>
+</tr>
+<tr>
+<td align="left"><strong>时间复杂度</strong></td>
+<td align="left">O(log n)</td>
+<td align="left">O(n) 平均</td>
+</tr>
+</tbody></table>
+<h3 id="3-3-算法步骤"><a href="#3-3-算法步骤" class="headerlink" title="3.3 算法步骤"></a>3.3 算法步骤</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">1. 在 nums[left..right] 中随机选一个基准元素 pivot</span><br><span class="line">2. 分区：把 ≤pivot 的放左边，≥pivot 的放右边</span><br><span class="line">3. 设分区后 pivot 的下标为 q</span><br><span class="line">4. 比较 q 与 n-k：</span><br><span class="line">   - q == n-k → 找到了！返回 nums[q]</span><br><span class="line">   - q &gt;  n-k → 答案在左边，right = q - 1，回到步骤 1</span><br><span class="line">   - q &lt;  n-k → 答案在右边，left  = q + 1，回到步骤 1</span><br></pre></td></tr></table></figure>
+
+<p>用流程图表示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">          ┌─────────────────┐</span><br><span class="line">          │  left, right    │</span><br><span class="line">          │  target = n-k   │</span><br><span class="line">          └────────┬────────┘</span><br><span class="line">                   │</span><br><span class="line">                   ▼</span><br><span class="line">          ┌─────────────────┐</span><br><span class="line">          │ 随机选 pivot    │</span><br><span class="line">          │ 对 [left,right] │</span><br><span class="line">          │ 做一次 partition │</span><br><span class="line">          └────────┬────────┘</span><br><span class="line">                   │</span><br><span class="line">                   ▼</span><br><span class="line">             ┌──────────┐</span><br><span class="line">             │ q = 分区  │</span><br><span class="line">             │ 后 pivot  │</span><br><span class="line">             │ 的下标    │</span><br><span class="line">             └────┬─────┘</span><br><span class="line">                  │</span><br><span class="line">     ┌────────────┼────────────┐</span><br><span class="line">     │            │            │</span><br><span class="line">     ▼            ▼            ▼</span><br><span class="line">q == n-k      q &gt; n-k      q &lt; n-k</span><br><span class="line">     │            │            │</span><br><span class="line">     ▼            ▼            ▼</span><br><span class="line">┌────────┐  ┌──────────┐  ┌──────────┐</span><br><span class="line">│ return │  │ right =  │  │ left =   │</span><br><span class="line">│nums[q] │  │ q - 1    │  │ q + 1    │</span><br><span class="line">└────────┘  └────┬─────┘  └────┬─────┘</span><br><span class="line">                 │            │</span><br><span class="line">                 └─────┬──────┘</span><br><span class="line">                       │</span><br><span class="line">                       ▼</span><br><span class="line">                回到&quot;随机选pivot&quot;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="四、分区函数-——-算法的灵魂"><a href="#四、分区函数-——-算法的灵魂" class="headerlink" title="四、分区函数 —— 算法的灵魂"></a>四、分区函数 —— 算法的灵魂</h2><p>分区（partition）是整个算法的核心。我们来看看它到底做了什么。</p>
+<h3 id="4-1-分区的基本目标"><a href="#4-1-分区的基本目标" class="headerlink" title="4.1 分区的基本目标"></a>4.1 分区的基本目标</h3><p>给定一个基准值 <code>base</code>，将数组 <code>[left, right]</code> 划分为三个区域：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">┌──────────────┬──────┬──────────────┐</span><br><span class="line">│   ≤ base     │ base │   ≥ base     │</span><br><span class="line">│   (左侧)     │(归位)│   (右侧)     │</span><br><span class="line">└──────────────┴──────┴──────────────┘</span><br><span class="line">↑              ↑      ↑              ↑</span><br><span class="line">left           j      pivot最终位置   right</span><br></pre></td></tr></table></figure>
+
+<p>分区完成后，返回基准元素最终所在的下标。</p>
+<h3 id="4-2-三种分区策略对比"><a href="#4-2-三种分区策略对比" class="headerlink" title="4.2 三种分区策略对比"></a>4.2 三种分区策略对比</h3><p>这是本文最关键的表格。不同的分区策略，在面对<strong>大量重复元素</strong>时表现天差地别：</p>
+<table>
+<thead>
+<tr>
+<th align="left">策略</th>
+<th align="left">左侧条件</th>
+<th align="left">右侧条件</th>
+<th align="left">全相等数组的表现</th>
+<th align="left">是否会退化</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>策略 A</strong></td>
+<td align="left"><code>&lt; base</code></td>
+<td align="left"><code>≥ base</code></td>
+<td align="left">分区后 pivot 在最左侧（下标 0）</td>
+<td align="left">⚠️ 会退化</td>
+</tr>
+<tr>
+<td align="left"><strong>策略 B</strong></td>
+<td align="left"><code>≤ base</code></td>
+<td align="left"><code>&gt; base</code></td>
+<td align="left">分区后 pivot 在最右侧（下标 n-1）</td>
+<td align="left">⚠️ 会退化</td>
+</tr>
+<tr>
+<td align="left"><strong>策略 C（最优）</strong></td>
+<td align="left"><code>≤ base</code></td>
+<td align="left"><code>≥ base</code></td>
+<td align="left">分区后 pivot 在正中间</td>
+<td align="left">✅ 不退化</td>
+</tr>
+</tbody></table>
+<p>下面用具体的例子说明这三种策略的差异。</p>
+<h3 id="4-3-策略-A：-base-放左，≥-base-放右"><a href="#4-3-策略-A：-base-放左，≥-base-放右" class="headerlink" title="4.3 策略 A：&lt; base 放左，≥ base 放右"></a>4.3 策略 A：<code>&lt; base</code> 放左，<code>≥ base</code> 放右</h3><p>以全相等数组 <code>[1, 1, 1, 1, 1, 1]</code> 为例，选第一个元素 <code>1</code> 为基准：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">初始状态:</span><br><span class="line">        [ 1,  1,  1,  1,  1,  1 ]</span><br><span class="line">          ↑                   ↑</span><br><span class="line">         left               right</span><br><span class="line">        (base=1)</span><br><span class="line"></span><br><span class="line">i 从左往右找 ≥ base 的 → 第一个就满足，i 停在 left+1</span><br><span class="line">j 从右往左找 &lt; base 的  → 找不到（都 ≥ base），j 一直左移</span><br><span class="line"></span><br><span class="line">最终 j 停在 left 位置，即下标 0</span><br><span class="line"></span><br><span class="line">分区结果:</span><br><span class="line">        [ 1,  1,  1,  1,  1,  1 ]</span><br><span class="line">          ↑</span><br><span class="line">          j=0 (pivot在最左侧！)</span><br><span class="line"></span><br><span class="line">如果我们要找 n-k=3（中间位置），q=0 &lt; 3，</span><br><span class="line">只能去右侧找 [1,1,1,1,1]，问题规模几乎没有缩小！</span><br></pre></td></tr></table></figure>
+
+<p><strong>问题：</strong> 当 <code>base</code> 等于数组最小值且大量重复时，右侧没有 <code>&lt; base</code> 的元素，<code>j</code> 会一直走到最左端。反之，如果 <code>base</code> 是最大值，<code>i</code> 会走到最右端。无论如何，<strong>分区极不平衡</strong>，算法退化为 O(n²)。</p>
+<h3 id="4-4-策略-B：≤-base-放左，-base-放右"><a href="#4-4-策略-B：≤-base-放左，-base-放右" class="headerlink" title="4.4 策略 B：≤ base 放左，&gt; base 放右"></a>4.4 策略 B：<code>≤ base</code> 放左，<code>&gt; base</code> 放右</h3><p>与策略 A 镜像对称，全相等数组下 pivot 会落在最右侧。问题同样严重。</p>
+<h3 id="4-5-策略-C（最优）：≤-base-放左，≥-base-放右，相遇时交换"><a href="#4-5-策略-C（最优）：≤-base-放左，≥-base-放右，相遇时交换" class="headerlink" title="4.5 策略 C（最优）：≤ base 放左，≥ base 放右，相遇时交换"></a>4.5 策略 C（最优）：<code>≤ base</code> 放左，<code>≥ base</code> 放右，相遇时交换</h3><p>核心区别在于：<strong>左右指针遇到等于 base 的元素时，也要交换</strong>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">初始状态: [1, 1, 1, 1, 1, 1], base = nums[left] = 1</span><br><span class="line">          ↑                 ↑</span><br><span class="line">          i=left+1          j=right</span><br><span class="line"></span><br><span class="line">第一轮:</span><br><span class="line"></span><br><span class="line">  i 从左往右找 &gt; base 的 → 找不到（都 = base）</span><br><span class="line">    但条件写的是 nums[i] &lt; base 时 i++，</span><br><span class="line">    当 nums[i] &gt;= base 时 i 停下 → 第一个位置就停下！</span><br><span class="line"></span><br><span class="line">  j 从右往左找 &lt; base 的 → 找不到（都 = base）</span><br><span class="line">    但条件写的是 nums[j] &gt; base 时 j--，</span><br><span class="line">    当 nums[j] &lt;= base 时 j 停下 → 最后一个位置就停下！</span><br><span class="line"></span><br><span class="line">  i &lt;= j，交换 nums[i] 和 nums[j]，然后 i++，j--</span><br><span class="line"></span><br><span class="line">  交换后: [1, 1, 1, 1, 1, 1]  (值相同看不出变化)</span><br><span class="line">          ↑              ↑</span><br><span class="line">         left     新i→   ←新j</span><br><span class="line"></span><br><span class="line">第二轮:</span><br><span class="line"></span><br><span class="line">  i 又停在第一个 ≥ base 的位置</span><br><span class="line">  j 又停在第一个 ≤ base 的位置</span><br><span class="line">  交换，i++，j--</span><br><span class="line"></span><br><span class="line">  持续进行……</span><br><span class="line"></span><br><span class="line">最终当 i &gt; j 时停止。</span><br><span class="line">此时 j 的位置大约在数组中间。</span><br><span class="line"></span><br><span class="line">分区结果:</span><br><span class="line"></span><br><span class="line">  pivot 落在中间位置（约 n/2）</span><br><span class="line">  → 问题规模每次确实缩小约一半！</span><br></pre></td></tr></table></figure>
+
+<p>我们用图示追踪策略 C 在 <code>[1,1,1,1,1,1]</code> 上的完整过程：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">初始:  [1, 1, 1, 1, 1, 1]</span><br><span class="line">       ↑                 ↑</span><br><span class="line">      left              right</span><br><span class="line">    base=1, i=1, j=5</span><br><span class="line"></span><br><span class="line">Step 1: i找≥base的 → i=1; j找≤base的 → j=5</span><br><span class="line">        交换 nums[1]↔nums[5], i=2, j=4</span><br><span class="line">        [1, 1, 1, 1, 1, 1]</span><br><span class="line">            ↑        ↑</span><br><span class="line">            i        j</span><br><span class="line"></span><br><span class="line">Step 2: i找≥base的 → i=2; j找≤base的 → j=4</span><br><span class="line">        交换 nums[2]↔nums[4], i=3, j=3</span><br><span class="line">        [1, 1, 1, 1, 1, 1]</span><br><span class="line">               ↑</span><br><span class="line">              i,j</span><br><span class="line"></span><br><span class="line">Step 3: i找≥base的 → i=3; j找≤base的 → j=3</span><br><span class="line">        交换 nums[3]↔nums[3], i=4, j=2</span><br><span class="line">        此时 i(4) &gt; j(2) → 退出循环</span><br><span class="line"></span><br><span class="line">最终:   swap(nums[left], nums[j])</span><br><span class="line">        → swap(nums[0], nums[2])</span><br><span class="line">        j = 2，恰好是中间位置！</span><br><span class="line"></span><br><span class="line">        [1, 1, 1, 1, 1, 1]</span><br><span class="line">               ↑</span><br><span class="line">             q=2  (n=6, 正中间!)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>关键洞察：</strong> 策略 C 的精妙之处在于，<code>≤</code> 和 <code>≥</code> 的条件让左右指针在遇到等于 <code>base</code> 的值时都会停下来并交换。这样相等的元素被<strong>均匀分散</strong>到两侧，pivot 最终落在中间位置，保证了分区平衡。</p>
+</blockquote>
+<hr>
+<h2 id="五、完整代码与逐行解析"><a href="#五、完整代码与逐行解析" class="headerlink" title="五、完整代码与逐行解析"></a>五、完整代码与逐行解析</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">// ── 分区函数 ──</span></span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">partition</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums, <span class="type">int</span> left, <span class="type">int</span> right)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 1. 选基准：取最左元素（实际使用时可随机选并交换到最左）</span></span><br><span class="line">        <span class="type">int</span> base = nums[left];</span><br><span class="line">        <span class="type">int</span> i = left + <span class="number">1</span>;   <span class="comment">// 左指针：寻找 ≥ base 的元素</span></span><br><span class="line">        <span class="type">int</span> j = right;      <span class="comment">// 右指针：寻找 ≤ base 的元素</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">            <span class="comment">// 2. 左指针右移，直到找到 ≥ base 的元素</span></span><br><span class="line">            <span class="comment">//    （严格小于 base 的跳过——它们本来就该在左边）</span></span><br><span class="line">            <span class="keyword">while</span> (i &lt;= j &amp;&amp; nums[i] &lt; base) &#123;</span><br><span class="line">                i++;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 3. 右指针左移，直到找到 ≤ base 的元素</span></span><br><span class="line">            <span class="comment">//    （严格大于 base 的跳过——它们本来就该在右边）</span></span><br><span class="line">            <span class="keyword">while</span> (j &gt;= i &amp;&amp; nums[j] &gt; base) &#123;</span><br><span class="line">                j--;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 4. 指针交错 → 分区完成</span></span><br><span class="line">            <span class="keyword">if</span> (i &gt; j) &#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 5. 交换两边&quot;站错位置&quot;的元素</span></span><br><span class="line">            <span class="comment">//    注意：等于base的元素也会被交换，这是防止退化的关键！</span></span><br><span class="line">            <span class="built_in">swap</span>(nums[i], nums[j]);</span><br><span class="line">            i++;</span><br><span class="line">            j--;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 6. 将基准放到最终位置</span></span><br><span class="line">        <span class="comment">//    为什么和 j 交换而不是 i？</span></span><br><span class="line">        <span class="comment">//    因为循环退出时 i &gt; j，j 指向的是最后一个 ≤ base 的元素</span></span><br><span class="line">        <span class="comment">//    把 base 放到 j 的位置，左侧全 ≤ base，右侧全 ≥ base</span></span><br><span class="line">        <span class="built_in">swap</span>(nums[left], nums[j]);</span><br><span class="line">        <span class="keyword">return</span> j;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ── 主函数 ──</span></span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">findKthLargest</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums, <span class="type">int</span> k)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> n = nums.<span class="built_in">size</span>();</span><br><span class="line">        <span class="type">int</span> target = n - k;   <span class="comment">// 第 k 大 → 升序数组中的下标 n-k</span></span><br><span class="line">        <span class="type">int</span> left = <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> right = n - <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">            <span class="type">int</span> q = <span class="built_in">partition</span>(nums, left, right);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (q == target) &#123;</span><br><span class="line">                <span class="keyword">return</span> nums[q];        <span class="comment">// 命中！</span></span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (q &gt; target) &#123;</span><br><span class="line">                right = q - <span class="number">1</span>;         <span class="comment">// 目标在左侧</span></span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                left = q + <span class="number">1</span>;          <span class="comment">// 目标在右侧</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-1-分区函数图解"><a href="#5-1-分区函数图解" class="headerlink" title="5.1 分区函数图解"></a>5.1 分区函数图解</h3><p>以 <code>nums = [3, 2, 1, 5, 6, 4]</code>，选 <code>base = 3</code> 为例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">初始:</span><br><span class="line">  base = 3</span><br><span class="line">  [3, 2, 1, 5, 6, 4]</span><br><span class="line">   ↑  ↑           ↑</span><br><span class="line"> left i           j</span><br><span class="line"> (0) (1)         (5)</span><br><span class="line"></span><br><span class="line">Round 1:</span><br><span class="line">  i=1: nums[1]=2 &lt; 3 → i++ → i=2</span><br><span class="line">  i=2: nums[2]=1 &lt; 3 → i++ → i=3</span><br><span class="line">  i=3: nums[3]=5 ≥ 3 → i 停下 (i=3)</span><br><span class="line"></span><br><span class="line">  j=5: nums[5]=4 &gt; 3 → j-- → j=4</span><br><span class="line">  j=4: nums[4]=6 &gt; 3 → j-- → j=3</span><br><span class="line">  j=3: nums[3]=5 &gt; 3 → j-- → j=2</span><br><span class="line">  j=2: nums[2]=1 ≤ 3 → j 停下 (j=2)</span><br><span class="line"></span><br><span class="line">  此时 i(3) &gt; j(2) → break!</span><br><span class="line"></span><br><span class="line">最后: swap(nums[0], nums[2])</span><br><span class="line">  → [1, 2, 3, 5, 6, 4]</span><br><span class="line">         ↑</span><br><span class="line">        q=2</span><br><span class="line"></span><br><span class="line">  左侧 [1,2] 都 ≤ 3 ✓</span><br><span class="line">  右侧 [5,6,4] 都 ≥ 3 ✓</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-2-为什么最后交换的是-j-而不是-i？"><a href="#5-2-为什么最后交换的是-j-而不是-i？" class="headerlink" title="5.2 为什么最后交换的是 j 而不是 i？"></a>5.2 为什么最后交换的是 <code>j</code> 而不是 <code>i</code>？</h3><p>循环退出时，**<code>i &gt; j</code>** 恒成立。此时：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[... ≤base ...]  [... ≥base ...]</span><br><span class="line">               ↑  ↑</span><br><span class="line">               j  i</span><br><span class="line">          (j在左, i在右)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>j</code> 指向最后一个 <strong>≤ base</strong> 的元素</li>
+<li><code>i</code> 指向第一个 <strong>≥ base</strong> 的元素</li>
+</ul>
+<p>把 <code>base</code>（在 <code>left</code>）和 <code>nums[j]</code> 交换，<code>base</code> 就来到了它应该待的位置——左边全是 ≤ base，右边全是 ≥ base。</p>
+<p>如果和 <code>i</code> 交换，<code>base</code> 会被放到第一个 ≥ base 的位置，左边可能出现 &gt; base 的元素，破坏分区性质。</p>
+<hr>
+<h2 id="六、重复元素的坑-——-深入分析"><a href="#六、重复元素的坑-——-深入分析" class="headerlink" title="六、重复元素的坑 —— 深入分析"></a>六、重复元素的坑 —— 深入分析</h2><p>这是本文最容易被忽视、却最重要的部分。</p>
+<h3 id="6-1-为什么重复元素会让算法退化？"><a href="#6-1-为什么重复元素会让算法退化？" class="headerlink" title="6.1 为什么重复元素会让算法退化？"></a>6.1 为什么重复元素会让算法退化？</h3><p>快速选择的时间复杂度依赖于<strong>每次分区能把问题规模缩小多少</strong>。</p>
+<table>
+<thead>
+<tr>
+<th align="left">场景</th>
+<th align="left">pivot 位置</th>
+<th align="left">剩余问题规模</th>
+<th align="left">退化程度</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">理想</td>
+<td align="left">正中间</td>
+<td align="left">n&#x2F;2</td>
+<td align="left">无</td>
+</tr>
+<tr>
+<td align="left">策略 A，全相等</td>
+<td align="left">最左侧</td>
+<td align="left">n-1</td>
+<td align="left">严重！</td>
+</tr>
+<tr>
+<td align="left">策略 B，全相等</td>
+<td align="left">最右侧</td>
+<td align="left">n-1</td>
+<td align="left">严重！</td>
+</tr>
+<tr>
+<td align="left"><strong>策略 C</strong>，全相等</td>
+<td align="left"><strong>正中间</strong></td>
+<td align="left"><strong>n&#x2F;2</strong></td>
+<td align="left"><strong>无</strong> ✅</td>
+</tr>
+</tbody></table>
+<p>当策略 A 遇到全相等数组时：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">第 1 次 partition: 问题规模 n → n-1</span><br><span class="line">第 2 次 partition: 问题规模 n-1 → n-2</span><br><span class="line">第 3 次 partition: 问题规模 n-2 → n-3</span><br><span class="line">...</span><br><span class="line">总共: O(n) 次 partition，每次 O(当前规模)</span><br><span class="line">总复杂度: O(n + (n-1) + (n-2) + ... + 1) = O(n²)  ← 灾难！</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-2-策略-C-为什么能扛住？"><a href="#6-2-策略-C-为什么能扛住？" class="headerlink" title="6.2 策略 C 为什么能扛住？"></a>6.2 策略 C 为什么能扛住？</h3><p>因为左右指针<strong>遇到等于 base 的值不会跳过，而是停下来交换</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">策略 A 的指针行为:</span><br><span class="line">  i 找 &gt;= base → 遇到 =base 就停（停在最左边）</span><br><span class="line">  j 找 &lt;  base → 遇到 =base 继续左移（一路到左端）</span><br><span class="line">  → 交换几乎不发生，pivot 卡在一端</span><br><span class="line"></span><br><span class="line">策略 C 的指针行为:</span><br><span class="line">  i 找 &gt;= base → 遇到 =base 就停</span><br><span class="line">  j 找 &lt;= base → 遇到 =base 也停！</span><br><span class="line">  → 双方都在 =base 处停下，频繁交换，均匀分布</span><br></pre></td></tr></table></figure>
+
+<p>用一个表格来直观对比：</p>
+<table>
+<thead>
+<tr>
+<th align="left"></th>
+<th align="left">策略 A（<code>&lt;</code> &#x2F; <code>≥</code>）</th>
+<th align="left">策略 C（<code>≤</code> &#x2F; <code>≥</code>）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>nums[i]</code> 行为</td>
+<td align="left"><code>&lt; base</code> 则 i++，遇到 <code>=base</code> 停止</td>
+<td align="left"><code>&lt; base</code> 则 i++，遇到 <code>=base</code> 也停止</td>
+</tr>
+<tr>
+<td align="left"><code>nums[j]</code> 行为</td>
+<td align="left"><code>&gt; base</code> 则 j–，遇到 <code>=base</code> 继续左移</td>
+<td align="left"><code>&gt; base</code> 则 j–，遇到 <code>=base</code> 也停止</td>
+</tr>
+<tr>
+<td align="left">等于 base 的元素</td>
+<td align="left">全部堆在一侧</td>
+<td align="left">均匀分散到两侧</td>
+</tr>
+<tr>
+<td align="left">全相等数组的 pivot 位置</td>
+<td align="left">左端或右端</td>
+<td align="left">正中间</td>
+</tr>
+<tr>
+<td align="left">最坏复杂度</td>
+<td align="left">O(n²)</td>
+<td align="left">O(n)</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="七、复杂度分析"><a href="#七、复杂度分析" class="headerlink" title="七、复杂度分析"></a>七、复杂度分析</h2><h3 id="7-1-时间复杂度"><a href="#7-1-时间复杂度" class="headerlink" title="7.1 时间复杂度"></a>7.1 时间复杂度</h3><p><strong>平均情况：O(n)</strong></p>
+<p>设每次分区后 pivot 落在任意位置的概率相等，则：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">T(n) = O(n) + T(n/2)     （期望上每次缩小一半）</span><br><span class="line">     = O(n) + O(n/2) + O(n/4) + ...</span><br><span class="line">     = O(n) · (1 + 1/2 + 1/4 + ...)</span><br><span class="line">     = O(n) · 2</span><br><span class="line">     = O(n)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>可以用<strong>主定理</strong>严格证明：<code>T(n) = T(n/2) + Θ(n)</code> → Case 3 → T(n) &#x3D; Θ(n)。</p>
+</blockquote>
+<p><strong>最坏情况：O(n²)</strong></p>
+<p>每次分区都只排除一个元素（pivot 恰好是当前子数组的最小&#x2F;最大值）。使用随机化可以将最坏情况的概率降到极低。</p>
+<p><strong>实际表现：</strong></p>
+<table>
+<thead>
+<tr>
+<th align="left">情况</th>
+<th align="left">复杂度</th>
+<th align="left">发生条件</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">平均</td>
+<td align="left">O(n)</td>
+<td align="left">常规输入</td>
+</tr>
+<tr>
+<td align="left">最好</td>
+<td align="left">O(n)</td>
+<td align="left">第一次就命中</td>
+</tr>
+<tr>
+<td align="left">最坏（无随机化）</td>
+<td align="left">O(n²)</td>
+<td align="left">数组已有序 + 固定选最左为 pivot</td>
+</tr>
+<tr>
+<td align="left">最坏（有随机化）</td>
+<td align="left">O(n²)，概率极低</td>
+<td align="left">每次都随机到最值</td>
+</tr>
+</tbody></table>
+<h3 id="7-2-空间复杂度"><a href="#7-2-空间复杂度" class="headerlink" title="7.2 空间复杂度"></a>7.2 空间复杂度</h3><p><strong>O(1)</strong> —— 原地操作，没有使用额外数组。递归&#x2F;循环也只用了常数个变量。</p>
+<hr>
+<h2 id="八、随机化的意义"><a href="#八、随机化的意义" class="headerlink" title="八、随机化的意义"></a>八、随机化的意义</h2><p>如果固定选 <code>nums[left]</code> 作为基准，当输入数组<strong>已经有序</strong>时：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[1, 2, 3, 4, 5, 6]  选 base = 1</span><br><span class="line"></span><br><span class="line">分区后: [1, 2, 3, 4, 5, 6]</span><br><span class="line">        ↑  (pivot 在最左，右侧还有 n-1 个元素)</span><br></pre></td></tr></table></figure>
+
+<p>每次都是最坏情况，O(n²)。</p>
+<p><strong>解决办法：</strong> 每次随机选一个元素作为 pivot，然后把它交换到 <code>left</code> 位置：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> randIdx = left + <span class="built_in">rand</span>() % (right - left + <span class="number">1</span>);</span><br><span class="line"><span class="built_in">swap</span>(nums[left], nums[randIdx]);  <span class="comment">// 随机元素换到最左</span></span><br><span class="line"><span class="type">int</span> base = nums[left];</span><br><span class="line"><span class="comment">// 后续分区逻辑不变</span></span><br></pre></td></tr></table></figure>
+
+<p>这样，无论输入是什么，<strong>期望</strong>上每次分区都是平衡的。</p>
+<hr>
+<h2 id="九、与快速排序的关系"><a href="#九、与快速排序的关系" class="headerlink" title="九、与快速排序的关系"></a>九、与快速排序的关系</h2><table>
+<thead>
+<tr>
+<th align="left"></th>
+<th align="left">快速排序 (Quicksort)</th>
+<th align="left">快速选择 (QuickSelect)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>目标</strong></td>
+<td align="left">排序整个数组</td>
+<td align="left">找到第 k 大（小）的元素</td>
+</tr>
+<tr>
+<td align="left"><strong>分区后</strong></td>
+<td align="left">递归<strong>左右两侧</strong></td>
+<td align="left">只递归<strong>目标所在的一侧</strong></td>
+</tr>
+<tr>
+<td align="left"><strong>递归式</strong></td>
+<td align="left">T(n) &#x3D; T(k) + T(n-k-1) + O(n)</td>
+<td align="left">T(n) &#x3D; T(n&#x2F;2) + O(n)</td>
+</tr>
+<tr>
+<td align="left"><strong>时间复杂度</strong></td>
+<td align="left">O(n log n) 平均</td>
+<td align="left"><strong>O(n)</strong> 平均</td>
+</tr>
+<tr>
+<td align="left"><strong>稳定性</strong></td>
+<td align="left">不稳定</td>
+<td align="left">不稳定</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>快排要打理整栋楼的两翼，快选只看目标楼层的那一侧。</p>
+</blockquote>
+<hr>
+<h2 id="十、常见疑问解答-FAQ"><a href="#十、常见疑问解答-FAQ" class="headerlink" title="十、常见疑问解答 (FAQ)"></a>十、常见疑问解答 (FAQ)</h2><h3 id="Q1-分区条件为什么不能用"><a href="#Q1-分区条件为什么不能用" class="headerlink" title="Q1: 分区条件为什么不能用 &lt;= 和 &lt; 的组合？"></a>Q1: 分区条件为什么不能用 <code>&lt;=</code> 和 <code>&lt;</code> 的组合？</h3><p>用 <code>nums[i] &lt;= base</code> 和 <code>nums[j] &lt; base</code>？这等价于策略 A 的镜像——<code>i</code> 遇到等于 <code>base</code> 的不会停，直接跳过。结果等于 <code>base</code> 的元素全堆在一边，重复元素多时退化。</p>
+<h3 id="Q2-能不能用三路分区？"><a href="#Q2-能不能用三路分区？" class="headerlink" title="Q2: 能不能用三路分区？"></a>Q2: 能不能用三路分区？</h3><p>当然可以。三路分区将数组分为 <code>&lt; base</code>、<code>= base</code>、<code>&gt; base</code> 三个区域：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[  &lt; base  |  = base  |  &gt; base  ]</span><br><span class="line">            ↑         ↑</span><br><span class="line">           lt        gt</span><br></pre></td></tr></table></figure>
+
+<p>好处是等于 <code>base</code> 的区域一次到位，遇到大量重复元素时更快。但实现稍复杂，且本题的两路 + 策略 C 已经足够。</p>
+<h3 id="Q3-为什么最后-swap-nums-left-nums-j-不会出错？"><a href="#Q3-为什么最后-swap-nums-left-nums-j-不会出错？" class="headerlink" title="Q3: 为什么最后 swap(nums[left], nums[j]) 不会出错？"></a>Q3: 为什么最后 <code>swap(nums[left], nums[j])</code> 不会出错？</h3><p>循环退出时保证 <code>i &gt; j</code>。此时：</p>
+<ul>
+<li><code>j</code> 要么等于 <code>left</code>（所有元素都 ≥ base），要么指向一个 ≤ base 的元素</li>
+<li>无论如何，交换后分区性质保持：<code>[left, j-1]</code> 都 ≤ base，<code>[j+1, right]</code> 都 ≥ base</li>
+</ul>
+<h3 id="Q4-第-K-大和第-K-小有什么关系？"><a href="#Q4-第-K-大和第-K-小有什么关系？" class="headerlink" title="Q4: 第 K 大和第 K 小有什么关系？"></a>Q4: 第 K 大和第 K 小有什么关系？</h3><p>第 K 大 &#x3D; 升序数组中第 <code>n - k</code> 小。所以本题等价于找第 <code>n - k + 1</code> 小的元素（如果从 1 开始计数）。</p>
+<hr>
+<h2 id="十一、总结"><a href="#十一、总结" class="headerlink" title="十一、总结"></a>十一、总结</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────────────────────────────┐</span><br><span class="line">│                    QuickSelect 核心要点                    │</span><br><span class="line">├─────────────────────────────────────────────────────────┤</span><br><span class="line">│  1. 目标：在无序数组中找第 k 大的元素，O(n) 时间            │</span><br><span class="line">│                                                         │</span><br><span class="line">│  2. 思想：每次分区确定一个元素的最终位置，                   │</span><br><span class="line">│     只往目标所在的那一侧递归                               │</span><br><span class="line">│                                                         │</span><br><span class="line">│  3. 分区策略：用 ≤ 和 ≥ 把等于 pivot 的元素均匀分散，       │</span><br><span class="line">│     避免重复元素导致退化                                   │</span><br><span class="line">│                                                         │</span><br><span class="line">│  4. 随机化：随机选 pivot，避免有序输入的 O(n²) 最坏情况     │</span><br><span class="line">│                                                         │</span><br><span class="line">│  5. 复杂度：时间 O(n) 平均，空间 O(1)                      │</span><br><span class="line">└─────────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<p>掌握快速选择，你不仅能够 O(n) 解决 Top K 问题，更能深入理解<strong>分治思想</strong>中「只解决有用那一半」的智慧——这才是算法设计的精髓所在。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AE%97%E6%B3%95-%E5%BF%AB%E6%8E%92-%E5%BF%AB%E9%80%9F%E9%80%89%E6%8B%A9-%E7%AC%ACK%E5%A4%A7%E5%85%83%E7%B4%A0/" rel="tag"># 算法 快排 快速选择 第K大元素</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/06/21/oncall-Agent-1-0/" rel="prev" title="oncall Agent-1.0">
+                  <i class="fa fa-angle-left"></i> oncall Agent-1.0
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2024 – 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">查志渊</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>
