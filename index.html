@@ -139,7 +139,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-count">15</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -150,7 +150,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-count">27</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -172,6 +172,703 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/06/22/Oncall-Agent-2-0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="查志渊">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="渊渟岳峙的技术笔记">
+      <meta itemprop="description" content="磨炼自己的一点点技术">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=" | 渊渟岳峙的技术笔记">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2026/06/22/Oncall-Agent-2-0/" class="post-title-link" itemprop="url">Oncall Agent-2.0</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2026-06-22 19:00:03 / 修改时间：21:00:00" itemprop="dateCreated datePublished" datetime="2026-06-22T19:00:03+08:00">2026-06-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E9%A1%B9%E7%9B%AE%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">项目笔记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="Oncall-Agent-2-0-—-Agent-架构演进、多智能体协作与-MCP-工具集成"><a href="#Oncall-Agent-2-0-—-Agent-架构演进、多智能体协作与-MCP-工具集成" class="headerlink" title="Oncall Agent 2.0 — Agent 架构演进、多智能体协作与 MCP 工具集成"></a>Oncall Agent 2.0 — Agent 架构演进、多智能体协作与 MCP 工具集成</h1><blockquote>
+<p><strong>本文目标</strong>：从 ReAct 单智能体模式出发，到 Plan-Execute-Replan 多智能体协作架构，最后深入理解 Oncall Agent 2.0 中各工具（特别是腾讯云 CLS MCP）的工作原理。读完这份笔记，你就能完整回答：”为什么 Agent 要这样设计？MCP 到底是什么？CLS MCP 是怎么让 AI 直接查日志的？”</p>
+<p>前置阅读：<a href="/2026/06/21/oncall-Agent-1-0/">Oncall Agent 1.0 — RAG 问答系统核心流程与组件拆解</a></p>
+</blockquote>
+<hr>
+<h2 id="一、全景速览"><a href="#一、全景速览" class="headerlink" title="一、全景速览"></a>一、全景速览</h2><p>从 1.0 到 2.0，Oncall Agent 经历了两个核心变化：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Oncall Agent 1.0                          Oncall Agent 2.0</span><br><span class="line">┌─────────────────────┐                  ┌──────────────────────────────┐</span><br><span class="line">│  单一 RAG 问答系统    │      ──▶        │  多 Agent 协作的运维平台       │</span><br><span class="line">│                     │                  │                              │</span><br><span class="line">│  用户提问 → 检索 →   │                  │  ┌─ 对话 Agent (RAG 问答)     │</span><br><span class="line">│  大模型回答          │                  │  ├─ 运维 Agent (日志/告警)    │</span><br><span class="line">│                     │                  │  └─ 工具层 (CLS MCP/...)     │</span><br><span class="line">└─────────────────────┘                  └──────────────────────────────┘</span><br><span class="line"></span><br><span class="line">        核心变化 ①                          核心变化 ②</span><br><span class="line">  从&quot;简单问答&quot;到&quot;ReAct 推理循环&quot;        从&quot;单一 Agent&quot;到&quot;多 Agent 协作&quot;</span><br><span class="line">  (思考→行动→观察→再思考)             (Planner→Executor→Replan)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>一句话概括 2.0</strong>：Oncall Agent 2.0 是一个基于 <strong>ReAct 推理范式</strong> 和 <strong>Plan-Execute-Replan 多智能体架构</strong> 的智能运维助手，通过 <strong>MCP 协议</strong> 集成腾讯云 CLS 等外部工具，实现对告警和日志的智能分析。</p>
+</blockquote>
+<hr>
+<h2 id="二、ReAct-架构：推理-执行-观察的闭环"><a href="#二、ReAct-架构：推理-执行-观察的闭环" class="headerlink" title="二、ReAct 架构：推理 + 执行 + 观察的闭环"></a>二、ReAct 架构：推理 + 执行 + 观察的闭环</h2><h3 id="2-1-什么是-ReAct？"><a href="#2-1-什么是-ReAct？" class="headerlink" title="2.1 什么是 ReAct？"></a>2.1 什么是 ReAct？</h3><p><strong>ReAct</strong> &#x3D; <strong>Re</strong>asoning + <strong>Act</strong>ing（推理 + 行动），是 LLM Agent 领域最经典的架构范式。</p>
+<p>它的核心思想极其简单：<strong>让大模型在一个循环里不断地”思考 → 行动 → 观察结果 → 再思考”，直到解决问题。</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">┌──────────────┐</span><br><span class="line">│   Thought    │  ← 分析当前状态，决定下一步做什么</span><br><span class="line">│   (思考)     │</span><br><span class="line">└──────┬───────┘</span><br><span class="line">       │</span><br><span class="line">       ▼</span><br><span class="line">┌──────────────┐</span><br><span class="line">│   Action     │  ← 执行具体操作（调用工具/函数）</span><br><span class="line">│   (行动)     │</span><br><span class="line">└──────┬───────┘</span><br><span class="line">       │</span><br><span class="line">       ▼</span><br><span class="line">┌──────────────┐</span><br><span class="line">│ Observation  │  ← 观察行动结果（工具返回了什么）</span><br><span class="line">│   (观察)     │</span><br><span class="line">└──────┬───────┘</span><br><span class="line">       │</span><br><span class="line">       ▼</span><br><span class="line">┌──────────────┐</span><br><span class="line">│ 是否已完成？  │──否──▶ 回到 Thought（带着观察结果）</span><br><span class="line">└──────┬───────┘</span><br><span class="line">       │是</span><br><span class="line">       ▼</span><br><span class="line">┌──────────────┐</span><br><span class="line">│   返回最终答案  │</span><br><span class="line">└──────────────┘</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>🔑 <strong>为什么叫 ReAct？</strong> 因为它的每一步都在交替做两件事：<strong>Re</strong>ason（推理）和 <strong>Act</strong>（行动）——推理告诉你”该做什么”，行动去”实际做”，观察结果反馈给下一轮推理。这就是一个完整的 <strong>感知-决策-执行</strong> 闭环。</p>
+</blockquote>
+<h3 id="2-2-古老-ReAct：纯文本驱动的”协议”"><a href="#2-2-古老-ReAct：纯文本驱动的”协议”" class="headerlink" title="2.2 古老 ReAct：纯文本驱动的”协议”"></a>2.2 古老 ReAct：纯文本驱动的”协议”</h3><p>在 Function Call 出现之前，ReAct 是这样实现的：</p>
+<p><strong>做法</strong>：在 System Prompt 里写死一套文本格式规范，强制大模型按照规定的文本模式输出。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">System Prompt（示例）：</span><br><span class="line">┌─────────────────────────────────────────────────────────────┐</span><br><span class="line">│ 你是一个 ReAct 代理，遵循 思考 → 行动 → 观察 循环来解决问题。 │</span><br><span class="line">│                                                             │</span><br><span class="line">│ 你必须严格按照以下格式输出：                                  │</span><br><span class="line">│                                                             │</span><br><span class="line">│ Thought: &lt;你的思考，分析当前状态和下一步计划&gt;                  │</span><br><span class="line">│ Action: &lt;你要执行的行动名称&gt;                                  │</span><br><span class="line">│ Action Input: &lt;行动的参数&gt;                                   │</span><br><span class="line">│                                                             │</span><br><span class="line">│ 可用的行动有：                                               │</span><br><span class="line">│ - search(query: str): 搜索知识库                             │</span><br><span class="line">│ - calculate(expression: str): 执行数学计算                   │</span><br><span class="line">│ - get_current_time(): 获取当前时间                           │</span><br><span class="line">└─────────────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<p>大模型收到后按格式输出，<strong>应用程序通过正则表达式解析这段文本</strong>，提取 Action 和参数，执行工具，把结果拼回去，再让大模型继续。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">一轮完整的交互示例：</span><br><span class="line"></span><br><span class="line">┌─ 用户提问 ──────────────────────────────────────────────────┐</span><br><span class="line">│ &quot;现在几点？帮我查一下今天有没有P0级别的告警。&quot;                 │</span><br><span class="line">└──────────────────────────────────────────────────────────────┘</span><br><span class="line"></span><br><span class="line">┌─ 大模型第1轮输出 ───────────────────────────────────────────┐</span><br><span class="line">│ Thought: 我需要先获取当前时间，然后才能查询今天的告警。          │</span><br><span class="line">│ Action: get_current_time                                     │</span><br><span class="line">│ Action Input: 无                                              │</span><br><span class="line">└──────────────────────────────────────────────────────────────┘</span><br><span class="line">                    │ 程序解析文本 → 调用 get_current_time()</span><br><span class="line">                    │ 返回: &quot;2026-06-22 14:30:00&quot;</span><br><span class="line">                    ▼</span><br><span class="line">┌─ 大模型第2轮输出（拼接了上轮结果）────────────────────────────┐</span><br><span class="line">│ Thought: 现在是2026年6月22日下午2点半，可以查询今天的告警了。   │</span><br><span class="line">│ Action: search_alerts                                        │</span><br><span class="line">│ Action Input: &#123;&quot;level&quot;: &quot;P0&quot;, &quot;date&quot;: &quot;2026-06-22&quot;&#125;          │</span><br><span class="line">└──────────────────────────────────────────────────────────────┘</span><br><span class="line">                    │ 程序解析文本 → 调用 search_alerts(...)</span><br><span class="line">                    │ 返回: [&#123;&quot;id&quot;: &quot;ALT-001&quot;, &quot;title&quot;: &quot;数据库连接超时&quot;&#125;]</span><br><span class="line">                    ▼</span><br><span class="line">┌─ 大模型第3轮输出 ───────────────────────────────────────────┐</span><br><span class="line">│ Thought: 我已经获取了所有需要的信息，可以给用户最终答案了。     │</span><br><span class="line">│ Action: Final Answer                                         │</span><br><span class="line">│ Action Input: 现在是2026年6月22日14:30，今天有一条P0告警：     │</span><br><span class="line">│   ALT-001 数据库连接超时。                                    │</span><br><span class="line">└──────────────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<p><strong>古老 ReAct 的致命缺陷：</strong></p>
+<table>
+<thead>
+<tr>
+<th>问题</th>
+<th>具体表现</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>格式脆弱</strong></td>
+<td>大模型可能输出 <code>Thoughts:</code>（多了一个 s）、<code>Action input:</code>（大小写不一致），正则匹配直接失败</td>
+</tr>
+<tr>
+<td><strong>参数复杂时易出错</strong></td>
+<td>嵌套 JSON 参数容易格式错误、少括号、多引号，解析失败率随参数复杂度指数上升</td>
+</tr>
+<tr>
+<td><strong>幻觉行动名</strong></td>
+<td>大模型可能编造一个不存在的工具名，程序调用失败后才报错</td>
+</tr>
+<tr>
+<td><strong>调试困难</strong></td>
+<td>出问题时，你在看一段自由文本而非结构化数据，定位问题靠肉眼</td>
+</tr>
+<tr>
+<td><strong>不支持流式</strong></td>
+<td>文本格式解析必须等待完整输出，无法边生成边解析</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>💡 <strong>打个比方</strong>：古老 ReAct 就像你给一个人发短信说”你要严格按这个格式回复我”，但对方可能手滑、打错字、格式跑偏——你没有任何机制来保证他一定遵守格式。</p>
+</blockquote>
+<h3 id="2-3-现代-ReAct：Function-Call（函数调用）——-从文本到-JSON"><a href="#2-3-现代-ReAct：Function-Call（函数调用）——-从文本到-JSON" class="headerlink" title="2.3 现代 ReAct：Function Call（函数调用）—— 从文本到 JSON"></a>2.3 现代 ReAct：Function Call（函数调用）—— 从文本到 JSON</h3><p><strong>Function Call</strong> 是现代 LLM（GPT-4、Claude 等）原生支持的能力。它的核心改进是：<strong>不再用文本约定，而是用结构化的 JSON Schema 定义工具，大模型以 JSON 格式返回调用请求。</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">古老 ReAct                             现代 ReAct (Function Call)</span><br><span class="line">┌────────────────────┐                 ┌─────────────────────────┐</span><br><span class="line">│ 在 System Prompt    │                │ 在 API 请求中传递         │</span><br><span class="line">│ 中用文字描述工具     │     ──▶       │ 标准化的 tools 参数       │</span><br><span class="line">│                     │                │ (JSON Schema 格式)       │</span><br><span class="line">│ 大模型输出自由文本   │     ──▶       │ 大模型输出标准 JSON       │</span><br><span class="line">│                     │                │ &#123;&quot;name&quot;: &quot;...&quot;,          │</span><br><span class="line">│ 应用程序正则解析文本  │     ──▶       │  &quot;arguments&quot;: &#123;...&#125;&#125;     │</span><br><span class="line">│                     │                │                          │</span><br><span class="line">│ 格式错误率 ≈ 5-10%  │     ──▶       │ 格式错误率 ≈ 0%           │</span><br><span class="line">└────────────────────┘                 └─────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<p><strong>完整流程示意：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line">┌──────────────────────────────────────────────────────────────────┐</span><br><span class="line">│  1. 应用程序向大模型发送请求，包含 tools 定义（JSON Schema）       │</span><br><span class="line">│                                                                  │</span><br><span class="line">│  &#123;                                                               │</span><br><span class="line">│    &quot;model&quot;: &quot;claude-sonnet-4-6&quot;,                                │</span><br><span class="line">│    &quot;messages&quot;: [&#123;&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;查一下P0告警&quot;&#125;],    │</span><br><span class="line">│    &quot;tools&quot;: [                                                    │</span><br><span class="line">│      &#123;                                                           │</span><br><span class="line">│        &quot;name&quot;: &quot;search_alerts&quot;,                                  │</span><br><span class="line">│        &quot;description&quot;: &quot;查询告警列表，可按级别和时间过滤&quot;,          │</span><br><span class="line">│        &quot;input_schema&quot;: &#123;                                         │</span><br><span class="line">│          &quot;type&quot;: &quot;object&quot;,                                       │</span><br><span class="line">│          &quot;properties&quot;: &#123;                                         │</span><br><span class="line">│            &quot;level&quot;: &#123;&quot;type&quot;: &quot;string&quot;, &quot;enum&quot;: [&quot;P0&quot;,&quot;P1&quot;,&quot;P2&quot;]&#125;,│</span><br><span class="line">│            &quot;date&quot;:  &#123;&quot;type&quot;: &quot;string&quot;, &quot;format&quot;: &quot;date&quot;&#125;         │</span><br><span class="line">│          &#125;,                                                      │</span><br><span class="line">│          &quot;required&quot;: [&quot;level&quot;]                                   │</span><br><span class="line">│        &#125;                                                         │</span><br><span class="line">│      &#125;                                                           │</span><br><span class="line">│    ]                                                             │</span><br><span class="line">│  &#125;                                                               │</span><br><span class="line">└──────────────────────────────────────────────────────────────────┘</span><br><span class="line">                          │</span><br><span class="line">                          ▼</span><br><span class="line">┌──────────────────────────────────────────────────────────────────┐</span><br><span class="line">│  2. 大模型返回标准的 tool_use 消息（JSON 格式，不是文本！）        │</span><br><span class="line">│                                                                  │</span><br><span class="line">│  &#123;                                                               │</span><br><span class="line">│    &quot;role&quot;: &quot;assistant&quot;,                                          │</span><br><span class="line">│    &quot;content&quot;: [                                                  │</span><br><span class="line">│      &#123;                                                           │</span><br><span class="line">│        &quot;type&quot;: &quot;tool_use&quot;,                                       │</span><br><span class="line">│        &quot;name&quot;: &quot;search_alerts&quot;,                                  │</span><br><span class="line">│        &quot;input&quot;: &#123;                                                │</span><br><span class="line">│          &quot;level&quot;: &quot;P0&quot;,                                          │</span><br><span class="line">│          &quot;date&quot;: &quot;2026-06-22&quot;                                    │</span><br><span class="line">│        &#125;                                                         │</span><br><span class="line">│      &#125;                                                           │</span><br><span class="line">│    ]                                                             │</span><br><span class="line">│  &#125;                                                               │</span><br><span class="line">└──────────────────────────────────────────────────────────────────┘</span><br><span class="line">                          │</span><br><span class="line">                          ▼</span><br><span class="line">┌──────────────────────────────────────────────────────────────────┐</span><br><span class="line">│  3. 应用程序直接取 JSON，无需正则解析，类型安全                    │</span><br><span class="line">│                                                                  │</span><br><span class="line">│  tool_name = response.content[0].name    // &quot;search_alerts&quot;      │</span><br><span class="line">│  params    = response.content[0].input   // &#123;level: &quot;P0&quot;, ...&#125;   │</span><br><span class="line">│  result    = call_tool(tool_name, params)  // 调用实际工具        │</span><br><span class="line">└──────────────────────────────────────────────────────────────────┘</span><br><span class="line">                          │</span><br><span class="line">                          ▼</span><br><span class="line">┌──────────────────────────────────────────────────────────────────┐</span><br><span class="line">│  4. 把工具执行结果作为 tool_result 消息发回大模型，继续循环        │</span><br><span class="line">│                                                                  │</span><br><span class="line">│  &#123;                                                               │</span><br><span class="line">│    &quot;role&quot;: &quot;user&quot;,                                               │</span><br><span class="line">│    &quot;content&quot;: [&#123;                                                 │</span><br><span class="line">│      &quot;type&quot;: &quot;tool_result&quot;,                                      │</span><br><span class="line">│      &quot;tool_use_id&quot;: &quot;...&quot;,                                       │</span><br><span class="line">│      &quot;content&quot;: &quot;[&#123;id: ALT-001, title: 数据库连接超时&#125;]&quot;         │</span><br><span class="line">│    &#125;]                                                            │</span><br><span class="line">│  &#125;                                                               │</span><br><span class="line">└──────────────────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>🔑 <strong>关键差异</strong>：古老 ReAct 是大模型”写作文”给程序看，程序靠正则”猜”他写了什么；Function Call 是大模型直接输出结构化的 JSON，程序不需要”猜”——格式由协议保证，出错概率趋近于零。</p>
+</blockquote>
+<h3 id="2-4-ReAct-架构的优势总结"><a href="#2-4-ReAct-架构的优势总结" class="headerlink" title="2.4 ReAct 架构的优势总结"></a>2.4 ReAct 架构的优势总结</h3><table>
+<thead>
+<tr>
+<th>优势</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>架构简单</strong></td>
+<td>只需要一个推理-执行-观察的循环，就能处理各种复杂任务</td>
+</tr>
+<tr>
+<td><strong>可解释性强</strong></td>
+<td>每一步的 Thought 和 Action 都有记录，可以完整回溯推理链</td>
+</tr>
+<tr>
+<td><strong>输出结构化</strong></td>
+<td>使用 Function Call 后，工具调用是标准 JSON，解析零歧义</td>
+</tr>
+<tr>
+<td><strong>易于扩展</strong></td>
+<td>新增工具只需在 <code>tools</code> 数组中加一个 JSON Schema，不影响现有逻辑</td>
+</tr>
+<tr>
+<td><strong>错误可见</strong></td>
+<td>工具调用失败时，错误信息会被喂回大模型，让它自我修正</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="三、Plan-Execute-Replan-架构：多智能体协作模式"><a href="#三、Plan-Execute-Replan-架构：多智能体协作模式" class="headerlink" title="三、Plan-Execute-Replan 架构：多智能体协作模式"></a>三、Plan-Execute-Replan 架构：多智能体协作模式</h2><h3 id="3-1-核心思想"><a href="#3-1-核心思想" class="headerlink" title="3.1 核心思想"></a>3.1 核心思想</h3><p><strong>Plan-Execute-Replan</strong> 是 ReAct 的升级版——把”一个人边想边做”升级为”一个人先想好计划、另一个人去执行、第一个人再检查要不要调整计划”的 <strong>多角色协作模式</strong>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">      ReAct（单智能体）              Plan-Execute-Replan（多智能体）</span><br><span class="line">┌─────────────────────┐      ┌─────────────────────────────┐</span><br><span class="line">│                     │      │  ┌──────┐                   │</span><br><span class="line">│   思考               │      │  │Planner│  战略层：拆解目标  │</span><br><span class="line">│    ↓                │      │  └──┬───┘                   │</span><br><span class="line">│   行动  ← 同一角色   │      │     │ 分配子任务              │</span><br><span class="line">│    ↓                │      │     ▼                      │</span><br><span class="line">│   观察               │      │  ┌────────┐                │</span><br><span class="line">│                     │      │  │Executor│ 执行层：逐个完成  │</span><br><span class="line">│   一个人在循环       │      │  └──┬─────┘                │</span><br><span class="line">│                     │      │     │ 反馈结果              │</span><br><span class="line">│                     │      │     ▼                      │</span><br><span class="line">│                     │      │  ┌──────┐                  │</span><br><span class="line">│                     │      │  │Replan│  调整层：纠偏优化  │</span><br><span class="line">│                     │      │  └──────┘                  │</span><br><span class="line">└─────────────────────┘      └─────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>🔑 <strong>类比理解</strong>：ReAct 像一个工程师接到需求就边想边干；Plan-Execute-Replan 像一个团队——项目经理先拆任务（Planner）、工程师执行（Executor）、项目经理根据进度调整计划（Replan）。</p>
+</blockquote>
+<h3 id="3-2-三个角色的职责拆解"><a href="#3-2-三个角色的职责拆解" class="headerlink" title="3.2 三个角色的职责拆解"></a>3.2 三个角色的职责拆解</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────────────────────────────────────┐</span><br><span class="line">│                        Planner（规划者）                          │</span><br><span class="line">│                                                                  │</span><br><span class="line">│  输入：用户的最终目标                                             │</span><br><span class="line">│  输出：分步骤的执行计划（每一步是一个&quot;子目标&quot;）                     │</span><br><span class="line">│                                                                  │</span><br><span class="line">│  职责：                                                          │</span><br><span class="line">│  1. 理解用户意图，将大目标拆解为可执行的子任务                      │</span><br><span class="line">│  2. 确定子任务之间的依赖关系和执行顺序                             │</span><br><span class="line">│  3. 把每个子任务分配给 Executor 执行                              │</span><br><span class="line">│                                                                  │</span><br><span class="line">│  示例：用户说&quot;帮我排查一下服务延迟飙升的原因&quot;                       │</span><br><span class="line">│                                                                  │</span><br><span class="line">│  Planner 拆解 →                                                  │</span><br><span class="line">│    Step 1: 获取当前时间，确定时间范围                              │</span><br><span class="line">│    Step 2: 查询该时间段内所有 P0/P1 告警                          │</span><br><span class="line">│    Step 3: 查询相关服务的错误日志（过去1小时）                      │</span><br><span class="line">│    Step 4: 查询服务依赖的数据库慢查询日志                          │</span><br><span class="line">│    Step 5: 综合分析所有信息，给出根因和修复建议                     │</span><br><span class="line">└─────────────────────────────────────────────────────────────────┘</span><br><span class="line"></span><br><span class="line">┌─────────────────────────────────────────────────────────────────┐</span><br><span class="line">│                       Executor（执行者）                          │</span><br><span class="line">│                                                                  │</span><br><span class="line">│  输入：Planner 分配的一个子任务                                   │</span><br><span class="line">│  输出：该子任务的执行结果                                         │</span><br><span class="line">│                                                                  │</span><br><span class="line">│  职责：                                                          │</span><br><span class="line">│  1. 接收单个子任务，不关注全局目标                                 │</span><br><span class="line">│  2. 选择合适的工具（Function Call）完成子任务                      │</span><br><span class="line">│  3. 内部可能使用 ReAct 循环来完成单个子任务                        │</span><br><span class="line">│  4. 将结果（成功/失败 + 数据）返回给 Planner                      │</span><br><span class="line">│                                                                  │</span><br><span class="line">│  关键设计：Executor 可以是一个完整的 ReAct Agent！                  │</span><br><span class="line">│  ┌──────────────────────────────────────┐                        │</span><br><span class="line">│  │  Executor 内部可能是这样的：           │                        │</span><br><span class="line">│  │                                      │                        │</span><br><span class="line">│  │  Thought: 需要查日志                 │                        │</span><br><span class="line">│  │  Action:  SearchLog(query)          │                        │</span><br><span class="line">│  │  Observation: 返回30条错误日志       │                        │</span><br><span class="line">│  │  Thought: 日志太多，加过滤条件       │                        │</span><br><span class="line">│  │  Action:  SearchLog(query, level=ERROR)                      │</span><br><span class="line">│  │  Observation: 返回5条关键错误        │                        │</span><br><span class="line">│  │  Thought: 信息足够，可以总结了       │                        │</span><br><span class="line">│  └──────────────────────────────────────┘                        │</span><br><span class="line">└─────────────────────────────────────────────────────────────────┘</span><br><span class="line"></span><br><span class="line">┌─────────────────────────────────────────────────────────────────┐</span><br><span class="line">│                       Replan（重规划者）                          │</span><br><span class="line">│                                                                  │</span><br><span class="line">│  输入：Executor 执行所有子任务后的汇总结果                         │</span><br><span class="line">│  输出：是否需要调整计划的判断 + 调整后的新计划                     │</span><br><span class="line">│                                                                  │</span><br><span class="line">│  职责：                                                          │</span><br><span class="line">│  1. 审查 Executor 的返回结果，判断计划是否有效                     │</span><br><span class="line">│  2. 如果某个步骤失败 → 调整计划（换一种方式、跳过、降级等）         │</span><br><span class="line">│  3. 如果发现新信息需要补充调查 → 追加新步骤                       │</span><br><span class="line">│  4. 如果所有步骤完成 → 触发最终回答                               │</span><br><span class="line">│                                                                  │</span><br><span class="line">│  常见调整场景：                                                   │</span><br><span class="line">│  - Executor 返回&quot;没有找到相关日志&quot; → Replan 扩大时间范围           │</span><br><span class="line">│  - Executor 返回&quot;数据库连接超时&quot; → Replan 追加数据库诊断步骤       │</span><br><span class="line">│  - Executor 返回&quot;日志量太大&quot; → Replan 增加过滤条件                 │</span><br><span class="line">└─────────────────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-3-完整工作流"><a href="#3-3-完整工作流" class="headerlink" title="3.3 完整工作流"></a>3.3 完整工作流</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">用户输入：&quot;服务延迟飙升，帮我排查一下&quot;</span><br><span class="line">    │</span><br><span class="line">    ▼</span><br><span class="line">┌──────────────────────────────────────────────────────────────────┐</span><br><span class="line">│  Planner                                                         │</span><br><span class="line">│                                                                  │</span><br><span class="line">│  分析目标 → 拆解为子任务列表：                                    │</span><br><span class="line">│                                                                  │</span><br><span class="line">│  ┌─────────────────────────────────────────────────────────────┐ │</span><br><span class="line">│  │  [子任务1] 获取当前时间                         ← get_time  │ │</span><br><span class="line">│  │  [子任务2] 查询P0告警                           ← search_   │ │</span><br><span class="line">│  │  [子任务3] 查询错误日志（按时间范围+错误级别过滤）  alerts    │ │</span><br><span class="line">│  │  [子任务4] 查询慢查询日志                        ← SearchLog│ │</span><br><span class="line">│  │  [子任务5] 综合分析 → 生成报告                               │ │</span><br><span class="line">│  └─────────────────────────────────────────────────────────────┘ │</span><br><span class="line">└──────────────────────────────────────────────────────────────────┘</span><br><span class="line">    │</span><br><span class="line">    │  逐个派发子任务</span><br><span class="line">    ▼</span><br><span class="line">┌──────────────────────────────────────────────────────────────────┐</span><br><span class="line">│  Executor（对每个子任务独立执行）                                  │</span><br><span class="line">│                                                                  │</span><br><span class="line">│  执行子任务1 → get_time() → ✅ &quot;2026-06-22 14:30:00&quot;             │</span><br><span class="line">│  执行子任务2 → search_alerts(&quot;P0&quot;) → ✅ 返回1条P0告警             │</span><br><span class="line">│  执行子任务3 → SearchLog(query, level=ERROR) → ✅ 返回50条错误日志│</span><br><span class="line">│  执行子任务4 → SearchLog(query, type=slow_query) → ⚠️ 返回为空    │</span><br><span class="line">└──────────────────────────────────────────────────────────────────┘</span><br><span class="line">    │</span><br><span class="line">    │  汇总结果</span><br><span class="line">    ▼</span><br><span class="line">┌──────────────────────────────────────────────────────────────────┐</span><br><span class="line">│  Replan                                                          │</span><br><span class="line">│                                                                  │</span><br><span class="line">│  检查各项结果：                                                   │</span><br><span class="line">│  - 子任务1~3 成功 ✅                                              │</span><br><span class="line">│  - 子任务4 返回为空 ⚠️                                            │</span><br><span class="line">│                                                                  │</span><br><span class="line">│  判断：慢查询日志为空可能是因为时间范围太窄或服务没有慢查询         │</span><br><span class="line">│  决策：跳过子任务4，直接基于子任务1~3的结果进行综合分析             │</span><br><span class="line">│                                                                  │</span><br><span class="line">│  通知 Planner → 调整计划 → 触发综合分析                          │</span><br><span class="line">└──────────────────────────────────────────────────────────────────┘</span><br><span class="line">    │</span><br><span class="line">    ▼</span><br><span class="line">┌──────────────────────────────────────────────────────────────────┐</span><br><span class="line">│  最终输出：结构化诊断报告                                         │</span><br><span class="line">│                                                                  │</span><br><span class="line">│  🔴 根因分析：                                                   │</span><br><span class="line">│  - 14:25 数据库主库发生连接池耗尽（告警 ALT-001）                  │</span><br><span class="line">│  - 14:25~14:30 出现 50 条 &quot;Connection timeout&quot; 错误              │</span><br><span class="line">│                                                                  │</span><br><span class="line">│  💡 修复建议：                                                   │</span><br><span class="line">│  - 临时：扩容数据库连接池上限至 200                                │</span><br><span class="line">│  - 长期：检查是否有未释放连接的内存泄漏                            │</span><br><span class="line">└──────────────────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-4-Plan-Execute-Replan-架构的优势"><a href="#3-4-Plan-Execute-Replan-架构的优势" class="headerlink" title="3.4 Plan-Execute-Replan 架构的优势"></a>3.4 Plan-Execute-Replan 架构的优势</h3><table>
+<thead>
+<tr>
+<th>优势</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>全局规划能力强</strong></td>
+<td>Planner 在动手前先全局思考，避免”见树不见林”——ReAct 容易在局部细节中迷失</td>
+</tr>
+<tr>
+<td><strong>容错性和自愈性</strong></td>
+<td>Replan 角色能在某步骤失败后自动调整策略，而非直接报错退出</td>
+</tr>
+<tr>
+<td><strong>职责分离清晰</strong></td>
+<td>战略层(Planner)和执行层(Executor)解耦，各自优化各自的能力</td>
+</tr>
+<tr>
+<td><strong>可并行执行</strong></td>
+<td>无依赖的子任务可以被多个 Executor 并发执行，提升效率</td>
+</tr>
+<tr>
+<td><strong>更长的任务链</strong></td>
+<td>有全局计划支撑，可以处理比纯 ReAct 更长、更复杂的多步骤任务</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="四、ReAct-vs-Plan-Execute-Replan：多维对比"><a href="#四、ReAct-vs-Plan-Execute-Replan：多维对比" class="headerlink" title="四、ReAct vs Plan-Execute-Replan：多维对比"></a>四、ReAct vs Plan-Execute-Replan：多维对比</h2><blockquote>
+<p>从以下维度对比两种架构，帮助你在不同场景下做出正确的技术选型。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>对比维度</th>
+<th>ReAct</th>
+<th>Plan-Execute-Replan</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>核心思路</strong></td>
+<td>边想边做，推理和行动交替进行，无全局计划</td>
+<td>先规划后执行，有显式的全局计划，执行中可调整</td>
+</tr>
+<tr>
+<td><strong>是否有全局计划</strong></td>
+<td>❌ 没有。每一步只看到当前的观察结果</td>
+<td>✅ 有。Planner 先制定完整计划再分发</td>
+</tr>
+<tr>
+<td><strong>Agent 数量</strong></td>
+<td>1 个（单一 Agent 循环）</td>
+<td>多个（至少 3 个角色分工：Planner &#x2F; Executor &#x2F; Replan）</td>
+</tr>
+<tr>
+<td><strong>任务进度感知</strong></td>
+<td>弱。Agent 可能在中途”忘记”最初的复杂目标</td>
+<td>强。Planner 持有任务清单，可追踪每个子任务的完成状态</td>
+</tr>
+<tr>
+<td><strong>应对变化能力</strong></td>
+<td>有限。遇到意外结果只能在下一步调整，没有全局视角</td>
+<td>强。Replan 角色专门负责根据执行反馈调整全局计划</td>
+</tr>
+<tr>
+<td><strong>适合场景</strong></td>
+<td>简单到中等复杂度的任务（单次查询、信息检索、简单推理）</td>
+<td>复杂的多步骤任务（故障排查、多源数据分析、长流程自动化）</td>
+</tr>
+<tr>
+<td><strong>适合的任务长度</strong></td>
+<td>短到中等（1~5 个步骤）</td>
+<td>中到长（5~20+ 个步骤）</td>
+</tr>
+<tr>
+<td><strong>错误恢复</strong></td>
+<td>靠大模型自身判断”这次行动失败了，换个方式”</td>
+<td>有专门的 Replan 角色审视失败原因并系统性调整</td>
+</tr>
+<tr>
+<td><strong>并发能力</strong></td>
+<td>无（单线程循环）</td>
+<td>有。无依赖的子任务可被多个 Executor 并行处理</td>
+</tr>
+<tr>
+<td><strong>调试透明性</strong></td>
+<td>中等。可以看 Thought → Action → Observation 链路</td>
+<td>高。Plan → 每个 Executor 的结果 → Replan 决策 → 最终 Plan，分阶段可追踪</td>
+</tr>
+<tr>
+<td><strong>实现复杂度</strong></td>
+<td>低。一个循环 + Function Call 即可</td>
+<td>中到高。需要三个角色的 Prompt 工程、状态管理、通信协议</td>
+</tr>
+<tr>
+<td><strong>延迟</strong></td>
+<td>低。无额外规划开销</td>
+<td>中。Planner 规划 + Replan 审查有额外 LLM 调用成本</td>
+</tr>
+</tbody></table>
+<h3 id="架构选择决策树"><a href="#架构选择决策树" class="headerlink" title="架构选择决策树"></a>架构选择决策树</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">                  用户需求复杂度</span><br><span class="line">                        │</span><br><span class="line">        ┌───────────────┴───────────────┐</span><br><span class="line">        │                               │</span><br><span class="line">   简单/中等                         复杂/多步骤</span><br><span class="line">(单次查询/检索)                  (故障排查/多源分析)</span><br><span class="line">        │                               │</span><br><span class="line">        ▼                               ▼</span><br><span class="line">  ┌──────────┐              ┌────────────────────┐</span><br><span class="line">  │  ReAct   │              │ 任务步骤是否超过5步？ │</span><br><span class="line">  └──────────┘              └────────┬───────────┘</span><br><span class="line">                              ┌──────┴──────┐</span><br><span class="line">                              │             │</span><br><span class="line">                             否            是</span><br><span class="line">                              │             │</span><br><span class="line">                              ▼             ▼</span><br><span class="line">                        ┌──────────┐  ┌──────────────────┐</span><br><span class="line">                        │  ReAct   │  │Plan-Execute-Replan│</span><br><span class="line">                        │  (够用)  │  │   (明显更优)      │</span><br><span class="line">                        └──────────┘  └──────────────────┘</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>💡 <strong>Oncall Agent 2.0 的选择</strong>：运维排障天然是多步骤、跨数据源的复杂任务（查告警 → 查日志 → 查指标 → 综合分析），所以 2.0 采用 Plan-Execute-Replan 架构是正确的选择。</p>
+</blockquote>
+<hr>
+<h2 id="五、Oncall-Agent-2-0-的工具体系"><a href="#五、Oncall-Agent-2-0-的工具体系" class="headerlink" title="五、Oncall Agent 2.0 的工具体系"></a>五、Oncall Agent 2.0 的工具体系</h2><p>Oncall Agent 2.0 有两个核心 Agent，各自配备不同的工具集：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────────────────────────────────────┐</span><br><span class="line">│                    Oncall Agent 2.0 工具矩阵                      │</span><br><span class="line">│                                                                  │</span><br><span class="line">│  ┌─────────────────────┐    ┌──────────────────────────────┐    │</span><br><span class="line">│  │   对话 Agent          │    │     运维 Agent               │    │</span><br><span class="line">│  │   (Conversation)     │    │     (Operations)             │    │</span><br><span class="line">│  ├─────────────────────┤    ├──────────────────────────────┤    │</span><br><span class="line">│  │ 工具：               │    │ 工具：                        │    │</span><br><span class="line">│  │ 🧠 RAG 知识检索       │    │ 📋 实时获取告警详情             │    │</span><br><span class="line">│  │   (Milvus 向量库)    │    │ 🔍 自然语言日志检索 (CLS MCP)   │    │</span><br><span class="line">│  │                     │    │ 🕐 获取当前时间                 │    │</span><br><span class="line">│  │                     │    │ 📚 运维经验知识补充              │    │</span><br><span class="line">│  └─────────────────────┘    └──────────────────────────────┘    │</span><br><span class="line">│                                                                  │</span><br><span class="line">│  职责：回答通用问题、           职责：处理告警、排查故障、          │</span><br><span class="line">│        知识库检索问答                 分析日志、辅助运维决策        │</span><br><span class="line">└─────────────────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-1-对话-Agent-—-RAG-知识检索"><a href="#5-1-对话-Agent-—-RAG-知识检索" class="headerlink" title="5.1 对话 Agent — RAG 知识检索"></a>5.1 对话 Agent — RAG 知识检索</h3><p>这个 Agent 的核心工具就是 1.0 版本的整套 RAG 系统：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">用户提问 → 向量化 → Milvus 相似度检索 → 拼接 Prompt → 大模型生成回答</span><br></pre></td></tr></table></figure>
+
+<p>工具的技术栈：<strong>LangChain + Milvus + DashScope Embedding</strong>（详见 <a href="/2026/06/21/oncall-Agent-1-0/">Oncall Agent 1.0 笔记</a>）。</p>
+<h3 id="5-2-运维-Agent-—-四大工具详解"><a href="#5-2-运维-Agent-—-四大工具详解" class="headerlink" title="5.2 运维 Agent — 四大工具详解"></a>5.2 运维 Agent — 四大工具详解</h3><h4 id="工具-①-实时获取告警详情"><a href="#工具-①-实时获取告警详情" class="headerlink" title="工具 ① 实时获取告警详情"></a>工具 ① 实时获取告警详情</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">功能：调用告警平台 API，根据告警 ID 或过滤条件实时获取告警的完整信息</span><br><span class="line"></span><br><span class="line">输入示例：                             输出示例：</span><br><span class="line">┌────────────────────────┐            ┌──────────────────────────────┐</span><br><span class="line">│ alert_id: &quot;ALT-001&quot;    │    ──▶    │ &#123;                            │</span><br><span class="line">│ 或                      │            │   &quot;id&quot;: &quot;ALT-001&quot;,          │</span><br><span class="line">│ level: &quot;P0&quot;            │            │   &quot;level&quot;: &quot;P0&quot;,            │</span><br><span class="line">│ time_range: &quot;1h&quot;       │            │   &quot;title&quot;: &quot;数据库连接超时&quot;,  │</span><br><span class="line">└────────────────────────┘            │   &quot;service&quot;: &quot;user-api&quot;,    │</span><br><span class="line">                                      │   &quot;time&quot;: &quot;14:25:00&quot;,       │</span><br><span class="line">                                      │   &quot;detail&quot;: &quot;连接池耗尽...&quot;  │</span><br><span class="line">                                      │ &#125;                            │</span><br><span class="line">                                      └──────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<h4 id="工具-②-自然语言日志检索-—-CLS-MCP-🆕（2-0-核心新增）"><a href="#工具-②-自然语言日志检索-—-CLS-MCP-🆕（2-0-核心新增）" class="headerlink" title="工具 ② 自然语言日志检索 — CLS MCP 🆕（2.0 核心新增）"></a>工具 ② 自然语言日志检索 — CLS MCP 🆕（2.0 核心新增）</h4><blockquote>
+<p>这是 2.0 最重要的新增能力，详见第六、七章的深度解析。</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">传统方式：运维人员打开 CLS 控制台 → 手写 CQL 查询语句 → 翻日志</span><br><span class="line">Agent 方式：运维人员用自然语言描述想看什么 → Agent 自动翻译成 CQL → 返回结果</span><br></pre></td></tr></table></figure>
+
+<h4 id="工具-③-获取当前时间"><a href="#工具-③-获取当前时间" class="headerlink" title="工具 ③ 获取当前时间"></a>工具 ③ 获取当前时间</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">功能：获取当前的准确时间，用于构造时间范围和时效性判断</span><br><span class="line"></span><br><span class="line">为什么需要？</span><br><span class="line">- 大模型自身的&quot;时间感知&quot;不准确（它不知道&quot;现在&quot;是几点）</span><br><span class="line">- 告警查询、日志检索都需要精确的时间范围参数</span><br><span class="line">- 示例输出：2026-06-22 14:30:00 CST</span><br></pre></td></tr></table></figure>
+
+<h4 id="工具-④-运维经验补充"><a href="#工具-④-运维经验补充" class="headerlink" title="工具 ④ 运维经验补充"></a>工具 ④ 运维经验补充</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">功能：从运维知识库（历史故障案例、SOP 文档、runbook）中检索相关经验</span><br><span class="line"></span><br><span class="line">工作方式：本质上也是一个 RAG 检索，但检索的是运维专属的知识库：</span><br><span class="line">- 历史故障案例（&quot;上次数据库连接池耗尽是怎么处理的&quot;）</span><br><span class="line">- 标准操作流程（&quot;P0告警的处理SOP&quot;）</span><br><span class="line">- 常见问题速查（&quot;服务延迟飙升的常见原因&quot;）</span><br><span class="line"></span><br><span class="line">输入：当前故障的描述或关键词</span><br><span class="line">输出：相关历史案例、处理步骤、注意事项</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="六、MCP-协议深度解析"><a href="#六、MCP-协议深度解析" class="headerlink" title="六、MCP 协议深度解析"></a>六、MCP 协议深度解析</h2><blockquote>
+<p><strong>MCP（Model Context Protocol，模型上下文协议）</strong> 是 Anthropic 于 2024 年 11 月推出的开放协议，被比喻为 **”AI 应用的 USB-C 接口”**。理解 MCP 是理解 Oncall Agent 2.0 工具集成方式的关键。</p>
+</blockquote>
+<h3 id="6-1-MCP-解决了什么问题？"><a href="#6-1-MCP-解决了什么问题？" class="headerlink" title="6.1 MCP 解决了什么问题？"></a>6.1 MCP 解决了什么问题？</h3><p><strong>传统 AI 应用集成外部工具的痛点（M × N 问题）：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">传统方式（M × N 集成）：                MCP 方式（M + N 集成）：</span><br><span class="line"></span><br><span class="line">     AI应用1  AI应用2  AI应用3           AI应用1  AI应用2  AI应用3</span><br><span class="line">       │╲      │╱╲      │                 │        │        │</span><br><span class="line">       │ ╲    ╱  ╲    ╱ │                 │        │        │</span><br><span class="line">       │  ╲  ╱    ╲  ╱  │                 └────────┬────────┘</span><br><span class="line">       │   ╳        ╳   │                          │</span><br><span class="line">       │  ╱  ╲      ╱ ╲ │                     MCP 协议层</span><br><span class="line">       │ ╱    ╲    ╱   ╲│                          │</span><br><span class="line">       │╱      ╲  ╱     ╲               ┌──────────┼──────────┐</span><br><span class="line">      工具A    工具B    工具C             │          │          │</span><br><span class="line">                                       工具A      工具B      工具C</span><br><span class="line"></span><br><span class="line">  每个AI应用 × 每个工具              每个AI应用 → MCP → 每个工具</span><br><span class="line">  = 专属适配器开发成本               = 一次集成，到处复用</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>🔑 <strong>一句话理解 MCP</strong>：MCP 定义了一套标准协议，让任何 AI 应用（Client）都能以同一种方式连接任何工具&#x2F;数据源（Server），不需要为每个组合写专用代码。就像 USB-C 一样——一个接口，连接所有外设。</p>
+</blockquote>
+<h3 id="6-2-MCP-架构：Host-Client-Server-三层模型"><a href="#6-2-MCP-架构：Host-Client-Server-三层模型" class="headerlink" title="6.2 MCP 架构：Host-Client-Server 三层模型"></a>6.2 MCP 架构：Host-Client-Server 三层模型</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">┌──────────────────────────────────────────────────────────────────┐</span><br><span class="line">│                     MCP Host（主机）                               │</span><br><span class="line">│              如 Claude Desktop、VS Code、Cursor 等               │</span><br><span class="line">│                                                                  │</span><br><span class="line">│  ┌────────────────┐  ┌────────────────┐  ┌────────────────┐     │</span><br><span class="line">│  │   MCP Client 1  │  │   MCP Client 2  │  │   MCP Client 3  │     │</span><br><span class="line">│  │                 │  │                 │  │                 │     │</span><br><span class="line">│  │  与 Server 1    │  │  与 Server 2    │  │  与 Server 3    │     │</span><br><span class="line">│  │  1:1 连接       │  │  1:1 连接       │  │  1:1 连接       │     │</span><br><span class="line">│  └───────┬─────────┘  └───────┬─────────┘  └───────┬─────────┘    │</span><br><span class="line">└──────────┼─────────────────────┼─────────────────────┼─────────────┘</span><br><span class="line">           │                     │                     │</span><br><span class="line">    ┌──────▼──────┐       ┌──────▼──────┐       ┌──────▼──────┐</span><br><span class="line">    │  Server 1   │       │  Server 2   │       │  Server 3   │</span><br><span class="line">    │ (文件系统)   │       │  (数据库)    │       │ (CLS 日志)   │</span><br><span class="line">    │             │       │             │       │             │</span><br><span class="line">    │ 提供:       │       │ 提供:       │       │ 提供:       │</span><br><span class="line">    │ · Resources │       │ · Resources │       │ · Tools     │</span><br><span class="line">    │ · Tools     │       │ · Tools     │       │ · Resources │</span><br><span class="line">    └─────────────┘       └─────────────┘       └─────────────┘</span><br></pre></td></tr></table></figure>
+
+<h4 id="三层角色的职责"><a href="#三层角色的职责" class="headerlink" title="三层角色的职责"></a>三层角色的职责</h4><table>
+<thead>
+<tr>
+<th>层级</th>
+<th>角色</th>
+<th>核心职责</th>
+<th>类比</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Host</strong></td>
+<td>主机</td>
+<td>运行 AI 应用的容器，管理所有 Client 的生命周期、权限控制、用户交互</td>
+<td>操作系统</td>
+</tr>
+<tr>
+<td><strong>Client</strong></td>
+<td>客户端</td>
+<td>与一个 Server 建立 1:1 连接，双向路由协议消息，维护会话状态和安全隔离</td>
+<td>USB 控制器</td>
+</tr>
+<tr>
+<td><strong>Server</strong></td>
+<td>服务端</td>
+<td>暴露 Resources &#x2F; Tools &#x2F; Prompts 三大能力，独立运行，专注单一职责</td>
+<td>USB 设备</td>
+</tr>
+</tbody></table>
+<h4 id="Server-暴露的三大核心能力"><a href="#Server-暴露的三大核心能力" class="headerlink" title="Server 暴露的三大核心能力"></a>Server 暴露的三大核心能力</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">┌──────────────────────────────────────────────────────────────┐</span><br><span class="line">│                    MCP Server                                │</span><br><span class="line">│                                                              │</span><br><span class="line">│  ┌────────────────┐  ┌────────────┐  ┌────────────────┐     │</span><br><span class="line">│  │   Resources    │  │   Tools    │  │    Prompts     │     │</span><br><span class="line">│  │   (资源)       │  │   (工具)   │  │   (提示模板)   │     │</span><br><span class="line">│  ├────────────────┤  ├────────────┤  ├────────────────┤     │</span><br><span class="line">│  │ 只读数据源      │  │ 可执行函数  │  │ 预定义模板     │     │</span><br><span class="line">│  │               │  │            │  │               │     │</span><br><span class="line">│  │ 例：          │  │ 例：       │  │ 例：          │     │</span><br><span class="line">│  │ · 文件内容    │  │ · 查询数据库│  │ · &quot;你是运维    │     │</span><br><span class="line">│  │ · 数据库记录  │  │ · 发送API   │  │   专家，请... │     │</span><br><span class="line">│  │ · API 响应    │  │   请求     │  │ · &quot;分析日志    │     │</span><br><span class="line">│  │ · 日志流      │  │ · 执行命令  │  │   的标准流程&quot; │     │</span><br><span class="line">│  └────────────────┘  └────────────┘  └────────────────┘     │</span><br><span class="line">│                                                              │</span><br><span class="line">│  LLM 可以读取        LLM 可以调用      LLM 可以引用            │</span><br><span class="line">│  (read-only)         (execute)        (template)              │</span><br><span class="line">└──────────────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-3-通信机制：JSON-RPC-2-0"><a href="#6-3-通信机制：JSON-RPC-2-0" class="headerlink" title="6.3 通信机制：JSON-RPC 2.0"></a>6.3 通信机制：JSON-RPC 2.0</h3><p>MCP 的所有消息都通过 <strong>JSON-RPC 2.0</strong> 格式传输，定义了三种消息类型：</p>
+<table>
+<thead>
+<tr>
+<th>消息类型</th>
+<th>方向</th>
+<th>说明</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Request</strong></td>
+<td>双向</td>
+<td>带 <code>id</code> 的消息，期待一个 Response</td>
+<td>调用工具、读取资源</td>
+</tr>
+<tr>
+<td><strong>Response</strong></td>
+<td>双向</td>
+<td>对某个 Request 的成功&#x2F;错误响应</td>
+<td>工具返回值、资源内容</td>
+</tr>
+<tr>
+<td><strong>Notification</strong></td>
+<td>双向</td>
+<td>无 <code>id</code> 的消息，不需要回复</td>
+<td>资源变更通知、状态更新</td>
+</tr>
+</tbody></table>
+<p><strong>两种传输方式：</strong></p>
+<table>
+<thead>
+<tr>
+<th>方式</th>
+<th>适用场景</th>
+<th>通信机制</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>STDIO</strong></td>
+<td>本地进程</td>
+<td>通过标准输入&#x2F;输出流传输 JSON-RPC 消息，简单高效</td>
+</tr>
+<tr>
+<td><strong>Streamable HTTP</strong></td>
+<td>远程服务</td>
+<td>统一 <code>/message</code> 端点，支持 SSE 流式推送，适合团队共享和远程部署</td>
+</tr>
+</tbody></table>
+<h3 id="6-4-连接生命周期"><a href="#6-4-连接生命周期" class="headerlink" title="6.4 连接生命周期"></a>6.4 连接生命周期</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">┌────────────┐                                          ┌────────────┐</span><br><span class="line">│   Client   │                                          │   Server   │</span><br><span class="line">└─────┬──────┘                                          └─────┬──────┘</span><br><span class="line">      │                                                       │</span><br><span class="line">      │  ① initialize (协议版本 + 客户端能力声明)              │</span><br><span class="line">      │ ────────────────────────────────────────────────────► │</span><br><span class="line">      │                                                       │</span><br><span class="line">      │  ② 服务器能力响应 (ServerCapabilities)                 │</span><br><span class="line">      │ ◄──────────────────────────────────────────────────── │</span><br><span class="line">      │                                                       │</span><br><span class="line">      │  ③ initialized 通知 (确认连接建立)                    │</span><br><span class="line">      │ ────────────────────────────────────────────────────► │</span><br><span class="line">      │                                                       │</span><br><span class="line">      │  能力协商完成，会话建立 ✅                               │</span><br><span class="line">      │                                                       │</span><br><span class="line">      │  ═══════════════ 正常操作阶段 ═══════════════════     │</span><br><span class="line">      │                                                       │</span><br><span class="line">      │  ④ tools/list 请求 (查询可用工具列表)                  │</span><br><span class="line">      │ ────────────────────────────────────────────────────► │</span><br><span class="line">      │  ⑤ 工具列表响应 (名称 + 参数 Schema + 描述)            │</span><br><span class="line">      │ ◄──────────────────────────────────────────────────── │</span><br><span class="line">      │                                                       │</span><br><span class="line">      │  ⑥ tools/call 请求 (调用具体工具，带参数)              │</span><br><span class="line">      │ ────────────────────────────────────────────────────► │</span><br><span class="line">      │  ⑦ 工具执行结果响应                                    │</span><br><span class="line">      │ ◄──────────────────────────────────────────────────── │</span><br><span class="line">      │                                                       │</span><br><span class="line">      │  ⑧ notifications/tools/list_changed                    │</span><br><span class="line">      │ ◄──────────────── (Server 新增/删除工具时主动通知)     │</span><br><span class="line">      │                                                       │</span><br><span class="line">      │  ... 重复 ④-⑧ 直到完成所有操作 ...                    │</span><br><span class="line">      │                                                       │</span><br><span class="line">      │  ═══════════════ 会话结束 ═══════════════════════     │</span><br><span class="line">      │                                                       │</span><br><span class="line">      │  ⑨ 终止会话                                           │</span><br><span class="line">      │ ────────────────────────────────────────────────────► │</span><br><span class="line">      │                                                       │</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-5-动态发现机制-—-MCP-最强大的特性"><a href="#6-5-动态发现机制-—-MCP-最强大的特性" class="headerlink" title="6.5 动态发现机制 — MCP 最强大的特性"></a>6.5 动态发现机制 — MCP 最强大的特性</h3><p><strong>动态发现</strong> 是 MCP 协议的核心创新：AI 应用不需要在代码中硬编码”有哪些工具”，而是在运行时通过协议动态获取。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">传统方式：</span><br><span class="line">  开发者写代码 → 定义工具 → 部署应用 → (新增工具) → 改代码 → 重新部署</span><br><span class="line"></span><br><span class="line">MCP 方式：</span><br><span class="line">  Server 启动 → 声明工具列表 → Client 动态获取 → (Server 新增工具)</span><br><span class="line">                                               → 自动通知 Client</span><br><span class="line">                                               → Client 即时可用 ✅</span><br><span class="line">                                               → 零代码改动 ✅</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────────────────────────────────┐</span><br><span class="line">│  动态发现流程                                                │</span><br><span class="line">│                                                             │</span><br><span class="line">│  ① Client 调用 tools/list                                   │</span><br><span class="line">│     ──────────────────────────► Server 返回：               │</span><br><span class="line">│                                   [&#123;                        │</span><br><span class="line">│                                     name: &quot;SearchLog&quot;,      │</span><br><span class="line">│                                     description: &quot;搜索日志&quot;, │</span><br><span class="line">│                                     inputSchema: &#123;...&#125;      │</span><br><span class="line">│                                   &#125;,                        │</span><br><span class="line">│                                   &#123;                         │</span><br><span class="line">│                                     name: &quot;QueryMetric&quot;,    │</span><br><span class="line">│                                     description: &quot;查询指标&quot;, │</span><br><span class="line">│                                     inputSchema: &#123;...&#125;      │</span><br><span class="line">│                                   &#125;]                        │</span><br><span class="line">│                                                             │</span><br><span class="line">│  ② 大模型看到这些工具 → 自主决定调用哪个、传什么参数         │</span><br><span class="line">│                                                             │</span><br><span class="line">│  ③ 如果 CLS MCP Server 升级、新增了工具                      │</span><br><span class="line">│     → Server 发送 notifications/tools/list_changed          │</span><br><span class="line">│     → Client 自动重新拉取工具列表                            │</span><br><span class="line">│     → 新工具对 AI 立即可用                                   │</span><br><span class="line">└─────────────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-6-MCP-的安全设计"><a href="#6-6-MCP-的安全设计" class="headerlink" title="6.6 MCP 的安全设计"></a>6.6 MCP 的安全设计</h3><table>
+<thead>
+<tr>
+<th>安全原则</th>
+<th>具体实现</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>用户同意</strong></td>
+<td>所有数据访问和工具调用需用户明确授权</td>
+</tr>
+<tr>
+<td><strong>数据隐私</strong></td>
+<td>Host 必须获得用户同意才能向 Server 暴露数据</td>
+</tr>
+<tr>
+<td><strong>服务器隔离</strong></td>
+<td>每个 Client-Server 连接独立，Server 无法读取其他 Server 的数据，也无法读取完整对话历史</td>
+</tr>
+<tr>
+<td><strong>最小权限</strong></td>
+<td>生产环境使用子账号，只授予必要的权限（如 CLS 只读权限 <code>QcloudCLSReadOnlyAccess</code>）</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="七、腾讯云-CLS-MCP-集成详解"><a href="#七、腾讯云-CLS-MCP-集成详解" class="headerlink" title="七、腾讯云 CLS MCP 集成详解"></a>七、腾讯云 CLS MCP 集成详解</h2><blockquote>
+<p>这是 Oncall Agent 2.0 最具技术含量的工具集成。下面详细拆解 CLS MCP Server 是什么、怎么工作、怎么用。</p>
+</blockquote>
+<h3 id="7-1-什么是-CLS？"><a href="#7-1-什么是-CLS？" class="headerlink" title="7.1 什么是 CLS？"></a>7.1 什么是 CLS？</h3><p><strong>CLS（Cloud Log Service，日志服务）</strong> 是腾讯云的一站式日志服务平台，提供：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────────────────────────────────┐</span><br><span class="line">│                 腾讯云 CLS（日志服务）                        │</span><br><span class="line">│                                                             │</span><br><span class="line">│  ┌───────────┐  ┌───────────┐  ┌───────────┐  ┌─────────┐ │</span><br><span class="line">│  │ 日志采集   │  │ 日志存储   │  │ 日志检索   │  │ 告警管理  │ │</span><br><span class="line">│  │           │  │           │  │           │  │         │ │</span><br><span class="line">│  │ Agent/API │  │ 结构化/   │  │ CQL 查询  │  │ 多维度   │ │</span><br><span class="line">│  │ 实时采集   │  │ 非结构化  │  │ 全文/键值  │  │ 告警策略  │ │</span><br><span class="line">│  └───────────┘  └───────────┘  └───────────┘  └─────────┘ │</span><br><span class="line">│                                                             │</span><br><span class="line">│  ┌───────────┐  ┌───────────┐  ┌────────────────────────┐  │</span><br><span class="line">│  │ 数据可视化 │  │ 日志投递   │  │ 指标监控 (PromQL)      │  │</span><br><span class="line">│  │           │  │           │  │                       │  │</span><br><span class="line">│  │ 仪表盘/   │  │ COS/Ckafka│  │ CPU/内存/QPS 实时监控  │  │</span><br><span class="line">│  │ 图表      │  │ 投递      │  │                       │  │</span><br><span class="line">│  └───────────┘  └───────────┘  └────────────────────────┘  │</span><br><span class="line">└─────────────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<h3 id="7-2-CLS-MCP-Server-是什么？"><a href="#7-2-CLS-MCP-Server-是什么？" class="headerlink" title="7.2 CLS MCP Server 是什么？"></a>7.2 CLS MCP Server 是什么？</h3><p><strong>CLS MCP Server</strong> 是一个符合 MCP 协议的轻量级服务程序，把 CLS 的 API 封装成 MCP 标准工具，让大模型能够”听懂”自然语言并自动调用 CLS 能力。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">┌──────────────────────────────────────────────────────────────┐</span><br><span class="line">│                    CLS MCP Server 架构                        │</span><br><span class="line">│                                                              │</span><br><span class="line">│  ┌──────────┐                                               │</span><br><span class="line">│  │ Oncall   │   &quot;查一下过去1小时 user-api 的错误日志&quot;          │</span><br><span class="line">│  │ Agent    │                                               │</span><br><span class="line">│  │ (Host)   │──── 自然语言 ────▶  CLS MCP Server             │</span><br><span class="line">│  └──────────┘                    ┌─────────────────────┐     │</span><br><span class="line">│                                  │ ① 接收自然语言查询   │     │</span><br><span class="line">│                                  │                     │     │</span><br><span class="line">│                                  │ ② TextToSearchLog-  │     │</span><br><span class="line">│                                  │    Query             │     │</span><br><span class="line">│                                  │    翻译自然语言 →    │     │</span><br><span class="line">│                                  │    CQL 查询语句      │     │</span><br><span class="line">│                                  │                     │     │</span><br><span class="line">│                                  │ ③ SearchLog          │     │</span><br><span class="line">│                                  │    执行 CQL 查询     │     │</span><br><span class="line">│                                  │                     │     │</span><br><span class="line">│                                  │ ④ 返回结构化日志结果  │     │</span><br><span class="line">│                                  └────────┬────────────┘     │</span><br><span class="line">│                                           │                  │</span><br><span class="line">│                                    ┌──────▼──────┐           │</span><br><span class="line">│                                    │ 腾讯云 CLS   │           │</span><br><span class="line">│                                    │ (日志存储)   │           │</span><br><span class="line">│                                    └─────────────┘           │</span><br><span class="line">└──────────────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<h3 id="7-3-CLS-MCP-Server-提供的工具清单"><a href="#7-3-CLS-MCP-Server-提供的工具清单" class="headerlink" title="7.3 CLS MCP Server 提供的工具清单"></a>7.3 CLS MCP Server 提供的工具清单</h3><table>
+<thead>
+<tr>
+<th>工具分类</th>
+<th>工具名称</th>
+<th>功能说明</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>日志检索</strong></td>
+<td><code>SearchLog</code></td>
+<td>根据 CQL 语法搜索日志</td>
+<td>精确日志查询</td>
+</tr>
+<tr>
+<td></td>
+<td><code>TextToSearchLogQuery</code></td>
+<td><strong>自然语言 → CQL 查询语句</strong>（核心能力）</td>
+<td>用户用自然语言描述需求，自动翻译</td>
+</tr>
+<tr>
+<td></td>
+<td><code>DescribeLogContext</code></td>
+<td>获取某条日志的前后 N 条日志（上下文）</td>
+<td>查看错误日志的”前因后果”</td>
+</tr>
+<tr>
+<td></td>
+<td><code>DescribeLogHistogram</code></td>
+<td>日志数量分布直方图</td>
+<td>快速了解日志的时间分布趋势</td>
+</tr>
+<tr>
+<td><strong>指标查询</strong></td>
+<td><code>QueryMetric</code></td>
+<td>查询指标实时值（PromQL 语法）</td>
+<td>查当前 CPU、内存、QPS 等</td>
+</tr>
+<tr>
+<td></td>
+<td><code>QueryRangeMetric</code></td>
+<td>查询时间范围内的指标趋势</td>
+<td>看指标在一段时间内的变化曲线</td>
+</tr>
+<tr>
+<td><strong>告警管理</strong></td>
+<td><code>DescribeAlarms</code></td>
+<td>告警策略列表查询</td>
+<td>查看当前有哪些告警规则</td>
+</tr>
+<tr>
+<td></td>
+<td><code>GetAlarmLog</code></td>
+<td>告警执行详情日志</td>
+<td>查看告警触发时的详细情况</td>
+</tr>
+<tr>
+<td></td>
+<td><code>DescribeAlertRecordHistory</code></td>
+<td>告警触发&#x2F;恢复历史记录</td>
+<td>回溯告警历史</td>
+</tr>
+<tr>
+<td><strong>辅助工具</strong></td>
+<td><code>GetTopicInfoByName</code></td>
+<td>按名称搜索日志主题（Topic）</td>
+<td>找到”哪个服务”的日志存在哪个 Topic 里</td>
+</tr>
+<tr>
+<td></td>
+<td><code>GetRegionCodeByName</code></td>
+<td>地域名称 → 区域代码转换</td>
+<td>“广州” → <code>ap-guangzhou</code></td>
+</tr>
+<tr>
+<td></td>
+<td><code>TimestampConvert</code></td>
+<td>时间字符串 ↔ 时间戳互转</td>
+<td>“2026-06-22 14:30” → 1750576200</td>
+</tr>
+</tbody></table>
+<h3 id="7-4-自然语言日志检索-—-最核心的工具能力"><a href="#7-4-自然语言日志检索-—-最核心的工具能力" class="headerlink" title="7.4 自然语言日志检索 — 最核心的工具能力"></a>7.4 自然语言日志检索 — 最核心的工具能力</h3><p><code>TextToSearchLogQuery</code> 是整个 CLS MCP 中最具 AI 特色的工具：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">用户输入（自然语言）                CLS MCP 自动翻译成 CQL</span><br><span class="line">┌────────────────────────────┐     ┌──────────────────────────────┐</span><br><span class="line">│ &quot;查一下过去24小时内所有     │     │ level:ERROR AND              │</span><br><span class="line">│  错误级别的日志&quot;            │ ──▶ │ timestamp:[now-24h TO now]   │</span><br><span class="line">└────────────────────────────┘     └──────────────────────────────┘</span><br><span class="line"></span><br><span class="line">┌────────────────────────────┐     ┌──────────────────────────────┐</span><br><span class="line">│ &quot;有没有来自可疑IP的访问     │     │ status:403 AND                │</span><br><span class="line">│  被拒绝的记录&quot;              │ ──▶ │ ip:10.0.0.* AND              │</span><br><span class="line">│                            │     │ action:deny                  │</span><br><span class="line">└────────────────────────────┘     └──────────────────────────────┘</span><br><span class="line"></span><br><span class="line">┌────────────────────────────┐     ┌──────────────────────────────┐</span><br><span class="line">│ &quot;user-api 服务在过去1小时   │     │ service:user-api AND          │</span><br><span class="line">│  接口响应时间超过3秒的请求&quot;  │ ──▶ │ duration:&gt;3000 AND           │</span><br><span class="line">│                            │     │ timestamp:[now-1h TO now]    │</span><br><span class="line">└────────────────────────────┘     └──────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<h3 id="7-5-四种部署方式"><a href="#7-5-四种部署方式" class="headerlink" title="7.5 四种部署方式"></a>7.5 四种部署方式</h3><table>
+<thead>
+<tr>
+<th>方式</th>
+<th>传输协议</th>
+<th>适用场景</th>
+<th>是否需要本地环境</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>腾讯云 SSE 托管</strong></td>
+<td>SSE</td>
+<td>零部署，直接使用 MCP 市场</td>
+<td>❌ 不需要</td>
+</tr>
+<tr>
+<td><strong>NPX 启动（推荐本地）</strong></td>
+<td>STDIO</td>
+<td>本地开发、个人使用</td>
+<td>✅ 需要 Node.js</td>
+</tr>
+<tr>
+<td><strong>自建 SSE&#x2F;HTTP 服务</strong></td>
+<td>SSE&#x2F;HTTP</td>
+<td>团队共享、远程部署</td>
+<td>✅ 需要服务器</td>
+</tr>
+<tr>
+<td><strong>源码安装</strong></td>
+<td>STDIO&#x2F;SSE</td>
+<td>需要定制开发</td>
+<td>✅ 需要 Python</td>
+</tr>
+</tbody></table>
+<p><strong>NPX 本地配置示例：</strong></p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;mcpServers&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;cls-mcp-server&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;isActive&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;cls-mcp-server&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;stdio&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;command&quot;</span><span class="punctuation">:</span> <span class="string">&quot;npx&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;args&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;-y&quot;</span><span class="punctuation">,</span> <span class="string">&quot;cls-mcp-server@latest&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;env&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;TRANSPORT&quot;</span><span class="punctuation">:</span> <span class="string">&quot;stdio&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;TENCENTCLOUD_SECRET_ID&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&lt;你的腾讯云密钥ID&gt;&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;TENCENTCLOUD_SECRET_KEY&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&lt;你的腾讯云密钥Key&gt;&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;TZ&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Asia/Shanghai&quot;</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="7-6-CLS-MCP-在-Oncall-Agent-中的实际工作流"><a href="#7-6-CLS-MCP-在-Oncall-Agent-中的实际工作流" class="headerlink" title="7.6 CLS MCP 在 Oncall Agent 中的实际工作流"></a>7.6 CLS MCP 在 Oncall Agent 中的实际工作流</h3><p>以一次运维排障为例，展示 CLS MCP 如何被 Agent 调用：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">运维人员： &quot;user-api 服务响应很慢，帮我看看是什么原因&quot;</span><br><span class="line">    │</span><br><span class="line">    ▼</span><br><span class="line">┌────────────────────────────────────────────────────────────────┐</span><br><span class="line">│  Planner 制定计划：                                             │</span><br><span class="line">│  Step 1: 获取当前时间                                          │</span><br><span class="line">│  Step 2: 查询 user-api 的 P0 告警                              │</span><br><span class="line">│  Step 3: 用 CLS MCP 查询 user-api 的错误日志（过去1小时）        │</span><br><span class="line">│  Step 4: 用 CLS MCP 查询 user-api 的慢请求日志（&gt;3秒）          │</span><br><span class="line">│  Step 5: 用 CLS MCP 查询数据库相关的错误日志                     │</span><br><span class="line">│  Step 6: 综合分析 → 给出根因和修复建议                           │</span><br><span class="line">└────────────────────────────────────────────────────────────────┘</span><br><span class="line">    │</span><br><span class="line">    ▼</span><br><span class="line">┌────────────────────────────────────────────────────────────────┐</span><br><span class="line">│  Executor 执行 Step 3: 用 CLS MCP 查询错误日志                  │</span><br><span class="line">│                                                                │</span><br><span class="line">│  大模型内部思考：                                               │</span><br><span class="line">│  &quot;需要查 user-api 的错误日志。我可以用 TextToSearchLogQuery      │</span><br><span class="line">│   把自然语言转成 CQL，或者直接用 SearchLog。&quot;                    │</span><br><span class="line">│                                                                │</span><br><span class="line">│  工具调用：                                                     │</span><br><span class="line">│  tools/call: &#123;                                                 │</span><br><span class="line">│    name: &quot;SearchLog&quot;,                                          │</span><br><span class="line">│    arguments: &#123;                                                │</span><br><span class="line">│      &quot;TopicId&quot;: &quot;topic-user-api-logs&quot;,                         │</span><br><span class="line">│      &quot;Query&quot;: &quot;level:ERROR AND timestamp:[now-1h TO now]&quot;,    │</span><br><span class="line">│      &quot;Limit&quot;: 50                                               │</span><br><span class="line">│    &#125;                                                           │</span><br><span class="line">│  &#125;                                                             │</span><br><span class="line">│                                                                │</span><br><span class="line">│  CLS MCP Server 返回：                                         │</span><br><span class="line">│  [                                                             │</span><br><span class="line">│    &#123;&quot;timestamp&quot;: &quot;14:25:01&quot;, &quot;msg&quot;: &quot;DB connection timeout&quot;,   │</span><br><span class="line">│                                  &quot;count&quot;: 47&#125;,                 │</span><br><span class="line">│    &#123;&quot;timestamp&quot;: &quot;14:25:02&quot;, &quot;msg&quot;: &quot;Connection pool exhaust&quot;, │</span><br><span class="line">│                                  &quot;count&quot;: 3&#125;                   │</span><br><span class="line">│  ]                                                             │</span><br><span class="line">└────────────────────────────────────────────────────────────────┘</span><br><span class="line">    │</span><br><span class="line">    ▼</span><br><span class="line">┌────────────────────────────────────────────────────────────────┐</span><br><span class="line">│  Replan 审查：                                                 │</span><br><span class="line">│  &quot;错误日志都指向数据库连接问题，可能需要查数据库的慢查询日志&quot;     │</span><br><span class="line">│  → 追加 Step 5.5: 查询 RDS 慢查询日志                          │</span><br><span class="line">└────────────────────────────────────────────────────────────────┘</span><br><span class="line">    │</span><br><span class="line">    ▼</span><br><span class="line">    ... 继续执行，最终生成诊断报告 ...</span><br></pre></td></tr></table></figure>
+
+<h3 id="7-7-为什么用-MCP-而不是直接调-API？"><a href="#7-7-为什么用-MCP-而不是直接调-API？" class="headerlink" title="7.7 为什么用 MCP 而不是直接调 API？"></a>7.7 为什么用 MCP 而不是直接调 API？</h3><table>
+<thead>
+<tr>
+<th>对比维度</th>
+<th>直接调 CLS API</th>
+<th>通过 CLS MCP Server</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>集成工作量</strong></td>
+<td>需要为每个 API 写对接代码、处理鉴权、管理 SDK 版本</td>
+<td>配一个 JSON 配置文件即可</td>
+</tr>
+<tr>
+<td><strong>自然语言支持</strong></td>
+<td>需要自己实现 NL→CQL 的翻译</td>
+<td><code>TextToSearchLogQuery</code> 内置支持</td>
+</tr>
+<tr>
+<td><strong>工具发现</strong></td>
+<td>新增 API 需要改代码重新部署</td>
+<td>Server 升级后自动通知 Client，热更新</td>
+</tr>
+<tr>
+<td><strong>多平台兼容</strong></td>
+<td>只为 Oncall Agent 开发</td>
+<td>同一 MCP Server 可用于 Claude Desktop、Cursor、VS Code 等</td>
+</tr>
+<tr>
+<td><strong>权限管理</strong></td>
+<td>需要自己实现权限控制</td>
+<td>MCP 协议层有标准的用户授权机制</td>
+</tr>
+<tr>
+<td><strong>维护成本</strong></td>
+<td>腾讯云 API 升级 → 改代码</td>
+<td>MCP Server 由腾讯云官方维护，协议层兼容</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="八、关键设计决策问答"><a href="#八、关键设计决策问答" class="headerlink" title="八、关键设计决策问答"></a>八、关键设计决策问答</h2><h3 id="Q1：为什么不只用一个-ReAct-Agent，而要引入-Plan-Execute-Replan？"><a href="#Q1：为什么不只用一个-ReAct-Agent，而要引入-Plan-Execute-Replan？" class="headerlink" title="Q1：为什么不只用一个 ReAct Agent，而要引入 Plan-Execute-Replan？"></a>Q1：为什么不只用一个 ReAct Agent，而要引入 Plan-Execute-Replan？</h3><p>运维排障场景的特点是 <strong>步骤多、跨数据源、执行路径不确定</strong>（你可能查到一半才发现需要查另一种日志）。纯 ReAct 容易在 3-4 步之后”忘记”最初的目标，Plan-Execute-Replan 的 Planner 持有一份显式的任务清单，能保证不遗漏。而且 Replan 角色能在”执行结果为空”时自动调整策略，而非直接说”我找不到”。</p>
+<h3 id="Q2：CLS-MCP-的-TextToSearchLogQuery-是怎么做到的？"><a href="#Q2：CLS-MCP-的-TextToSearchLogQuery-是怎么做到的？" class="headerlink" title="Q2：CLS MCP 的 TextToSearchLogQuery 是怎么做到的？"></a>Q2：CLS MCP 的 TextToSearchLogQuery 是怎么做到的？</h3><p>它内部调用大模型（或 CLS 自己的 NL2SQL 引擎）将自然语言翻译为 <strong>CQL（Cloud Query Language）</strong>——腾讯云日志服务的查询语言。这一步本质上是一次”语义翻译”：把”过去一小时的错误日志”翻译成 <code>level:ERROR AND timestamp:[now-1h TO now]</code>。翻译结果会作为 SearchLog 的参数执行。</p>
+<h3 id="Q3：MCP-和传统的-REST-API-有什么本质区别？"><a href="#Q3：MCP-和传统的-REST-API-有什么本质区别？" class="headerlink" title="Q3：MCP 和传统的 REST API 有什么本质区别？"></a>Q3：MCP 和传统的 REST API 有什么本质区别？</h3><table>
+<thead>
+<tr>
+<th></th>
+<th>REST API</th>
+<th>MCP</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>发现机制</strong></td>
+<td>需要看文档才知道有哪些接口</td>
+<td><code>tools/list</code> 自动获取，LLM 自行理解</td>
+</tr>
+<tr>
+<td><strong>调用方式</strong></td>
+<td>开发者写代码调用</td>
+<td>LLM 自主决定何时调用、传什么参数</td>
+</tr>
+<tr>
+<td><strong>扩展性</strong></td>
+<td>新增 API → 改代码 → 部署</td>
+<td>Server 声明新工具 → 自动通知 → 即时可用</td>
+</tr>
+<tr>
+<td><strong>标准化</strong></td>
+<td>每个 API 格式不同</td>
+<td>统一的 JSON-RPC 2.0 + JSON Schema</td>
+</tr>
+</tbody></table>
+<p>MCP 是为 <strong>AI Agent 自动调用工具</strong> 设计的，REST API 是为 <strong>人类开发者写代码调用</strong> 设计的。</p>
+<h3 id="Q4：CLS-MCP-Server-的安全性如何保证？"><a href="#Q4：CLS-MCP-Server-的安全性如何保证？" class="headerlink" title="Q4：CLS MCP Server 的安全性如何保证？"></a>Q4：CLS MCP Server 的安全性如何保证？</h3><ul>
+<li><strong>密钥管理</strong>：通过环境变量 <code>TENCENTCLOUD_SECRET_ID</code> &#x2F; <code>TENCENTCLOUD_SECRET_KEY</code> 传入，不硬编码</li>
+<li><strong>最小权限</strong>：建议使用子账号，只授予 <code>QcloudCLSReadOnlyAccess</code>（只读权限），防止 Agent 误删日志</li>
+<li><strong>内网安全</strong>：如在腾讯云 VPC 内网，API 域名设为 <code>internal.tencentcloudapi.com</code>，流量不出公网</li>
+<li><strong>MCP 协议层</strong>：每次工具调用需经过 MCP Host 的权限检查，用户可拦截敏感操作</li>
+</ul>
+<h3 id="Q5：Oncall-Agent-2-0-的-Planner-和-Executor-之间是怎么通信的？"><a href="#Q5：Oncall-Agent-2-0-的-Planner-和-Executor-之间是怎么通信的？" class="headerlink" title="Q5：Oncall Agent 2.0 的 Planner 和 Executor 之间是怎么通信的？"></a>Q5：Oncall Agent 2.0 的 Planner 和 Executor 之间是怎么通信的？</h3><p>Planner 不直接和 Executor 通信——它们都通过一个统一的 <strong>消息总线 &#x2F; 状态管理器</strong> 交换信息：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Planner ──写入──▶ 任务队列 (Task Queue) ──读取──▶ Executor</span><br><span class="line">                          │</span><br><span class="line">                    状态管理器 (State Manager)</span><br><span class="line">                          │</span><br><span class="line">Replan  ◀──读取── 执行结果存储 ◀──写入── Executor</span><br></pre></td></tr></table></figure>
+
+<p>Planner 把计划写入任务队列，Executor 从队列取任务执行，结果回写到状态管理器，Replan 读取所有结果后决定是否调整计划。这种松耦合设计让每个角色的实现可以独立迭代。</p>
+<hr>
+<h2 id="九、完整架构总览图"><a href="#九、完整架构总览图" class="headerlink" title="九、完整架构总览图"></a>九、完整架构总览图</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────────────────────────────────────────┐</span><br><span class="line">│                     Oncall Agent 2.0 全架构                          │</span><br><span class="line">│                                                                      │</span><br><span class="line">│  ┌──────────────────────────────────────────────────────────────┐   │</span><br><span class="line">│  │                        用户交互层                              │   │</span><br><span class="line">│  │   ┌──────────┐  ┌──────────┐  ┌──────────┐                   │   │</span><br><span class="line">│  │   │ Web 前端  │  │ 企业微信  │  │ API 接口  │                   │   │</span><br><span class="line">│  │   └────┬─────┘  └────┬─────┘  └────┬─────┘                   │   │</span><br><span class="line">│  └────────┼──────────────┼──────────────┼────────────────────────┘   │</span><br><span class="line">│           └──────────────┼──────────────┘                           │</span><br><span class="line">│                          ▼                                          │</span><br><span class="line">│  ┌──────────────────────────────────────────────────────────────┐   │</span><br><span class="line">│  │                 Plan-Execute-Replan 调度层                     │   │</span><br><span class="line">│  │                                                               │   │</span><br><span class="line">│  │   Planner ──────▶ Task Queue ──────▶ Executor                 │   │</span><br><span class="line">│  │      ▲                                   │                    │   │</span><br><span class="line">│  │      │                                   ▼                    │   │</span><br><span class="line">│  │      └──────── Replan ◀─────── 执行结果汇总                    │   │</span><br><span class="line">│  └──────────────────────────────────────────────────────────────┘   │</span><br><span class="line">│                                │                                     │</span><br><span class="line">│                    ┌───────────┼───────────┐                        │</span><br><span class="line">│                    ▼                       ▼                        │</span><br><span class="line">│  ┌──────────────────────────┐  ┌──────────────────────────────┐    │</span><br><span class="line">│  │     对话 Agent            │  │       运维 Agent              │    │</span><br><span class="line">│  │                          │  │                               │    │</span><br><span class="line">│  │  ┌───────────────────┐   │  │  ┌────────────────────────┐  │    │</span><br><span class="line">│  │  │   RAG 知识检索      │   │  │  │   Function Call 引擎    │  │    │</span><br><span class="line">│  │  │                   │   │  │  │                        │  │    │</span><br><span class="line">│  │  │  用户提问          │   │  │  │  ReAct 循环:           │  │    │</span><br><span class="line">│  │  │    ↓              │   │  │  │  Thought → Action      │  │    │</span><br><span class="line">│  │  │  Milvus 检索       │   │  │  │     → Observation     │  │    │</span><br><span class="line">│  │  │    ↓              │   │  │  └───────────┬────────────┘  │    │</span><br><span class="line">│  │  │  拼接 Prompt       │   │  │              │               │    │</span><br><span class="line">│  │  │    ↓              │   │  │              ▼               │    │</span><br><span class="line">│  │  │  大模型回答        │   │  │  ┌────────────────────────┐  │    │</span><br><span class="line">│  │  └───────────────────┘   │  │  │      工具层              │  │    │</span><br><span class="line">│  │                          │  │  │                        │  │    │</span><br><span class="line">│  │  核心技术栈：             │  │  │  📋 告警API  ──────────│──│──▶ 告警平台</span><br><span class="line">│  │  · LangChain             │  │  │  🔍 CLS MCP  ─────────│──│──▶ 腾讯云CLS</span><br><span class="line">│  │  · Milvus                │  │  │  🕐 时间工具            │  │    │</span><br><span class="line">│  │  · DashScope Embedding  │  │  │  📚 运维知识库          │  │    │</span><br><span class="line">│  └──────────────────────────┘  │  └────────────────────────┘  │    │</span><br><span class="line">│                                 └──────────────────────────────┘    │</span><br><span class="line">└─────────────────────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="十、一句话总结"><a href="#十、一句话总结" class="headerlink" title="十、一句话总结"></a>十、一句话总结</h2><table>
+<thead>
+<tr>
+<th>你要记住的</th>
+<th>一句话</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>ReAct 是什么</strong></td>
+<td>推理→行动→观察→再推理的循环——大模型边想边做，每一步都是 Thought → Action → Observation</td>
+</tr>
+<tr>
+<td><strong>古老 vs 现代 ReAct</strong></td>
+<td>古老 ReAct 靠正则解析文本（脆弱），现代 ReAct 用 Function Call 输出标准 JSON（可靠）</td>
+</tr>
+<tr>
+<td><strong>Plan-Execute-Replan</strong></td>
+<td>把一个人循环升级为三个角色协作：Planner 拆任务 → Executor 执行 → Replan 调整计划</td>
+</tr>
+<tr>
+<td><strong>什么时候用哪种</strong></td>
+<td>简单任务用 ReAct（轻量），多步骤复杂排障用 Plan-Execute-Replan（有全局视角）</td>
+</tr>
+<tr>
+<td><strong>MCP 协议核心价值</strong></td>
+<td>AI 的”USB-C”——标准协议让 AI 应用动态发现和调用任何工具，告别 M×N 集成噩梦</td>
+</tr>
+<tr>
+<td><strong>CLS MCP Server</strong></td>
+<td>把腾讯云日志服务封装成 MCP 标准工具，让 AI 能用自然语言直接查日志、看指标、管告警</td>
+</tr>
+<tr>
+<td><strong>Oncall Agent 2.0 的进化</strong></td>
+<td>从”单一 RAG 问答”进化为”Plan-Execute-Replan 多 Agent + MCP 工具生态”的智能运维平台</td>
+</tr>
+</tbody></table>
+<hr>
+<blockquote>
+<p><strong>延伸阅读</strong>：</p>
+<ul>
+<li><a href="/2026/06/21/oncall-Agent-1-0/">Oncall Agent 1.0 — RAG 问答系统核心流程与组件拆解</a>（前置知识）</li>
+<li><a target="_blank" rel="noopener" href="https://modelcontextprotocol.io/specification/draft/architecture/">MCP 官方规范</a></li>
+<li><a target="_blank" rel="noopener" href="https://cloud.tencent.com/document/product/614/118699">腾讯云 CLS MCP Server 文档</a></li>
+</ul>
+</blockquote>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -3979,7 +4676,7 @@
 <tr>
 <td>6</td>
 <td><strong>Rewrite和Expand的区别？为什么Expand效果更差？</strong></td>
-<td>Rewrite：口语→官方术语，2-3个改写版本。Expand：复杂问题→3-5个子问题。Expand差的原因：子问题引入无关文档噪声，RRF无法完全过滤；拆解粒度太细产生冗余。数据上：Rewrite P@3+3.4%，Expand <a href="mailto:&#x48;&#x52;&#64;&#x33;&#x2d;&#54;&#46;&#x36;">&#x48;&#x52;&#64;&#x33;&#x2d;&#54;&#46;&#x36;</a>%。</td>
+<td>Rewrite：口语→官方术语，2-3个改写版本。Expand：复杂问题→3-5个子问题。Expand差的原因：子问题引入无关文档噪声，RRF无法完全过滤；拆解粒度太细产生冗余。数据上：Rewrite P@3+3.4%，Expand <a href="mailto:&#72;&#x52;&#64;&#51;&#45;&#x36;&#46;&#54;">&#72;&#x52;&#64;&#51;&#45;&#x36;&#46;&#54;</a>%。</td>
 </tr>
 <tr>
 <td>7</td>
@@ -4393,223 +5090,6 @@
 <p>插入时：从顶向下找入口 → 每层搜 <code>ef_construction</code> 个候选 → 启发式选邻居 → 双向连边</p>
 <p>搜索时：从顶向下路由（ef&#x3D;1）→ 在第 0 层精搜（ef&#x3D;ef_）→ 返回 top-k</p>
 <p>整个算法 &#x3D; <strong>多层图 + 贪心 BFS + 提前终止 + 多样性剪枝</strong></p>
-</blockquote>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2026/06/06/%E9%80%82%E5%90%88%E6%96%B0%E6%89%8B%E5%AE%9D%E5%AE%9D%E7%9A%84vibe-coding/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="查志渊">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="渊渟岳峙的技术笔记">
-      <meta itemprop="description" content="磨炼自己的一点点技术">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | 渊渟岳峙的技术笔记">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/06/06/%E9%80%82%E5%90%88%E6%96%B0%E6%89%8B%E5%AE%9D%E5%AE%9D%E7%9A%84vibe-coding/" class="post-title-link" itemprop="url">适合新手宝宝的vibe coding</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2026-06-06 23:03:34 / 修改时间：23:16:02" itemprop="dateCreated datePublished" datetime="2026-06-06T23:03:34+08:00">2026-06-06</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">学习</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <hr>
-<h1 id="Claude-Code-×-Vibe-Coding：写给中高级开发者的硬核实战指南"><a href="#Claude-Code-×-Vibe-Coding：写给中高级开发者的硬核实战指南" class="headerlink" title="Claude Code × Vibe Coding：写给中高级开发者的硬核实战指南"></a>Claude Code × Vibe Coding：写给中高级开发者的硬核实战指南</h1><blockquote>
-<p><strong>当前版本参考</strong>：v2.1.163<br><strong>适用环境</strong>：macOS &#x2F; Linux (WSL2)<br><strong>前置要求</strong>：Claude Pro&#x2F;Max 订阅 或 API Key</p>
-</blockquote>
-<h2 id="一、极简配置与环境调优"><a href="#一、极简配置与环境调优" class="headerlink" title="一、极简配置与环境调优"></a>一、极简配置与环境调优</h2><h3 id="1-1-安装（别再用-npm-了）"><a href="#1-1-安装（别再用-npm-了）" class="headerlink" title="1.1 安装（别再用 npm 了）"></a>1.1 安装（别再用 npm 了）</h3><p>⚠️ <strong>注意</strong>：npm 包 <code>@anthropic-ai/claude-code</code> 在 v2.1.113 时已废弃，CLI 已迁移为平台原生二进制。请勿使用旧方式安装。</p>
-<p><strong>推荐安装方式（支持后台自动更新）</strong>：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># macOS / Linux 原生安装（推荐，自动后台更新）</span></span><br><span class="line">curl -fsSL https://code.claude.com/install.sh | sh</span><br><span class="line"></span><br><span class="line"><span class="comment"># macOS Homebrew（不自动更新，需手动 brew upgrade）</span></span><br><span class="line">brew install claude-code         <span class="comment"># 稳定版，约延后一周</span></span><br><span class="line">brew install claude-code@latest  <span class="comment"># 最新版</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="1-2-大佬级环境变量配置"><a href="#1-2-大佬级环境变量配置" class="headerlink" title="1.2 大佬级环境变量配置"></a>1.2 大佬级环境变量配置</h3><p>不要每次都在终端里配，直接把以下配置写进你的 <code>~/.zshrc</code> 或 <code>~/.bashrc</code>：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ── Claude Code 核心环境变量 ──────────────────────────────</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 1. API Key（订阅用户走 OAuth 则无需此项）</span></span><br><span class="line"><span class="built_in">export</span> ANTHROPIC_API_KEY=<span class="string">&quot;sk-ant-...&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. 指定努力等级（auto/low/medium/high/xhigh）</span></span><br><span class="line"><span class="comment"># xhigh 对应 Opus 4.7 模型，优先级高于配置文件</span></span><br><span class="line"><span class="built_in">export</span> CLAUDE_CODE_EFFORT=<span class="string">&quot;high&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 3. 关闭遥测/反馈上报（适合企业环境/强隐私需求）</span></span><br><span class="line"><span class="built_in">export</span> CLAUDE_CODE_DISABLE_TELEMETRY=1</span><br><span class="line"></span><br><span class="line"><span class="comment"># 4. 启动时从额外目录加载 CLAUDE.md</span></span><br><span class="line"><span class="built_in">export</span> CLAUDE_ADD_DIR_LOAD_CLAUDE_MD=1</span><br><span class="line"></span><br><span class="line"><span class="comment"># 5. 禁用 SessionEnd Cron（节省内存）</span></span><br><span class="line"><span class="built_in">export</span> CLAUDE_CODE_DISABLE_CRON=<span class="literal">true</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="1-3-Shell-补全（Tab-键补全-CLI-flags）"><a href="#1-3-Shell-补全（Tab-键补全-CLI-flags）" class="headerlink" title="1.3 Shell 补全（Tab 键补全 CLI flags）"></a>1.3 Shell 补全（Tab 键补全 CLI flags）</h3><p>CLI 自带补全脚本，极大提升输入效率：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># zsh</span></span><br><span class="line">claude completion zsh &gt;&gt; ~/.zshrc &amp;&amp; <span class="built_in">source</span> ~/.zshrc</span><br><span class="line"></span><br><span class="line"><span class="comment"># bash</span></span><br><span class="line">claude completion bash &gt;&gt; ~/.bashrc &amp;&amp; <span class="built_in">source</span> ~/.bashrc</span><br><span class="line"></span><br><span class="line"><span class="comment"># fish</span></span><br><span class="line">claude completion fish &gt; ~/.config/fish/completions/claude.fish</span><br></pre></td></tr></table></figure>
-
-<h3 id="1-4-项目结构黄金模板"><a href="#1-4-项目结构黄金模板" class="headerlink" title="1.4 项目结构黄金模板"></a>1.4 项目结构黄金模板</h3><p>一个经得起实战考验的 Vibe Coding 项目结构如下：</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">my-project/</span><br><span class="line">├── CLAUDE.md                   # 项目永久记忆（每次 session 都强制加载）</span><br><span class="line">├── .claudeignore               # 排除上下文文件（防 Token 爆炸）</span><br><span class="line">├── .claude/</span><br><span class="line">│   ├── settings.json           # 权限 + Hooks（必须提交进 git 供团队共享）</span><br><span class="line">│   ├── agents/                 # 自定义子智能体</span><br><span class="line">│   │   ├── code-reviewer.md</span><br><span class="line">│   │   └── codebase-explorer.md</span><br><span class="line">│   ├── commands/               # 自定义斜杠命令</span><br><span class="line">│   └── hooks/                  # 确定性 Hook 脚本</span><br><span class="line">│       ├── pre-bash-guard.sh</span><br><span class="line">│       └── post-edit-format.sh</span><br><span class="line">└── ... (项目文件)</span><br></pre></td></tr></table></figure>
-
-<h3 id="1-5-CLAUDE-md-—-写法的反常识真相"><a href="#1-5-CLAUDE-md-—-写法的反常识真相" class="headerlink" title="1.5 CLAUDE.md — 写法的反常识真相"></a>1.5 CLAUDE.md — 写法的反常识真相</h3><p><code>CLAUDE.md</code> 是一个特殊文件，Claude 在每次对话开始时都会读取它。你可以通过跑 <code>/init</code> 生成初稿，它会自动分析你的代码库并生成基础配置。</p>
-<p>❌ <strong>反常识：不要往 CLAUDE.md 里塞代码风格规则！</strong><br>永远不要让 LLM 去做 linter 的工作。LLM 相比传统 linter 既贵又慢，把代码风格指南塞进这里会吃掉大量上下文窗口并降低性能。优先使用指针（<code>file:line</code>）而非复制粘贴代码。</p>
-<p><strong>一个经过实战验证的 CLAUDE.md 模板：</strong></p>
-<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="section"># My SaaS API</span></span><br><span class="line">Backend service for user management. Node.js + TypeScript + PostgreSQL.</span><br><span class="line"></span><br><span class="line"><span class="section">## Tech Stack</span></span><br><span class="line"><span class="bullet">-</span> Runtime: Node 20, Bun for scripts</span><br><span class="line"><span class="bullet">-</span> ORM: Prisma</span><br><span class="line"><span class="bullet">-</span> Test: Vitest</span><br><span class="line"><span class="bullet">-</span> Lint/Format: Biome (handles both, NOT Prettier+ESLint)</span><br><span class="line"></span><br><span class="line"><span class="section">## How to verify changes</span></span><br><span class="line"><span class="code">`bun run typecheck`</span>   # tsc --noEmit</span><br><span class="line"><span class="code">`bun run test`</span>        # vitest run</span><br><span class="line"><span class="code">`bun run lint`</span>        # biome check .</span><br><span class="line"></span><br><span class="line"><span class="section">## Architecture map</span></span><br><span class="line"><span class="bullet">-</span> src/routes/ → HTTP handlers</span><br><span class="line"><span class="bullet">-</span> src/services/ → business logic</span><br><span class="line"><span class="bullet">-</span> src/db/ → Prisma client + migrations</span><br><span class="line"><span class="bullet">-</span> src/lib/ → shared utilities</span><br><span class="line"></span><br><span class="line"><span class="section">## Hard rules</span></span><br><span class="line"><span class="bullet">-</span> Never edit .env or prisma/migrations/</span><br><span class="line"><span class="bullet">-</span> Always run tests before committing</span><br><span class="line"><span class="bullet">-</span> Use bun not npm</span><br><span class="line"></span><br><span class="line"><span class="section">## File pointers</span></span><br><span class="line"><span class="bullet">-</span> Auth logic: see src/services/auth.ts:42</span><br><span class="line"><span class="bullet">-</span> DB schema: prisma/schema.prisma</span><br></pre></td></tr></table></figure>
-
-<h3 id="1-6-claudeignore-最佳实践"><a href="#1-6-claudeignore-最佳实践" class="headerlink" title="1.6 .claudeignore 最佳实践"></a>1.6 <code>.claudeignore</code> 最佳实践</h3><p><code>.claudeignore</code> 的作用类似 <code>.gitignore</code>，防止自动文件发现期间将垃圾文件拉入上下文。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"># .claudeignore</span><br><span class="line"></span><br><span class="line"># 依赖（最大的上下文杀手）</span><br><span class="line">node_modules/</span><br><span class="line">.venv/</span><br><span class="line">vendor/</span><br><span class="line"></span><br><span class="line"># 构建产物</span><br><span class="line">dist/</span><br><span class="line">build/</span><br><span class="line">.next/</span><br><span class="line"></span><br><span class="line"># 数据库/大文件</span><br><span class="line">*.sqlite</span><br><span class="line">data/raw/</span><br><span class="line"></span><br><span class="line"># 敏感文件（注意：仍需 settings.json 做硬性拒绝）</span><br><span class="line">.env</span><br><span class="line">.env.*</span><br><span class="line">secrets/</span><br></pre></td></tr></table></figure>
-
-<p>⚠️ <strong>高能预警</strong>：<code>.claudeignore</code> 不会让文件完全不可见。对于真正敏感的 secrets，必须在 <code>.claude/settings.json</code> 里做硬性拒绝：</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;permissions&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;deny&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">      <span class="string">&quot;Read(.env)&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="string">&quot;Read(.env.*)&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="string">&quot;Read(./secrets/**)&quot;</span></span><br><span class="line">    <span class="punctuation">]</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-
-<hr>
-<h2 id="二、Vibe-Coding-核心心法在-Claude-Code-中的映射"><a href="#二、Vibe-Coding-核心心法在-Claude-Code-中的映射" class="headerlink" title="二、Vibe Coding 核心心法在 Claude Code 中的映射"></a>二、Vibe Coding 核心心法在 Claude Code 中的映射</h2><p>Claude Code 不是一个“能生成代码的聊天界面”，而是一个<strong>能规划工作、读取代码库、跨目录编辑文件、运行测试并创建 PR 的 Agentic（智能体）工具</strong>。</p>
-<h3 id="2-1-核心心法映射表"><a href="#2-1-核心心法映射表" class="headerlink" title="2.1 核心心法映射表"></a>2.1 核心心法映射表</h3><table>
-<thead>
-<tr>
-<th align="left">Vibe Coding 心法</th>
-<th align="left">Claude Code 对应机制</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left"><strong>描述意图，不描述步骤</strong></td>
-<td align="left">自然语言 → 多步骤 Agentic 自动执行</td>
-</tr>
-<tr>
-<td align="left"><strong>先让它跑起来</strong></td>
-<td align="left"><code>Auto Mode</code> + 宽松权限</td>
-</tr>
-<tr>
-<td align="left"><strong>保持心流</strong></td>
-<td align="left">会话恢复 (<code>-c</code>) + <code>CLAUDE.md</code> 持久记忆</td>
-</tr>
-<tr>
-<td align="left"><strong>快速迭代</strong></td>
-<td align="left"><code>/rewind</code> + <code>/fork</code> 回滚与分支实验</td>
-</tr>
-<tr>
-<td align="left"><strong>信任工具</strong></td>
-<td align="left"><code>--dangerously-skip-permissions</code>（仅限受控 CI 环境）</td>
-</tr>
-</tbody></table>
-<h3 id="2-2-精准控制文件读写权限"><a href="#2-2-精准控制文件读写权限" class="headerlink" title="2.2 精准控制文件读写权限"></a>2.2 精准控制文件读写权限</h3><p>读取类工具（如 <code>Read</code>, <code>Glob</code>, <code>Grep</code>）默认自动批准。修改类工具（如 <code>Edit</code>, <code>Bash</code>）需要你的批准。根据场景选择模式：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 模式 1：默认（安全，每次修改都提示确认）</span></span><br><span class="line">claude</span><br><span class="line"></span><br><span class="line"><span class="comment"># 模式 2：Auto Mode（推荐日常开发）</span></span><br><span class="line"><span class="comment"># 让独立的分类器模型自动审查命令，只拦截高风险操作</span></span><br><span class="line">claude --auto-approve</span><br><span class="line"></span><br><span class="line"><span class="comment"># 模式 3：完全跳过权限（极度危险，仅用于沙盒或 CI）</span></span><br><span class="line">claude --dangerously-skip-permissions -p <span class="string">&quot;run all tests and fix failures&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>你可以通过 <code>settings.json</code> 预批准安全的开发命令，同时拉黑危险命令：</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;permissions&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;allow&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">      <span class="string">&quot;Bash(bun run *)&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="string">&quot;Bash(git status)&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="string">&quot;Bash(git diff *)&quot;</span></span><br><span class="line">    <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;deny&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">      <span class="string">&quot;Bash(git push --force*)&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="string">&quot;Bash(rm -rf *)&quot;</span></span><br><span class="line">    <span class="punctuation">]</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="2-3-让-Claude-先“采访”你，再动手"><a href="#2-3-让-Claude-先“采访”你，再动手" class="headerlink" title="2.3 让 Claude 先“采访”你，再动手"></a>2.3 让 Claude 先“采访”你，再动手</h3><p>对于大型功能，别直接叫它动手写代码。从最简短的 Prompt 开始，让它反向收集需求：</p>
-<blockquote>
-<p>我想构建 [简短描述]。<br>请使用 AskUserQuestion 工具详细采访我。<br>询问技术实现、UI&#x2F;UX、边界情况、顾虑和权衡。不要问显而易见的问题，深入挖掘我可能没考虑到的难点。<br>持续采访直到我们覆盖所有内容，然后将完整规格写入 SPEC.md。<br>规格完成后，我们将开启一个新 session 来执行它。</p>
-</blockquote>
-<h3 id="2-4-Plan-Mode-—-大改动前的安全网"><a href="#2-4-Plan-Mode-—-大改动前的安全网" class="headerlink" title="2.4 Plan Mode — 大改动前的安全网"></a>2.4 Plan Mode — 大改动前的安全网</h3><p>对生产关键文件或数据库迁移，先用 Plan Mode 让 Claude 处于<strong>只读状态</strong>。它会分析代码并给出修改计划，但绝不动手。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 启动时直接进入 Plan Mode</span></span><br><span class="line">claude --plan</span><br><span class="line"></span><br><span class="line"><span class="comment"># 或在交互 session 内输入：</span></span><br><span class="line">&gt; /plan</span><br><span class="line"><span class="comment"># 或直接按 Shift+Tab 切换</span></span><br></pre></td></tr></table></figure>
-
-<hr>
-<h2 id="三、进阶与硬核操作（核心干货）"><a href="#三、进阶与硬核操作（核心干货）" class="headerlink" title="三、进阶与硬核操作（核心干货）"></a>三、进阶与硬核操作（核心干货）</h2><h3 id="3-1-精准控制-Context，避免-Token-浪费"><a href="#3-1-精准控制-Context，避免-Token-浪费" class="headerlink" title="3.1 精准控制 Context，避免 Token 浪费"></a>3.1 精准控制 Context，避免 Token 浪费</h3><p>Context 管理是 Vibe Coding 的最核心技能。</p>
-<ul>
-<li><strong>&#x2F;compact — Token 救星</strong><br>当上下文超过 80% 时，用它把历史记录压缩成密集摘要。<br><em>用法</em>：<code>&gt; /compact Focus on the auth module and current test failures</code></li>
-<li><strong>&#x2F;fork — 对话层面的 Git Branch</strong><br>想尝试一种激进的重构方式？用 <code>/fork try-aggressive-approach</code> 创建对话分支。如果失败了，直接回到原来的 session，不破坏工作状态。</li>
-<li><strong>&#x2F;rewind — 后悔药</strong><br>双击 <code>Esc</code> 或输入 <code>/rewind</code>。你可以选择“仅回滚代码”，在保留对话（诊断过程）的同时撤销所有文件修改。再也不用 <code>git stash</code> 了。</li>
-</ul>
-<p><strong>跨项目工作（无需切目录）：</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">claude --add-dir ../backend -p <span class="string">&quot;Validate that API calls in current dir match endpoints in ../backend&quot;</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="3-2-Bash-管道符的高阶联动"><a href="#3-2-Bash-管道符的高阶联动" class="headerlink" title="3.2 Bash 管道符的高阶联动"></a>3.2 Bash 管道符的高阶联动</h3><p>加上 <code>-p</code> 标志，Claude Code 就会运行一次查询后直接退出（不启动交互 session），非常适合结合 Bash 管道（Piping）做自动化：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 自动分析并修复 TypeScript 错误，输出结构化 JSON 供脚本消费</span></span><br><span class="line">npx tsc --noEmit 2&gt;&amp;1 | claude -p <span class="string">&quot;categorize these TS errors by severity and suggest fixes&quot;</span> --output-format json &gt; ts-errors.json</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. CI 中自动检测 PR 安全回归</span></span><br><span class="line">git diff origin/main...HEAD | claude -p \</span><br><span class="line">  <span class="string">&quot;Does this diff introduce any security vulnerabilities? Reply YES or NO then explain.&quot;</span> \</span><br><span class="line">  --output-format json</span><br><span class="line"></span><br><span class="line"><span class="comment"># 3. 将线上 Sentry 错误直接转化为本地任务清单</span></span><br><span class="line">curl -s <span class="string">&quot;https://sentry.io/api/.../issues/&quot;</span> -H <span class="string">&quot;Authorization: Bearer <span class="variable">$TOKEN</span>&quot;</span> | \</span><br><span class="line">  claude -p <span class="string">&quot;Convert these Sentry issues into a prioritized todo list with reproduction steps&quot;</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="3-3-大型重构任务：子智能体-Worktree-并行战术（最硬核）"><a href="#3-3-大型重构任务：子智能体-Worktree-并行战术（最硬核）" class="headerlink" title="3.3 大型重构任务：子智能体 + Worktree 并行战术（最硬核）"></a>3.3 大型重构任务：子智能体 + Worktree 并行战术（最硬核）</h3><p>当面临复杂的大型重构时，将任务拆分给子智能体（Subagents），并利用 Git Worktrees 进行<strong>并行无冲突执行</strong>。</p>
-<p><strong>第一步：为并行任务创建独立 Worktree（零冲突）</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 打开三个 Terminal，互不污染</span></span><br><span class="line">claude --worktree refactor-auth-module     <span class="comment"># Terminal 1</span></span><br><span class="line">claude --worktree migrate-api-layer        <span class="comment"># Terminal 2</span></span><br><span class="line">claude --worktree fix-prod-memory-leak     <span class="comment"># Terminal 3</span></span><br></pre></td></tr></table></figure>
-
-<p><strong>第二步：定义专业化子智能体</strong><br>在 <code>.claude/agents/</code> 目录下创建 YAML+Markdown 结合的定义文件：</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># .claude/agents/codebase-explorer.md</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">name:</span> <span class="string">codebase-explorer</span></span><br><span class="line"><span class="attr">description:</span> <span class="string">Read-only</span> <span class="string">agent</span> <span class="string">for</span> <span class="string">deep</span> <span class="string">codebase</span> <span class="string">exploration</span></span><br><span class="line"><span class="attr">tools:</span> <span class="string">Read,</span> <span class="string">Glob,</span> <span class="string">Grep,</span> <span class="string">Bash</span></span><br><span class="line"><span class="attr">model:</span> <span class="string">claude-haiku-4-5</span>  <span class="comment"># 便宜快速，适合探索</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="string">你是一个只读探索智能体。分析代码库并返回简洁的发现（带文件路径）。</span></span><br><span class="line"><span class="string">绝不要修改任何文件。</span></span><br></pre></td></tr></table></figure>
-
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># .claude/agents/code-reviewer.md</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">name:</span> <span class="string">code-reviewer</span></span><br><span class="line"><span class="attr">description:</span> <span class="string">Reviews</span> <span class="string">code</span> <span class="string">for</span> <span class="string">security,</span> <span class="string">performance,</span> <span class="string">and</span> <span class="string">correctness.</span> <span class="string">Read-only.</span></span><br><span class="line"><span class="attr">tools:</span> <span class="string">Read,</span> <span class="string">Glob,</span> <span class="string">Grep,</span> <span class="string">Bash</span></span><br><span class="line"><span class="attr">model:</span> <span class="string">claude-sonnet-4-6</span> <span class="comment"># 旗舰模型，适合深度审查</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="string">你是一位高级代码审查者。只审查变更的文件。</span></span><br><span class="line"><span class="string">关注：安全漏洞、性能问题、边界情况。不要修改任何文件。</span></span><br></pre></td></tr></table></figure>
-
-<p><strong>第三步：发起重构指令</strong><br>在主 Session 中派发任务：</p>
-<blockquote>
-<p>我需要将 authentication 模块从 Passport.js 迁移到自定义 JWT 实现。</p>
-<ol>
-<li>先使用 <code>codebase-explorer</code> 分析当前 auth 实现，返回涉及文件清单。</li>
-<li>在各自的 worktree 中并行实现逻辑。</li>
-<li>完成后，调用 <code>code-reviewer</code> 审查 diff。审查通过后再生成 PR 描述。</li>
-</ol>
-</blockquote>
-<h3 id="3-4-Hooks-系统：注入确定性保障"><a href="#3-4-Hooks-系统：注入确定性保障" class="headerlink" title="3.4 Hooks 系统：注入确定性保障"></a>3.4 Hooks 系统：注入确定性保障</h3><p><code>CLAUDE.md</code> 里的规则大模型偶尔会忘，但 <strong>Hooks 每次都会确定性触发</strong>。<br>在 <code>.claude/settings.json</code> 中配置：</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;hooks&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;PreToolUse&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">      <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;matcher&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Bash&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;hooks&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">&#123;</span><span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;command&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;command&quot;</span><span class="punctuation">:</span> <span class="string">&quot;./.claude/hooks/pre-bash-guard.sh&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">]</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;PostToolUse&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">      <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;matcher&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Write|Edit&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;hooks&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">          <span class="punctuation">&#123;</span><span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;command&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;command&quot;</span><span class="punctuation">:</span> <span class="string">&quot;npx biome format --write \&quot;$CLAUDE_TOOL_INPUT_FILE_PATH\&quot;&quot;</span><span class="punctuation">&#125;</span></span><br><span class="line">        <span class="punctuation">]</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-
-<p><strong>硬核技巧：使用 <code>exit 2</code> 阻断或强制执行</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="comment"># .claude/hooks/pre-bash-guard.sh</span></span><br><span class="line">COMMAND=$(<span class="built_in">cat</span> | jq -r <span class="string">&#x27;.tool_input.command&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> <span class="built_in">echo</span> <span class="string">&quot;<span class="variable">$COMMAND</span>&quot;</span> | grep -qi <span class="string">&quot;drop table&quot;</span>; <span class="keyword">then</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;🚫 Blocked: &#x27;drop table&#x27; detected!&quot;</span> &gt;&amp;2</span><br><span class="line">  <span class="built_in">exit</span> 2  <span class="comment"># exit 2 在 PreToolUse 中表示：立刻阻断工具调用，报错给 Claude！</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"><span class="built_in">exit</span> 0</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h2 id="四、避坑指南（Anti-patterns）"><a href="#四、避坑指南（Anti-patterns）" class="headerlink" title="四、避坑指南（Anti-patterns）"></a>四、避坑指南（Anti-patterns）</h2><h3 id="❌-坑-1：在一个超长-Session-里干所有事"><a href="#❌-坑-1：在一个超长-Session-里干所有事" class="headerlink" title="❌ 坑 1：在一个超长 Session 里干所有事"></a>❌ 坑 1：在一个超长 Session 里干所有事</h3><p>新手喜欢开一个 session，加功能、改 bug、写测试全在里面。结果导致上下文被严重压缩，Claude 开始遗忘三小时前的架构决策。<br><strong>✅ 大佬的做法</strong>：<br>每个独立任务使用 <code>/clear</code> 开新 session。依赖 <code>CLAUDE.md</code> 保留永久架构知识，使用 <code>/compact</code> 进行定向压缩。</p>
-<h3 id="❌-坑-2：Prompt-太模糊，导致瞎猜"><a href="#❌-坑-2：Prompt-太模糊，导致瞎猜" class="headerlink" title="❌ 坑 2：Prompt 太模糊，导致瞎猜"></a>❌ 坑 2：Prompt 太模糊，导致瞎猜</h3><p>新手：“帮我优化这个函数”。Claude 不知道优化指的是性能、可读性还是内存，大概率改错。<br><strong>✅ 大佬的做法</strong>（目标 + 约束 + 验证）：</p>
-<blockquote>
-<p>优化 src&#x2F;user.ts 中的 getUserData 函数。<br><strong>目标</strong>：减少数据库查询次数（解决 N+1）。<br><strong>约束</strong>：保持函数签名不变；不引入新依赖。<br><strong>验证</strong>：必须通过 <code>bun run test src/user.test.ts</code>。完成后告诉我时间复杂度的变化。</p>
-</blockquote>
-<h3 id="❌-坑-3：生产环境不控制权限"><a href="#❌-坑-3：生产环境不控制权限" class="headerlink" title="❌ 坑 3：生产环境不控制权限"></a>❌ 坑 3：生产环境不控制权限</h3><p>让不受约束的 AI 读取环境文件或修改 git 历史。<br><strong>✅ 大佬的做法</strong>：<br>使用 <code>--allowedTools</code> 严格限制单次 session。<br><code>claude --allowedTools &quot;Read,Glob,Grep,Bash(git log*)&quot;</code>（打造一个纯探索、零破坏风险的 session）。</p>
-<hr>
-<h2 id="五、完整-Vibe-Coding-实战-Workflow"><a href="#五、完整-Vibe-Coding-实战-Workflow" class="headerlink" title="五、完整 Vibe Coding 实战 Workflow"></a>五、完整 Vibe Coding 实战 Workflow</h2><p><strong>案例</strong>：用 Claude Code 从零排查并修复 Node.js 内存泄漏（OOM 崩溃）。</p>
-<p><strong>Phase 1：探索阶段（不污染主上下文）</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt; use the codebase-explorer subagent to:</span><br><span class="line">  1. Find missing .removeListener() calls</span><br><span class="line">  2. Find un-cleared setIntervals</span><br><span class="line">  3. Map cache implementations without eviction policies</span><br></pre></td></tr></table></figure>
-
-<p><strong>Phase 2：管道收集运行时数据</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 将 heapdump 分析结果直接 pipe 给 Claude 定位问题</span></span><br><span class="line"><span class="built_in">cat</span> heapdump-analysis.txt | claude -p <span class="string">&quot;Analyze this V8 heap dump. Identify top 3 memory leak candidates.&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p><strong>Phase 3：Plan Mode 审查（零风险）</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; /plan</span><br><span class="line"><span class="comment"># Claude 给出 rateLimiter.ts 和 emailQueue.ts 的修复计划，人工 Review 确认。</span></span><br></pre></td></tr></table></figure>
-
-<p><strong>Phase 4：Worktree 并行修复</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Terminal 1</span></span><br><span class="line">claude --worktree fix/rate-limiter</span><br><span class="line">&gt; 按照 Plan 修复 rateLimiter，实现 LRU，跑通测试后提交。</span><br><span class="line"></span><br><span class="line"><span class="comment"># Terminal 2</span></span><br><span class="line">claude --worktree fix/email-queue</span><br><span class="line">&gt; 按照 Plan 修复 emailQueue 的 EventEmitter，跑通测试后提交。</span><br></pre></td></tr></table></figure>
-
-<p><strong>Phase 5：Review 与合并</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 回到主分支</span></span><br><span class="line">&gt; use the code-reviewer subagent to review the changes <span class="keyword">in</span> those two worktrees.</span><br><span class="line"><span class="comment"># 审查通过后</span></span><br><span class="line">git merge ...</span><br><span class="line">&gt; Write a detailed PR description <span class="keyword">for</span> these memory leak fixes.</span><br></pre></td></tr></table></figure>
-
-<h3 id="🔁-Workflow-总结："><a href="#🔁-Workflow-总结：" class="headerlink" title="🔁 Workflow 总结："></a>🔁 Workflow 总结：</h3><p>自然语言描述问题 → 子智能体探索 → Bash 管道查数据 → Plan Mode 零风险审查 → Worktree 并行实现 → Hooks 自动跑测试 → 子智能体 Code Review → 完美合入。</p>
-<hr>
-<h2 id="🚀-快速参考卡-Cheat-Sheet"><a href="#🚀-快速参考卡-Cheat-Sheet" class="headerlink" title="🚀 快速参考卡 (Cheat Sheet)"></a>🚀 快速参考卡 (Cheat Sheet)</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ── 日常必用 ──────────────────────────────────</span></span><br><span class="line">claude -c                          <span class="comment"># 恢复上次 session</span></span><br><span class="line">claude --plan                      <span class="comment"># Plan Mode（只读规划模式）</span></span><br><span class="line">/compact focus on X                <span class="comment"># 定向压缩历史上下文</span></span><br><span class="line">/rewind                            <span class="comment"># 回滚对话和代码（双击 Esc）</span></span><br><span class="line">/fork experiment-name              <span class="comment"># 建立当前对话的安全分支</span></span><br><span class="line">/model haiku                       <span class="comment"># 切换便宜模型（适合探索）</span></span><br><span class="line">/cost                              <span class="comment"># 查看本次 session 花费</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ── 跨域与并行 ────────────────────────────────</span></span><br><span class="line">claude --worktree feature-name     <span class="comment"># 启动带独立分支的工作树</span></span><br><span class="line">/add-dir ../other-project          <span class="comment"># 将其他项目拉入当前上下文</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ── 管道与自动化 ──────────────────────────────</span></span><br><span class="line">claude -p <span class="string">&quot;prompt&quot;</span> --output-format json       <span class="comment"># JSON 结构化输出</span></span><br><span class="line"><span class="built_in">cat</span> file.log | claude -p <span class="string">&quot;analyze this&quot;</span>       <span class="comment"># 结合 Bash 管道</span></span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>💡 <strong>终极心法</strong>：Claude Code 不是“更聪明的 Copilot”，它是一个通过<strong>权限</strong>、<strong>Hooks</strong>、<strong>子智能体</strong>和 <strong>Git Worktrees</strong> 分层系统来执行任务的自动化终端。Vibe Coding 的精髓就是：<strong>你负责定义意图和审查，Claude 负责脏活累活。</strong></p>
 </blockquote>
 
       
