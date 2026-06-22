@@ -139,7 +139,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-count">14</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -150,7 +150,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-count">21</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -172,6 +172,282 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/06/03/kaggle-test-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="查志渊">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="渊渟岳峙的技术笔记">
+      <meta itemprop="description" content="磨炼自己的一点点技术">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=" | 渊渟岳峙的技术笔记">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2026/06/03/kaggle-test-1/" class="post-title-link" itemprop="url">kaggle_test_1</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2026-06-03 16:12:00 / 修改时间：16:52:58" itemprop="dateCreated datePublished" datetime="2026-06-03T16:12:00+08:00">2026-06-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" itemprop="url" rel="index"><span itemprop="name">数据分析</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="kaggle练习1"><a href="#kaggle练习1" class="headerlink" title="kaggle练习1"></a>kaggle练习1</h1><h2 id="kaggle是什么："><a href="#kaggle是什么：" class="headerlink" title="kaggle是什么："></a>kaggle是什么：</h2><p>Kaggle 是一个由 Google 旗下的免费在线平台，全球各地的人们在这里一起解决数据问题、学习新技能并分享他们的成果。它提供工具、数据集、竞赛和学习资源，对所有对数据感兴趣的人开放——无论你是初学者还是专家，这里都有适合你的内容。</p>
+<h2 id="kaggle的五大核心功能："><a href="#kaggle的五大核心功能：" class="headerlink" title="kaggle的五大核心功能："></a>kaggle的五大核心功能：</h2><ul>
+<li>Competitions（竞赛） — 参与挑战并赢取奖品</li>
+<li>Datasets（数据集） — 免费获取数以千计的公开数据集</li>
+<li>Code&#x2F;Notebooks（代码） — 直接在浏览器中编写和运行代码</li>
+<li>Courses（课程） — 学习 Python、机器学习、数据可视化等课程</li>
+<li>Discussions（讨论区） — 与社区交流、提问、分享见解</li>
+</ul>
+<h2 id="进入-泰坦尼克号题目：-https-www-kaggle-com-c-titanic"><a href="#进入-泰坦尼克号题目：-https-www-kaggle-com-c-titanic" class="headerlink" title="进入 泰坦尼克号题目：(https://www.kaggle.com/c/titanic)"></a>进入 泰坦尼克号题目：(<a target="_blank" rel="noopener" href="https://www.kaggle.com/c/titanic">https://www.kaggle.com/c/titanic</a>)</h2><h3 id="数据集"><a href="#数据集" class="headerlink" title="数据集"></a>数据集</h3><p>我们可以在kaggle中找到泰坦尼克号的数据集，包括泰坦尼克号的乘客名单、舱位、年龄、性别、船票价格、船舱号、登船港口等信息。</p>
+<ol>
+<li>导入库：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> import pandas as pd</span><br><span class="line">import numpy as np</span><br><span class="line">from sklearn.ensemble import RandomForestClassifier</span><br><span class="line">from sklearn.preprocessing import LabelEncoder</span><br></pre></td></tr></table></figure>
+解释：</li>
+</ol>
+<ul>
+<li>pandas是一个强大的数据分析工具，用于处理和分析结构化数据。</li>
+<li>numpy是Python的一个科学计算库，提供了高性能的数组和矩阵操作。</li>
+<li>RandomForestClassifier是scikit-learn库中的一个分类器，基于随机森林算法实现。</li>
+<li>LabelEncoder是scikit-learn库中的一个工具，用于将分类变量转换为数值变量。</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/06/02/%E5%86%99%E5%8D%9A%E5%AE%A2%E6%B5%81%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="查志渊">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="渊渟岳峙的技术笔记">
+      <meta itemprop="description" content="磨炼自己的一点点技术">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=" | 渊渟岳峙的技术笔记">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2026/06/02/%E5%86%99%E5%8D%9A%E5%AE%A2%E6%B5%81%E7%A8%8B/" class="post-title-link" itemprop="url">写博客流程</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2026-06-02 22:28:17 / 修改时间：22:29:49" itemprop="dateCreated datePublished" datetime="2026-06-02T22:28:17+08:00">2026-06-02</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="✨-我的-Hexo-博客写作与发布-SOP-✨"><a href="#✨-我的-Hexo-博客写作与发布-SOP-✨" class="headerlink" title="✨ 我的 Hexo 博客写作与发布 SOP ✨"></a>✨ 我的 Hexo 博客写作与发布 SOP ✨</h1><blockquote>
+<p>这是一份从灵感到发布的完整操作流程，旨在帮助你高效、规范地管理你的个人博客。</p>
+</blockquote>
+<hr>
+<h3 id="阶段一：✍️-灵感构思与准备"><a href="#阶段一：✍️-灵感构思与准备" class="headerlink" title="阶段一：✍️ 灵感构思与准备"></a>阶段一：✍️ 灵感构思与准备</h3><ul>
+<li><strong>🎯 核心目标</strong>：捕捉想法，明确主题，规划结构。</li>
+</ul>
+<ol>
+<li><p><strong>💡 捕捉灵感 (Capture)</strong></p>
+<ul>
+<li><strong>时机</strong>：学习新知、解决Bug、阅读好文、项目复盘后。</li>
+<li><strong>工具</strong>：手机备忘录、Notion、<code>ideas.txt</code> 等。</li>
+<li><strong>记录</strong>：仅记录核心标题或关键词，例如：<ul>
+<li><code>TCP三次握手比喻</code></li>
+<li><code>Maven依赖冲突排查过程</code></li>
+<li><code>给新手的Git入门指南</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>🗺️ 构思大纲 (Outline)</strong></p>
+<ul>
+<li>在开始写作前，花 3 分钟用 Markdown 标题 (<code>#</code>, <code>##</code>, <code>###</code>) 列出文章结构。</li>
+<li><strong>示例</strong>：《深入理解Git工作流》<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="section"># 引言：为什么需要Git工作流</span></span><br><span class="line"><span class="section">## 什么是Git Flow</span></span><br><span class="line"><span class="section">## 什么是GitHub Flow</span></span><br><span class="line"><span class="section">## 两者对比：我该选哪个？</span></span><br><span class="line"><span class="section"># 总结：我的建议</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ol>
+<hr>
+<h3 id="阶段二：💻-本地写作与预览"><a href="#阶段二：💻-本地写作与预览" class="headerlink" title="阶段二：💻 本地写作与预览"></a>阶段二：💻 本地写作与预览</h3><ul>
+<li><strong>🎯 核心目标</strong>：完成文章撰写，并在本地预览确认效果。</li>
+</ul>
+<ol>
+<li><p><strong>🚀 新建文章 (New Post)</strong></p>
+<ul>
+<li><p>打开 <code>PowerShell</code> 或其他终端，<code>cd</code> 到你的博客根目录。</p>
+</li>
+<li><p>执行 <code>hexo new</code> 命令，使用<strong>全英文</strong>或<strong>拼音</strong>作为文件名（利于SEO）。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 语法: hexo new &lt;filename&gt;</span></span><br><span class="line">hexo new <span class="string">&quot;a-deep-dive-into-git-workflow&quot;</span></span><br></pre></td></tr></table></figure></li>
+<li><p>此命令会在 <code>source/_posts/</code> 目录下创建对应的 <code>.md</code> 文件。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>✍️ 撰写内容 (Writing)</strong></p>
+<ul>
+<li><p>使用 <strong>VS Code</strong> 打开新创建的 <code>.md</code> 文件。</p>
+</li>
+<li><p>**认真填写 <code>Front-matter</code>**（文件头部的元数据），这是文章的“身份证”。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">title:</span> <span class="string">深入理解主流Git工作流</span> <span class="comment"># 【必填】最终显示的文章标题</span></span><br><span class="line"><span class="attr">date:</span> <span class="number">2024-05-25 10:30:00</span> <span class="comment"># 【可选】文章发布时间，可修改</span></span><br><span class="line"><span class="attr">updated:</span> <span class="number">2024-05-26 14:00:00</span> <span class="comment"># 【可选】文章更新时间</span></span><br><span class="line"><span class="attr">tags:</span> <span class="comment"># 【推荐】标签，可以有多个，便于索引</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">Git</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">DevOps</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">版本控制</span></span><br><span class="line"><span class="attr">categories:</span> <span class="comment"># 【推荐】分类，建议只放一个，保持结构清晰</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">后端开发</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="string">&lt;!--</span> <span class="string">在这里开始你的正文内容</span> <span class="string">--&gt;</span></span><br></pre></td></tr></table></figure></li>
+<li><p>使用标准的 Markdown 语法进行写作，专注于内容本身。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>🔬 本地预览 (Preview)</strong></p>
+<ul>
+<li>在终端中运行以下命令，启动本地服务器。<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hexo server</span><br><span class="line"><span class="comment"># 简写: hexo s</span></span><br></pre></td></tr></table></figure></li>
+<li>命令运行后，终端会提示 <code>Hexo is running at http://localhost:4000/</code>。</li>
+<li>打开浏览器，访问 <strong><code>http://localhost:4000</code></strong> 即可实时预览。</li>
+<li><strong>高效技巧</strong>：写作时，每次在 VS Code 中保存 (<code>Ctrl + S</code>)，浏览器中的页面会自动刷新（或手动刷新），方便你即时查看排版效果。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h3 id="阶段三：🌐-发布上线"><a href="#阶段三：🌐-发布上线" class="headerlink" title="阶段三：🌐 发布上线"></a>阶段三：🌐 发布上线</h3><ul>
+<li><strong>🎯 核心目标</strong>：将本地的最新内容安全、完整地发布到互联网。</li>
+</ul>
+<ol>
+<li><p><strong>🛑 停止预览</strong></p>
+<ul>
+<li>回到终端窗口，按下 <code>Ctrl + C</code> 停止本地服务器。</li>
+</ul>
+</li>
+<li><p><strong>🚀 一键部署 (Deploy)</strong></p>
+<ul>
+<li><p>执行以下<strong>黄金命令</strong>，完成清理、生成、部署三项全能操作。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo clean &amp;&amp; hexo g -d</span><br></pre></td></tr></table></figure></li>
+<li><p><strong>命令解析</strong>：</p>
+<ul>
+<li><code>hexo clean</code>: <strong>清理</strong>。删除 <code>public</code> 文件夹，清除旧的缓存，避免潜在的冲突。</li>
+<li><code>&amp;&amp;</code>: <strong>连接符</strong>。表示前一个命令成功执行后，再执行下一个。</li>
+<li><code>hexo g</code>: <strong>生成</strong> (<code>generate</code>)。根据源文件生成最新的静态网站文件到 <code>public</code> 文件夹。</li>
+<li><code>hexo d</code>: <strong>部署</strong> (<code>deploy</code>)。将 <code>public</code> 文件夹中的内容推送到 GitHub Pages。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h3 id="阶段四：📢-发布后检查与推广"><a href="#阶段四：📢-发布后检查与推广" class="headerlink" title="阶段四：📢 发布后检查与推广"></a>阶段四：📢 发布后检查与推广</h3><ul>
+<li><strong>🎯 核心目标</strong>：确认线上效果，并让你的知识分享给更多人。</li>
+</ul>
+<ol>
+<li><p><strong>✅ 线上验证 (Verify)</strong></p>
+<ul>
+<li>部署命令成功后，<strong>等待 1-2 分钟</strong>（给 GitHub Pages 反应时间）。</li>
+<li>打开你的线上博客地址：<code>https://你的用户名.github.io</code></li>
+<li><strong>关键一步</strong>：使用<strong>强制刷新</strong>快捷键 <code>Ctrl + F5</code> (Windows) 或 <code>Cmd + Shift + R</code> (Mac)，确保你看到的是最新的网站内容，而非浏览器缓存。</li>
+<li>检查新文章的标题、内容、格式、图片是否都显示正常。</li>
+</ul>
+</li>
+<li><p><strong>🎉 分享推广 (Promote) - 可选</strong></p>
+<ul>
+<li>复制你新文章的链接。</li>
+<li>分享到各大技术社区（如掘金、CSDN、SegmentFault）、社交媒体或技术交流群。</li>
+<li><strong>引流技巧</strong>：在其他平台发布时，于文末附上你的博客原文链接，例如：<blockquote>
+<p>“原文首发于我的<a target="_blank" rel="noopener" href="https://woaiwang.github.io/%E6%96%87%E7%AB%A0%E9%93%BE%E6%8E%A5">个人博客</a>，欢迎访问交流！”</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 

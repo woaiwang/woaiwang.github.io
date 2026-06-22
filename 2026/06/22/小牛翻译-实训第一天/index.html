@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="小牛翻译-实训第一天今天主要是配置环境，连接远程ssh，连接实验室的服务器。先讲讲服务器，有一个root用户，我是组长，我是老师发了一份root的表格，ssh连接的格式和密码，然后我先用adduser创建四个子用户，分别是我的三个组员和我，然后我分别把组员的账号发给他们，让他们分别用自己的账号登录服务器。而且使用最简单的密码。今天在用vscode连接服务器的时候，死活连不上，如小牛bug.png所">
+<meta property="og:type" content="article">
+<meta property="og:title" content="小牛翻译-实训第一天">
+<meta property="og:url" content="http://example.com/2026/06/22/%E5%B0%8F%E7%89%9B%E7%BF%BB%E8%AF%91-%E5%AE%9E%E8%AE%AD%E7%AC%AC%E4%B8%80%E5%A4%A9/index.html">
+<meta property="og:site_name" content="渊渟岳峙的技术笔记">
+<meta property="og:description" content="小牛翻译-实训第一天今天主要是配置环境，连接远程ssh，连接实验室的服务器。先讲讲服务器，有一个root用户，我是组长，我是老师发了一份root的表格，ssh连接的格式和密码，然后我先用adduser创建四个子用户，分别是我的三个组员和我，然后我分别把组员的账号发给他们，让他们分别用自己的账号登录服务器。而且使用最简单的密码。今天在用vscode连接服务器的时候，死活连不上，如小牛bug.png所">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/media/image7.png">
+<meta property="article:published_time" content="2026-06-22T08:46:32.000Z">
+<meta property="article:modified_time" content="2026-06-22T09:16:09.725Z">
+<meta property="article:author" content="查志渊">
+<meta property="article:tag" content="小牛翻译，实训笔记">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/media/image7.png">
+
+
+<link rel="canonical" href="http://example.com/2026/06/22/%E5%B0%8F%E7%89%9B%E7%BF%BB%E8%AF%91-%E5%AE%9E%E8%AE%AD%E7%AC%AC%E4%B8%80%E5%A4%A9/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2026/06/22/%E5%B0%8F%E7%89%9B%E7%BF%BB%E8%AF%91-%E5%AE%9E%E8%AE%AD%E7%AC%AC%E4%B8%80%E5%A4%A9/","path":"2026/06/22/小牛翻译-实训第一天/","title":"小牛翻译-实训第一天"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>小牛翻译-实训第一天 | 渊渟岳峙的技术笔记</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">渊渟岳峙的技术笔记</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">用你喜欢的方式去度过一生</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B0%8F%E7%89%9B%E7%BF%BB%E8%AF%91-%E5%AE%9E%E8%AE%AD%E7%AC%AC%E4%B8%80%E5%A4%A9"><span class="nav-number">1.</span> <span class="nav-text">小牛翻译-实训第一天</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E5%AE%9E%E8%AE%AD%E9%A2%84%E5%A4%87%E8%AF%BE%E4%BD%9C%E4%B8%9A%E6%8A%A5%E5%91%8A"><span class="nav-number">2.</span> <span class="nav-text">人工智能实训预备课作业报告</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Problem-linux1-Understanding-Linux-and-Ubuntu"><span class="nav-number">2.1.</span> <span class="nav-text">Problem (linux1): Understanding Linux and Ubuntu</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#a-Linux-%E5%92%8C-Ubuntu-%E6%98%AF%E5%90%8C%E4%B8%80%E4%B8%AA%E4%B8%9C%E8%A5%BF%E5%90%97%EF%BC%9F"><span class="nav-number">2.1.1.</span> <span class="nav-text">(a) Linux 和 Ubuntu 是同一个东西吗？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#b-%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E5%AE%9E%E8%AE%AD%E8%AF%BE%E7%A8%8B%E5%B8%B8%E4%BD%BF%E7%94%A8-Ubuntu%EF%BC%8C%E8%80%8C%E4%B8%8D%E6%98%AF%E5%8F%AA%E4%BD%BF%E7%94%A8-Windows%EF%BC%9F"><span class="nav-number">2.1.2.</span> <span class="nav-text">(b) 为什么人工智能实训课程常使用 Ubuntu，而不是只使用 Windows？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Problem-vscode1-Connecting-to-the-Ubuntu-server"><span class="nav-number">2.2.</span> <span class="nav-text">Problem (vscode1): Connecting to the Ubuntu server</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Problem-vscode2-Local-computer-or-remote-Ubuntu"><span class="nav-number">2.3.</span> <span class="nav-text">Problem (vscode2): Local computer or remote Ubuntu?</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#a-VS-Code-%E5%AE%89%E8%A3%85%E5%9C%A8%E4%B8%AA%E4%BA%BA%E7%94%B5%E8%84%91%E4%B8%8A%EF%BC%8C%E4%B8%BA%E4%BB%80%E4%B9%88%E5%8F%AF%E4%BB%A5%E6%93%8D%E4%BD%9C-Ubuntu-%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%AD%E7%9A%84%E6%96%87%E4%BB%B6%EF%BC%9F"><span class="nav-number">2.3.1.</span> <span class="nav-text">(a) VS Code 安装在个人电脑上，为什么可以操作 Ubuntu 服务器中的文件？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#b-%E5%9C%A8%E8%BF%9C%E7%A8%8B%E7%BB%88%E7%AB%AF%E4%B8%AD%E5%88%9B%E5%BB%BA%E7%9A%84%E6%96%87%E4%BB%B6%E5%A4%B9%EF%BC%8C%E4%BC%9A%E5%87%BA%E7%8E%B0%E5%9C%A8%E6%9C%AC%E5%9C%B0%E6%A1%8C%E9%9D%A2%E4%B8%8A%E5%90%97%EF%BC%9F"><span class="nav-number">2.3.2.</span> <span class="nav-text">(b) 在远程终端中创建的文件夹，会出现在本地桌面上吗？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Problem-shell1-First-command-line-operations"><span class="nav-number">2.4.</span> <span class="nav-text">Problem (shell1): First command-line operations</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Problem-file1-Managing-a-small-project-directory"><span class="nav-number">2.5.</span> <span class="nav-text">Problem (file1): Managing a small project directory</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Problem-apt1-Installing-basic-tools"><span class="nav-number">2.6.</span> <span class="nav-text">Problem (apt1): Installing basic tools</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Problem-miniconda1-Installing-Miniconda"><span class="nav-number">2.7.</span> <span class="nav-text">Problem (miniconda1): Installing Miniconda</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#a-%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E5%BB%BA%E8%AE%AE%E7%9B%B4%E6%8E%A5%E6%8A%8A%E6%89%80%E6%9C%89%E4%BE%9D%E8%B5%96%E5%AE%89%E8%A3%85%E5%88%B0-base-%E7%8E%AF%E5%A2%83%E4%B8%AD%EF%BC%9F"><span class="nav-number">2.7.1.</span> <span class="nav-text">(a) 为什么不建议直接把所有依赖安装到 base 环境中？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#b-Miniconda-%E5%AE%89%E8%A3%85%E5%9C%A8-Ubuntu-%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%AD%EF%BC%8C%E8%BF%98%E6%98%AF%E5%AE%89%E8%A3%85%E5%9C%A8%E6%9C%AC%E5%9C%B0%E4%B8%AA%E4%BA%BA%E7%94%B5%E8%84%91%E4%B8%AD%EF%BC%9F"><span class="nav-number">2.7.2.</span> <span class="nav-text">(b) Miniconda 安装在 Ubuntu 服务器中，还是安装在本地个人电脑中？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#c-source-bashrc-%E7%9A%84%E4%BD%9C%E7%94%A8%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-number">2.7.3.</span> <span class="nav-text">(c) source ~&#x2F;.bashrc 的作用是什么？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Problem-conda1-Understanding-Conda-and-pip"><span class="nav-number">2.8.</span> <span class="nav-text">Problem (conda1): Understanding Conda and pip</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#a-Conda-%E7%8E%AF%E5%A2%83%E8%A7%A3%E5%86%B3%E4%BA%86%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98%EF%BC%9F"><span class="nav-number">2.8.1.</span> <span class="nav-text">(a) Conda 环境解决了什么问题？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#b-pip-install-%E5%AE%89%E8%A3%85%E7%9A%84%E5%8C%85%E4%B8%80%E5%AE%9A%E5%B1%9E%E4%BA%8E%E6%95%B4%E4%B8%AA-Ubuntu-%E7%B3%BB%E7%BB%9F%E5%90%97%EF%BC%9F"><span class="nav-number">2.8.2.</span> <span class="nav-text">(b) pip install 安装的包一定属于整个 Ubuntu 系统吗？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#c-%E8%AF%B7%E8%A7%A3%E9%87%8A-Ubuntu%E3%80%81Miniconda%E3%80%81Conda-environment%E3%80%81pip-%E4%B9%8B%E9%97%B4%E7%9A%84%E5%B1%82%E7%BA%A7%E5%85%B3%E7%B3%BB%E3%80%82"><span class="nav-number">2.8.3.</span> <span class="nav-text">(c) 请解释 Ubuntu、Miniconda、Conda environment、pip 之间的层级关系。</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Problem-env1-Building-a-Conda-inference-environment"><span class="nav-number">2.9.</span> <span class="nav-text">Problem (env1): Building a Conda inference environment</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Problem-infer1-First-model-inference"><span class="nav-number">2.10.</span> <span class="nav-text">Problem (infer1): First model inference</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#a-%E8%BF%90%E8%A1%8C-inference-py"><span class="nav-number">2.10.1.</span> <span class="nav-text">(a) 运行 inference.py</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#b-%E8%A7%A3%E9%87%8A-x-w-%E7%9A%84%E5%90%AB%E4%B9%89"><span class="nav-number">2.10.2.</span> <span class="nav-text">(b) 解释 x @ w 的含义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#c-%E4%BF%AE%E6%94%B9%E8%BE%93%E5%85%A5%E5%B9%B6%E5%86%8D%E6%AC%A1%E8%BF%90%E8%A1%8C"><span class="nav-number">2.10.3.</span> <span class="nav-text">(c) 修改输入并再次运行</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9B%E9%98%B6%E5%86%85%E5%AE%B9%EF%BC%9AProblem-advanced1-Optional-profiling-with-Scalene"><span class="nav-number">2.11.</span> <span class="nav-text">进阶内容：Problem (advanced1): Optional profiling with Scalene</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#a-slow-nn-py-%E7%9A%84%E4%B8%BB%E8%A6%81%E6%80%A7%E8%83%BD%E7%93%B6%E9%A2%88%E5%9C%A8%E5%93%AA%E9%87%8C%EF%BC%9F"><span class="nav-number">2.11.1.</span> <span class="nav-text">(a) slow_nn.py 的主要性能瓶颈在哪里？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#b-%E4%BD%A0%E9%87%87%E7%94%A8%E4%BA%86%E4%BB%80%E4%B9%88%E4%BC%98%E5%8C%96%E6%80%9D%E8%B7%AF%EF%BC%9F"><span class="nav-number">2.11.2.</span> <span class="nav-text">(b) 你采用了什么优化思路？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#c-%E4%BC%98%E5%8C%96%E5%89%8D%E5%90%8E%E6%98%AF%E5%90%A6%E6%9C%89%E6%98%8E%E6%98%BE%E6%8F%90%E5%8D%87%EF%BC%9F"><span class="nav-number">2.11.3.</span> <span class="nav-text">(c) 优化前后是否有明显提升？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Problem-export1-Exporting-the-environment"><span class="nav-number">2.12.</span> <span class="nav-text">Problem (export1): Exporting the environment</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">查志渊</p>
+  <div class="site-description" itemprop="description">磨炼自己的一点点技术</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/woaiwang" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;woaiwang" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/06/22/%E5%B0%8F%E7%89%9B%E7%BF%BB%E8%AF%91-%E5%AE%9E%E8%AE%AD%E7%AC%AC%E4%B8%80%E5%A4%A9/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="查志渊">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="渊渟岳峙的技术笔记">
+      <meta itemprop="description" content="磨炼自己的一点点技术">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="小牛翻译-实训第一天 | 渊渟岳峙的技术笔记">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          小牛翻译-实训第一天
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2026-06-22 16:46:32 / 修改时间：17:16:09" itemprop="dateCreated datePublished" datetime="2026-06-22T16:46:32+08:00">2026-06-22</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="小牛翻译-实训第一天"><a href="#小牛翻译-实训第一天" class="headerlink" title="小牛翻译-实训第一天"></a>小牛翻译-实训第一天</h1><p>今天主要是配置环境，连接远程ssh，连接实验室的服务器。<br>先讲讲服务器，有一个root用户，我是组长，我是老师发了一份root的表格，ssh连接的格式和密码，然后我先用adduser创建四个子用户，分别是我的三个组员和我，然后我分别把组员的账号发给他们，让他们分别用自己的账号登录服务器。而且使用最简单的密码。<br>今天在用vscode连接服务器的时候，死活连不上，<br>如小牛bug.png所示，就是连不上，解决方法是把Preferences: Open User Settings (JSON) 搜索这个，然后把之前配代理的那个端口给删了<br>下面这是我今天的实验报告<br>好的，这是根据您提供的 <code>report.docx</code> 内容转换成的 Markdown 格式。我保留了所有标题、问题编号、回答文本和图片引用（图片路径保持不变），并将数学公式用 LaTeX 或文本方式清晰呈现。</p>
+<hr>
+<h1 id="人工智能实训预备课作业报告"><a href="#人工智能实训预备课作业报告" class="headerlink" title="人工智能实训预备课作业报告"></a>人工智能实训预备课作业报告</h1><hr>
+<h2 id="Problem-linux1-Understanding-Linux-and-Ubuntu"><a href="#Problem-linux1-Understanding-Linux-and-Ubuntu" class="headerlink" title="Problem (linux1): Understanding Linux and Ubuntu"></a>Problem (linux1): Understanding Linux and Ubuntu</h2><h3 id="a-Linux-和-Ubuntu-是同一个东西吗？"><a href="#a-Linux-和-Ubuntu-是同一个东西吗？" class="headerlink" title="(a) Linux 和 Ubuntu 是同一个东西吗？"></a>(a) Linux 和 Ubuntu 是同一个东西吗？</h3><p><strong>答：</strong> 不是一个东西。Linux 是一个开源的操作系统内核，是整个系统的基础；而 Ubuntu 是基于 Linux 内核构建的一个具体发行版，它包含了图形界面、系统工具和软件包管理等功能，是 Linux 内核的一种具体实现形式。</p>
+<h3 id="b-为什么人工智能实训课程常使用-Ubuntu，而不是只使用-Windows？"><a href="#b-为什么人工智能实训课程常使用-Ubuntu，而不是只使用-Windows？" class="headerlink" title="(b) 为什么人工智能实训课程常使用 Ubuntu，而不是只使用 Windows？"></a>(b) 为什么人工智能实训课程常使用 Ubuntu，而不是只使用 Windows？</h3><p><strong>答：</strong><br>首先，在深度学习环境配置方面，Ubuntu 对 CUDA、PyTorch 等主流 AI 框架的兼容性更好，官方文档和社区支持也更丰富；其次，AI 开发通常在远程服务器上进行，Ubuntu 作为服务器操作系统在稳定性、资源占用和远程管理（SSH）方面具有优势；最后，命令行操作更利于批量任务、脚本自动化以及依赖关系的精确控制，便于实验复现。</p>
+<hr>
+<h2 id="Problem-vscode1-Connecting-to-the-Ubuntu-server"><a href="#Problem-vscode1-Connecting-to-the-Ubuntu-server" class="headerlink" title="Problem (vscode1): Connecting to the Ubuntu server"></a>Problem (vscode1): Connecting to the Ubuntu server</h2><p><strong>任务完成情况：</strong> 已在个人电脑上安装 VS Code 和 Remote-SSH 插件，配置 SSH config 并成功连接 Ubuntu 服务器，在远程终端中运行了 <code>whoami</code>、<code>hostname</code>、<code>pwd</code>、<code>uname -a</code> 命令。</p>
+<hr>
+<h2 id="Problem-vscode2-Local-computer-or-remote-Ubuntu"><a href="#Problem-vscode2-Local-computer-or-remote-Ubuntu" class="headerlink" title="Problem (vscode2): Local computer or remote Ubuntu?"></a>Problem (vscode2): Local computer or remote Ubuntu?</h2><h3 id="a-VS-Code-安装在个人电脑上，为什么可以操作-Ubuntu-服务器中的文件？"><a href="#a-VS-Code-安装在个人电脑上，为什么可以操作-Ubuntu-服务器中的文件？" class="headerlink" title="(a) VS Code 安装在个人电脑上，为什么可以操作 Ubuntu 服务器中的文件？"></a>(a) VS Code 安装在个人电脑上，为什么可以操作 Ubuntu 服务器中的文件？</h3><p><strong>答：</strong> Remote-SSH 插件的作用是在本地 VS Code 与远程服务器之间建立一条基于 SSH 协议的安全通道。插件会将本地的操作指令发送到服务器执行，并将服务器返回的结果（如文件列表、编辑内容）显示在本地界面上，从而让用户感觉像在操作本地文件一样。</p>
+<h3 id="b-在远程终端中创建的文件夹，会出现在本地桌面上吗？"><a href="#b-在远程终端中创建的文件夹，会出现在本地桌面上吗？" class="headerlink" title="(b) 在远程终端中创建的文件夹，会出现在本地桌面上吗？"></a>(b) 在远程终端中创建的文件夹，会出现在本地桌面上吗？</h3><p><strong>答：</strong> 不会。因为终端连接的是远程 Ubuntu 服务器，所有命令（如 <code>mkdir</code>）都是在服务器的文件系统中执行的，与本地个人电脑的文件系统完全隔离。</p>
+<hr>
+<h2 id="Problem-shell1-First-command-line-operations"><a href="#Problem-shell1-First-command-line-operations" class="headerlink" title="Problem (shell1): First command-line operations"></a>Problem (shell1): First command-line operations</h2><p><strong>任务完成情况：</strong> 在远程 Ubuntu 终端中依次执行了查看目录、回到主目录、创建项目文件夹及子文件夹、查看结果等操作。</p>
+<p><strong>使用的命令（示例）：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">pwd</span></span><br><span class="line"><span class="built_in">cd</span> ~</span><br><span class="line"><span class="built_in">mkdir</span> 2023xxxx_ai_practice   <span class="comment"># 替换为实际学号</span></span><br><span class="line"><span class="built_in">cd</span> 2023xxxx_ai_practice</span><br><span class="line"><span class="built_in">mkdir</span> data src outputs</span><br><span class="line"><span class="built_in">ls</span></span><br></pre></td></tr></table></figure>
+
+
+
+<hr>
+<h2 id="Problem-file1-Managing-a-small-project-directory"><a href="#Problem-file1-Managing-a-small-project-directory" class="headerlink" title="Problem (file1): Managing a small project directory"></a>Problem (file1): Managing a small project directory</h2><p><strong>任务完成情况：</strong> 在项目目录下完成了进入 <code>src</code>、创建 <code>hello.py</code>、写入内容、复制备份、查看内容、删除备份等操作。</p>
+<p><strong>使用的命令（示例）：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> src</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;print(&quot;Hello, Ubuntu!&quot;)&#x27;</span> &gt; hello.py</span><br><span class="line"><span class="built_in">cd</span> ..</span><br><span class="line"><span class="built_in">cp</span> src/hello.py outputs/hello_backup.py</span><br><span class="line"><span class="built_in">cat</span> outputs/hello_backup.py</span><br><span class="line"><span class="built_in">rm</span> outputs/hello_backup.py</span><br></pre></td></tr></table></figure>
+
+<p><strong>命令区别说明：</strong></p>
+<ul>
+<li><strong><code>cp</code>（copy）</strong>：用于复制文件或目录，原文件保持不变，生成一个新的副本。</li>
+<li><strong><code>mv</code>（move）</strong>：用于移动文件或目录（剪切）或重命名文件，原路径消失，出现在新路径。</li>
+<li><strong><code>rm</code>（remove）</strong>：用于永久删除文件或目录，数据不会进入回收站，删除后很难恢复。</li>
+</ul>
+<hr>
+<h2 id="Problem-apt1-Installing-basic-tools"><a href="#Problem-apt1-Installing-basic-tools" class="headerlink" title="Problem (apt1): Installing basic tools"></a>Problem (apt1): Installing basic tools</h2><p><strong>任务完成情况：</strong> 执行了 <code>sudo apt update</code> 更新源，安装 <code>tree</code> 工具，并在项目目录下运行 <code>tree</code> 查看目录结构。</p>
+<p><strong>截图：</strong></p>
+<p><strong><code>apt</code> 和 <code>pip</code> 的区别：</strong></p>
+<ul>
+<li><strong><code>apt</code></strong> 是 Ubuntu 系统的软件包管理工具，用于安装系统级别的软件（如 Git、Tree、Vim），通常需要 <code>sudo</code> 管理员权限。</li>
+<li><strong><code>pip</code></strong> 是 Python 的包管理工具，用于安装 Python 第三方库（如 NumPy、Torch），通常安装在当前激活的 Python 环境中，不需要系统管理员权限。两者管理的对象和作用域完全不同。</li>
+</ul>
+<hr>
+<h2 id="Problem-miniconda1-Installing-Miniconda"><a href="#Problem-miniconda1-Installing-Miniconda" class="headerlink" title="Problem (miniconda1): Installing Miniconda"></a>Problem (miniconda1): Installing Miniconda</h2><p><strong>任务完成情况：</strong> 在服务器中找到安装包，使用 <code>bash</code> 运行安装，接受许可、默认路径，执行 <code>conda init</code>，然后 <code>source ~/.bashrc</code>，验证安装，查看环境列表，并关闭自动激活 base。</p>
+<h3 id="a-为什么不建议直接把所有依赖安装到-base-环境中？"><a href="#a-为什么不建议直接把所有依赖安装到-base-环境中？" class="headerlink" title="(a) 为什么不建议直接把所有依赖安装到 base 环境中？"></a>(a) 为什么不建议直接把所有依赖安装到 base 环境中？</h3><p><strong>答：</strong> base 环境是 Conda 的基础环境，如果将所有项目的依赖都装在里面，不同项目间的库版本（如 PyTorch 2.0 vs PyTorch 1.8）容易发生冲突，导致环境混乱难以排查。为每个项目创建独立环境（如 <code>ai_infer</code>）可以实现环境隔离，保证项目的可复现性。</p>
+<h3 id="b-Miniconda-安装在-Ubuntu-服务器中，还是安装在本地个人电脑中？"><a href="#b-Miniconda-安装在-Ubuntu-服务器中，还是安装在本地个人电脑中？" class="headerlink" title="(b) Miniconda 安装在 Ubuntu 服务器中，还是安装在本地个人电脑中？"></a>(b) Miniconda 安装在 Ubuntu 服务器中，还是安装在本地个人电脑中？</h3><p><strong>答：</strong> Miniconda 安装在 Ubuntu 服务器中。因为后续的模型推理和代码运行都在远程服务器上执行，依赖库和环境必须部署在服务器上才能使用其 CPU&#x2F;GPU 资源。</p>
+<h3 id="c-source-bashrc-的作用是什么？"><a href="#c-source-bashrc-的作用是什么？" class="headerlink" title="(c) source ~/.bashrc 的作用是什么？"></a>(c) <code>source ~/.bashrc</code> 的作用是什么？</h3><p><strong>答：</strong> <code>~/.bashrc</code> 是 Bash Shell 的配置文件，包含了环境变量、别名和启动脚本等设置。<code>source ~/.bashrc</code> 的作用是让当前终端重新加载该文件，使新添加的 Conda 初始化配置立即生效，从而让系统识别 <code>conda</code> 命令。</p>
+<hr>
+<h2 id="Problem-conda1-Understanding-Conda-and-pip"><a href="#Problem-conda1-Understanding-Conda-and-pip" class="headerlink" title="Problem (conda1): Understanding Conda and pip"></a>Problem (conda1): Understanding Conda and pip</h2><h3 id="a-Conda-环境解决了什么问题？"><a href="#a-Conda-环境解决了什么问题？" class="headerlink" title="(a) Conda 环境解决了什么问题？"></a>(a) Conda 环境解决了什么问题？</h3><p><strong>答：</strong> Conda 环境解决了 Python 项目中的依赖冲突问题。如果没有环境隔离，在同一个 Python 环境中同时安装项目 A（需要 Django 3.0）和项目 B（需要 Django 4.0）会导致版本冲突。Conda 允许我们为每个项目创建独立的“沙箱”环境，各自拥有独立的 Python 解释器和库版本，互不干扰。</p>
+<h3 id="b-pip-install-安装的包一定属于整个-Ubuntu-系统吗？"><a href="#b-pip-install-安装的包一定属于整个-Ubuntu-系统吗？" class="headerlink" title="(b) pip install 安装的包一定属于整个 Ubuntu 系统吗？"></a>(b) <code>pip install</code> 安装的包一定属于整个 Ubuntu 系统吗？</h3><p><strong>答：</strong> 不一定。<code>pip install</code> 安装的包会安装到当前激活的 Python 环境中。如果在某个 Conda 环境（如 <code>ai_infer</code>）中执行 <code>pip install</code>，包会被安装到该 Conda 环境的 <code>lib/python3.x/site-packages/</code> 目录下，仅对该环境可见，不会影响 Ubuntu 系统自带的 Python 环境，也不会影响其他 Conda 环境。只有在未激活任何虚拟环境、直接使用系统 Python 时，<code>pip</code> 才会将包安装到系统目录（通常需要 <code>sudo</code> 权限）。</p>
+<h3 id="c-请解释-Ubuntu、Miniconda、Conda-environment、pip-之间的层级关系。"><a href="#c-请解释-Ubuntu、Miniconda、Conda-environment、pip-之间的层级关系。" class="headerlink" title="(c) 请解释 Ubuntu、Miniconda、Conda environment、pip 之间的层级关系。"></a>(c) 请解释 Ubuntu、Miniconda、Conda environment、pip 之间的层级关系。</h3><p><strong>答：</strong> Ubuntu 是最底层的操作系统，提供基础运行环境；Miniconda 是安装在 Ubuntu 上的环境管理工具，用来创建和管理隔离的 Python 工作空间；Conda environment 是 Miniconda 创建的独立虚拟环境，每个环境拥有自己的 Python 版本和库集合；pip 是 Python 的包安装工具，在某个 Conda environment 内部使用时，它安装的 Python 库只会归属于该特定的 Conda environment，从而形成“操作系统 → 环境管理工具 → 独立虚拟环境 → 包安装工具”的清晰层级结构。</p>
+<hr>
+<h2 id="Problem-env1-Building-a-Conda-inference-environment"><a href="#Problem-env1-Building-a-Conda-inference-environment" class="headerlink" title="Problem (env1): Building a Conda inference environment"></a>Problem (env1): Building a Conda inference environment</h2><p><strong>任务完成情况：</strong> 创建了 <code>ai_infer</code> 环境（Python 3.10），激活，检查版本，安装 <code>numpy</code> 和 <code>torch</code>，验证导入，并用 <code>which python</code> 确认环境。</p>
+<p><strong>如何判断进入正确的 Conda 环境：</strong><br>可以通过两种方式判断：第一，观察终端提示符，如果显示 <code>(ai_infer)</code> 前缀，说明已进入该环境；第二，执行 <code>which python</code>，如果返回的路径包含 <code>/miniconda3/envs/ai_infer/bin/python</code>，说明当前使用的 Python 解释器来自 <code>ai_infer</code> 环境。</p>
+<hr>
+<h2 id="Problem-infer1-First-model-inference"><a href="#Problem-infer1-First-model-inference" class="headerlink" title="Problem (infer1): First model inference"></a>Problem (infer1): First model inference</h2><h3 id="a-运行-inference-py"><a href="#a-运行-inference-py" class="headerlink" title="(a) 运行 inference.py"></a>(a) 运行 <code>inference.py</code></h3><p><strong>截图和输出：</strong></p>
+<p><img src="/media/image7.png">{width&#x3D;”5.768055555555556in” height&#x3D;”2.8583333333333334in”}</p>
+<p>（输出文件 <code>output.txt</code> 内容：略）</p>
+<h3 id="b-解释-x-w-的含义"><a href="#b-解释-x-w-的含义" class="headerlink" title="(b) 解释 x @ w 的含义"></a>(b) 解释 <code>x @ w</code> 的含义</h3><p><strong>答：</strong> <code>@</code> 运算是矩阵乘法。例如，对于 <code>x = [[1.0, 2.0, 3.0]]</code> 和 <code>w = [[0.2], [0.5], [0.3]]</code>，计算结果为：<br><code>1.0*0.2 + 2.0*0.5 + 3.0*0.3 = 0.2 + 1.0 + 0.9 = 2.1</code>。</p>
+<h3 id="c-修改输入并再次运行"><a href="#c-修改输入并再次运行" class="headerlink" title="(c) 修改输入并再次运行"></a>(c) 修改输入并再次运行</h3><p>将输入改为 <code>x = torch.tensor([[2.0, 1.0, 4.0]])</code> 后，输出仍为 <code>tensor([[2.1000]])</code>。<br><strong>原因分析：</strong> 虽然输入发生了变化，但计算过程遵循线性加权求和公式：  </p>
+<p>由于原始输入 <code>[1,2,3]</code> 的计算结果恰好也是 <code>0.2 + 1.0 + 0.9 = 2.1</code>，这次修改恰好产生了相同的数值输出。一般来说，改变输入值会导致输出值发生相应变化，因为输出是输入的线性函数。</p>
+<hr>
+<h2 id="进阶内容：Problem-advanced1-Optional-profiling-with-Scalene"><a href="#进阶内容：Problem-advanced1-Optional-profiling-with-Scalene" class="headerlink" title="进阶内容：Problem (advanced1): Optional profiling with Scalene"></a>进阶内容：Problem (advanced1): Optional profiling with Scalene</h2><h3 id="a-slow-nn-py-的主要性能瓶颈在哪里？"><a href="#a-slow-nn-py-的主要性能瓶颈在哪里？" class="headerlink" title="(a) slow_nn.py 的主要性能瓶颈在哪里？"></a>(a) <code>slow_nn.py</code> 的主要性能瓶颈在哪里？</h3><p><strong>答：</strong> 瓶颈在 <code>slow_forward</code> 函数中的 <code>for i in range(x.shape[0])</code> 循环。4096 次 Python 循环每次调用 PyTorch 操作，产生大量解释器开销，占用总时间的 90% 以上。</p>
+<p><strong>Scalene 输出截图：</strong></p>
+<h3 id="b-你采用了什么优化思路？"><a href="#b-你采用了什么优化思路？" class="headerlink" title="(b) 你采用了什么优化思路？"></a>(b) 你采用了什么优化思路？</h3><p><strong>答：</strong> 将逐条样本循环改为批量矩阵运算，一次性处理整个 batch，利用 PyTorch 的底层向量化加速，减少 Python 循环开销。</p>
+<h3 id="c-优化前后是否有明显提升？"><a href="#c-优化前后是否有明显提升？" class="headerlink" title="(c) 优化前后是否有明显提升？"></a>(c) 优化前后是否有明显提升？</h3><p><strong>答：</strong> 有显著提升。运行时间从 <code>slow_nn.py</code> 的约 X 秒（请填入实际测量值）降低到 <code>fast_nn.py</code> 的约 Y 秒（请填入实际测量值）。Scalene 显示瓶颈从 Python 循环转移到张量乘法，总时间大幅减少，优化有效。</p>
+<hr>
+<h2 id="Problem-export1-Exporting-the-environment"><a href="#Problem-export1-Exporting-the-environment" class="headerlink" title="Problem (export1): Exporting the environment"></a>Problem (export1): Exporting the environment</h2><p><strong>任务完成情况：</strong> 激活 <code>ai_infer</code> 环境，导出 <code>environment.yml</code>，使用 <code>cat</code> 查看内容。</p>
+<p><strong>为什么 AI 项目需要保存环境配置：</strong><br>AI 项目通常依赖大量特定版本的 Python 库（如 PyTorch、Transformers），不同版本之间可能不兼容。保存 <code>environment.yml</code> 可以精确记录项目运行所需的所有依赖，当其他人或自己换一台机器复现实验时，只需执行 <code>conda env create -f environment.yml</code> 即可一键重建完全相同的环境，避免了“在我电脑上能跑”的兼容性问题，保证了实验的可复现性和团队协作的便利性。</p>
+<hr>
+<p><strong>报告结束</strong></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%B0%8F%E7%89%9B%E7%BF%BB%E8%AF%91%EF%BC%8C%E5%AE%9E%E8%AE%AD%E7%AC%94%E8%AE%B0/" rel="tag"># 小牛翻译，实训笔记</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/06/21/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F-%E7%AE%97%E6%B3%95%E9%A2%98/" rel="prev" title="快速排序-算法题">
+                  <i class="fa fa-angle-left"></i> 快速排序-算法题
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2026/06/22/%E5%B0%8F%E7%89%9B%E7%BF%BB%E8%AF%91-%E5%AE%9E%E8%AE%AD%E7%AC%AC%E4%B8%80%E5%A4%A9-%E6%80%BB%E7%BB%93/" rel="next" title="小牛翻译-实训第一天 · 总结与复盘">
+                  小牛翻译-实训第一天 · 总结与复盘 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2024 – 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">查志渊</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

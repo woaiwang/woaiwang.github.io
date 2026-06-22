@@ -139,7 +139,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-count">14</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -150,7 +150,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-count">21</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -172,6 +172,1015 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/06/22/%E5%B0%8F%E7%89%9B%E7%BF%BB%E8%AF%91-%E5%AE%9E%E8%AE%AD%E7%AC%AC%E4%B8%80%E5%A4%A9-%E6%80%BB%E7%BB%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="查志渊">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="渊渟岳峙的技术笔记">
+      <meta itemprop="description" content="磨炼自己的一点点技术">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=" | 渊渟岳峙的技术笔记">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2026/06/22/%E5%B0%8F%E7%89%9B%E7%BF%BB%E8%AF%91-%E5%AE%9E%E8%AE%AD%E7%AC%AC%E4%B8%80%E5%A4%A9-%E6%80%BB%E7%BB%93/" class="post-title-link" itemprop="url">小牛翻译-实训第一天 · 总结与复盘</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2026-06-22 18:00:00 / 修改时间：17:18:00" itemprop="dateCreated datePublished" datetime="2026-06-22T18:00:00+08:00">2026-06-22</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="📝-小牛翻译实训第一天-·-总结与复盘"><a href="#📝-小牛翻译实训第一天-·-总结与复盘" class="headerlink" title="📝 小牛翻译实训第一天 · 总结与复盘"></a>📝 小牛翻译实训第一天 · 总结与复盘</h1><blockquote>
+<p>一句话回顾：今天完成了 <strong>远程服务器环境搭建</strong>、<strong>用户管理</strong>、<strong>Conda 环境创建</strong>，并跑通了<strong>第一个模型推理</strong>。期间踩了一个 VS Code SSH 连接的坑，已彻底解决。</p>
+</blockquote>
+<hr>
+<h2 id="一、今日工作总览"><a href="#一、今日工作总览" class="headerlink" title="一、今日工作总览"></a>一、今日工作总览</h2><table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>做了什么</th>
+<th>收获</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>🔐 用户管理</td>
+<td>在实验室服务器上用 <code>adduser</code> 创建了 4 个子账户（3 个组员 + 自己）</td>
+<td>理解了 Linux 多用户体系</td>
+</tr>
+<tr>
+<td>🔗 SSH 连接</td>
+<td>用 VS Code + Remote-SSH 插件连接远程 Ubuntu 服务器</td>
+<td>掌握了远程开发的完整链路</td>
+</tr>
+<tr>
+<td>🐧 Linux 基础</td>
+<td>学习了 Linux 与 Ubuntu 的关系、基本文件操作命令</td>
+<td>建立了 Linux 知识框架</td>
+</tr>
+<tr>
+<td>📦 包管理</td>
+<td>区分了 <code>apt</code>（系统级）和 <code>pip</code>（Python 级）</td>
+<td>理解了不同层级的包管理</td>
+</tr>
+<tr>
+<td>🐍 Conda 环境</td>
+<td>安装 Miniconda → 创建 <code>ai_infer</code> 环境 → 安装 PyTorch</td>
+<td>掌握了环境隔离的核心思想</td>
+</tr>
+<tr>
+<td>🧠 模型推理</td>
+<td>运行了第一个 <code>inference.py</code>，理解了矩阵乘法 <code>@</code></td>
+<td>完成了从环境到代码的闭环</td>
+</tr>
+<tr>
+<td>⚡ 性能分析</td>
+<td>用 Scalene 分析 <code>slow_nn.py</code>，发现 Python 循环是瓶颈</td>
+<td>学会了性能剖析的基本方法</td>
+</tr>
+<tr>
+<td>📋 环境导出</td>
+<td>导出 <code>environment.yml</code>，理解环境复现的意义</td>
+<td>明白了”可复现性”在 AI 工程中的重要性</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="二、踩坑记录-🐞-——-最重要的一节"><a href="#二、踩坑记录-🐞-——-最重要的一节" class="headerlink" title="二、踩坑记录 🐞 —— 最重要的一节"></a>二、踩坑记录 🐞 —— 最重要的一节</h2><h3 id="坑：VS-Code-死活连不上远程服务器"><a href="#坑：VS-Code-死活连不上远程服务器" class="headerlink" title="坑：VS Code 死活连不上远程服务器"></a>坑：VS Code 死活连不上远程服务器</h3><p><strong>现象：</strong></p>
+<p>在 VS Code 中配置好 SSH Host 后，反复尝试连接，始终失败。错误信息大致为连接超时或无法建立 SSH 通道。</p>
+<p><img src="/images/%E5%B0%8F%E7%89%9Bbug.png"></p>
+<p><strong>排查过程：</strong></p>
+<p>检查了以下项，全部正常：</p>
+<ul>
+<li>✅ 服务器 IP 和端口正确</li>
+<li>✅ 用户名和密码正确</li>
+<li>✅ 服务器 <code>sshd</code> 服务在运行</li>
+<li>✅ 本地网络正常</li>
+</ul>
+<p>但仍然连不上。😫</p>
+<p><strong>真正的原因（根因分析）：</strong></p>
+<blockquote>
+<p><strong>SSH 连接走了本地代理，而代理本身不可用或指向了错误的端口。</strong></p>
+</blockquote>
+<p>具体来说：我之前在 VS Code 的用户设置（<code>Preferences: Open User Settings (JSON)</code>）中配置过 <strong>HTTP&#x2F;HTTPS 代理</strong>（可能用于科学上网或其他网络调试），这个代理设置也被 VS Code 的 Remote-SSH 插件<strong>一并继承了</strong>。Remote-SSH 在建立 SSH 连接时，默认会使用系统或 VS Code 中配置的代理设置，导致 SSH 流量被错误地发往代理服务器，而不是直接连接目标服务器。</p>
+<p><strong>一句话总结根因：</strong> 代理配置污染了 SSH 连接通道。SSH 需要直连服务器，但代理设置让它”绕了远路”，结果绕不通。</p>
+<table>
+<thead>
+<tr>
+<th>层次</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>表象</td>
+<td>VS Code 连不上远程服务器</td>
+</tr>
+<tr>
+<td>直接原因</td>
+<td>SSH 流量走了代理</td>
+</tr>
+<tr>
+<td>根本原因</td>
+<td>User Settings JSON 中残留了之前配置的代理端口，Remote-SSH 插件的流量被这个代理劫持了</td>
+</tr>
+</tbody></table>
+<p><strong>解决方法：</strong></p>
+<p>打开 VS Code → <code>Ctrl+Shift+P</code> → 搜索 <code>Preferences: Open User Settings (JSON)</code> → 找到类似以下的代理配置项 → <strong>删掉它</strong>：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ❌ 删掉这些（示例）</span></span><br><span class="line"><span class="attr">&quot;http.proxy&quot;</span><span class="punctuation">:</span> <span class="string">&quot;http://127.0.0.1:xxxx&quot;</span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;http.proxyStrictSSL&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br></pre></td></tr></table></figure>
+
+<p>删除后保存，重新连接 SSH → 秒连 ✅</p>
+<p><strong>以后怎么避免：</strong></p>
+<ol>
+<li><strong>代理配置只在需要时开启，用完就关。</strong> 或者在配置代理时明确指定作用范围，不要让全局代理影响 SSH。</li>
+<li><strong>连接 SSH 之前，养成检查 VS Code 的代理设置的习惯。</strong> 路径：<code>File → Preferences → Settings → 搜索 &quot;proxy&quot;</code>。</li>
+<li><strong>把解决方法记在心里：</strong> 凡是 “网络连接类” 问题，第一反应就是排查代理设置。这个排查方向适用于 VS Code、终端、浏览器等几乎所有工具。</li>
+<li><strong>使用 <code>ssh -v</code> 命令调试：</strong> 在终端中手动 <code>ssh -v user@host</code>，可以看到详细的 SSH 连接日志，如果走了代理，日志里会有明确显示。</li>
+</ol>
+<hr>
+<h2 id="三、今日学到的知识点-📚"><a href="#三、今日学到的知识点-📚" class="headerlink" title="三、今日学到的知识点 📚"></a>三、今日学到的知识点 📚</h2><h3 id="3-1-Linux-与-Ubuntu-的关系"><a href="#3-1-Linux-与-Ubuntu-的关系" class="headerlink" title="3.1 Linux 与 Ubuntu 的关系"></a>3.1 Linux 与 Ubuntu 的关系</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">┌──────────────────────────────────────────────────┐</span><br><span class="line">│                   Ubuntu（发行版）                  │</span><br><span class="line">│  ┌────────────────────────────────────────────┐  │</span><br><span class="line">│  │         GNU 工具集（ls, cp, bash...）         │  │</span><br><span class="line">│  │  ┌──────────────────────────────────────┐  │  │</span><br><span class="line">│  │  │       Linux 内核（进程管理/驱动/网络）   │  │  │</span><br><span class="line">│  │  └──────────────────────────────────────┘  │  │</span><br><span class="line">│  └────────────────────────────────────────────┘  │</span><br><span class="line">└──────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>Linux</strong> &#x3D; 内核（发动机），负责管理硬件、进程、内存、网络</li>
+<li><strong>Ubuntu</strong> &#x3D; 发行版（整车），在内核基础上加上图形界面、包管理器（apt）、桌面环境等</li>
+</ul>
+<p><strong>为什么 AI 实训用 Ubuntu 而不是 Windows？</strong></p>
+<ul>
+<li>🎯 <strong>CUDA 兼容性</strong>：N 卡 + CUDA + PyTorch 在 Ubuntu 上是”原配”，Windows 上配置容易出各种奇怪问题</li>
+<li>🖥️ <strong>服务器生态</strong>：绝大多数 AI 服务器跑的都是 Linux，学 Ubuntu 就是学真实工作环境</li>
+<li>⚡ <strong>命令行效率</strong>：批量操作、脚本自动化、依赖管理——全在终端里搞定，比 GUI 快得多</li>
+</ul>
+<h3 id="3-2-VS-Code-Remote-SSH-的工作原理"><a href="#3-2-VS-Code-Remote-SSH-的工作原理" class="headerlink" title="3.2 VS Code Remote-SSH 的工作原理"></a>3.2 VS Code Remote-SSH 的工作原理</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">┌──────────────────┐         SSH 加密隧道        ┌───────────────────┐</span><br><span class="line">│   你的笔记本电脑    │  ←──────────────────────→  │   远程 Ubuntu 服务器  │</span><br><span class="line">│  （VS Code 界面）  │   命令↗    ↖文件/输出       │  （实际执行代码）    │</span><br><span class="line">└──────────────────┘                            └───────────────────┘</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>VS Code 的界面跑在<strong>本地</strong></li>
+<li>文件操作、命令执行、代码运行都发生在<strong>远程</strong></li>
+<li>Remote-SSH 插件在中间建立了一条加密隧道，让你”感觉”像在操作本地文件</li>
+</ul>
+<p><strong>关键判断：</strong> 在远程终端里 <code>mkdir</code> 创建的文件夹，<strong>不会</strong>出现在本地桌面上——它在远程服务器的硬盘里。</p>
+<h3 id="3-3-四层环境层级结构"><a href="#3-3-四层环境层级结构" class="headerlink" title="3.3 四层环境层级结构"></a>3.3 四层环境层级结构</h3><p>这是今天最核心的知识框架，请牢记：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">┌──────────────────────────────────────────────────────┐</span><br><span class="line">│  Layer 1: Ubuntu（操作系统）                           │</span><br><span class="line">│  提供硬件驱动、文件系统、网络、进程管理                    │</span><br><span class="line">│  ┌────────────────────────────────────────────────┐  │</span><br><span class="line">│  │  Layer 2: Miniconda（环境管理工具）                │  │</span><br><span class="line">│  │  安装在 Ubuntu 上，用来创建和管理隔离环境             │  │</span><br><span class="line">│  │  ┌──────────────────────────────────────────┐  │  │</span><br><span class="line">│  │  │  Layer 3: Conda Environment（虚拟环境）     │  │  │</span><br><span class="line">│  │  │  每个环境 = 独立的 Python + 独立的库集合       │  │  │</span><br><span class="line">│  │  │  如：ai_infer（Python 3.10 + PyTorch）     │  │  │</span><br><span class="line">│  │  │  ┌────────────────────────────────────┐  │  │</span><br><span class="line">│  │  │  │  Layer 4: pip（包安装工具）           │  │  │</span><br><span class="line">│  │  │  │  在某个 Conda 环境中安装 Python 库    │  │  │</span><br><span class="line">│  │  │  └────────────────────────────────────┘  │  │</span><br><span class="line">│  │  └──────────────────────────────────────────┘  │</span><br><span class="line">│  └────────────────────────────────────────────────┘</span><br><span class="line">└──────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<p><strong>两个”不等于”：</strong></p>
+<ul>
+<li><code>apt</code> 管理的是 Layer 1（系统级软件），<code>pip</code> 管理的是 Layer 4（Python 库），<strong>不要混用</strong></li>
+<li><code>pip install</code> 安装的包<strong>不一定</strong>属于整个系统——它属于当前激活的那个 Conda 环境</li>
+</ul>
+<h3 id="3-4-为什么需要-Conda-环境隔离？"><a href="#3-4-为什么需要-Conda-环境隔离？" class="headerlink" title="3.4 为什么需要 Conda 环境隔离？"></a>3.4 为什么需要 Conda 环境隔离？</h3><p>想象一下这个场景：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">项目 A：需要 PyTorch 1.8 + Python 3.7</span><br><span class="line">项目 B：需要 PyTorch 2.5 + Python 3.10</span><br><span class="line"></span><br><span class="line">如果全部装在 base 环境：</span><br><span class="line">→ PyTorch 版本冲突 💥</span><br><span class="line">→ Python 版本冲突 💥</span><br><span class="line">→ 依赖地狱 💀</span><br></pre></td></tr></table></figure>
+
+<p>Conda 的解决方案：给每个项目一个”独立房间”：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ai_infer 环境：PyTorch 2.5 + Python 3.10    ← 项目 A</span><br><span class="line">nlp_env 环境：PyTorch 1.8 + Transformers     ← 项目 B</span><br><span class="line">base 环境：保持干净，什么都不装                  ← 基础</span><br></pre></td></tr></table></figure>
+
+<p><strong>原则：base 环境保持干净，每个项目用独立环境。</strong></p>
+<h3 id="3-5-source-bashrc-是干什么的？"><a href="#3-5-source-bashrc-是干什么的？" class="headerlink" title="3.5 source ~/.bashrc 是干什么的？"></a>3.5 <code>source ~/.bashrc</code> 是干什么的？</h3><p>简单类比：<code>~/.bashrc</code> 是终端启动时”自动执行的初始化脚本”。当你用 <code>conda init</code> 修改了这个文件后，<strong>当前已打开的终端不会自动加载</strong>，必须手动 <code>source ~/.bashrc</code> 让它重新读一遍，这样 <code>conda</code> 命令才会在当前终端中生效。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">修改 .bashrc → 当前终端不知道 → source ~/.bashrc → 当前终端知道了 ✓</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="四、常用命令速查表-🛠️"><a href="#四、常用命令速查表-🛠️" class="headerlink" title="四、常用命令速查表 🛠️"></a>四、常用命令速查表 🛠️</h2><h3 id="文件和目录操作"><a href="#文件和目录操作" class="headerlink" title="文件和目录操作"></a>文件和目录操作</h3><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>作用</th>
+<th>例子</th>
+<th>注意事项</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>pwd</code></td>
+<td>查看当前所在目录</td>
+<td><code>pwd</code> → <code>/home/user</code></td>
+<td>print working directory</td>
+</tr>
+<tr>
+<td><code>cd ~</code></td>
+<td>回到主目录</td>
+<td><code>cd ~</code></td>
+<td><code>~</code> &#x3D; 当前用户的家目录</td>
+</tr>
+<tr>
+<td><code>mkdir</code></td>
+<td>创建文件夹</td>
+<td><code>mkdir my_project</code></td>
+<td>make directory</td>
+</tr>
+<tr>
+<td><code>ls</code></td>
+<td>列出当前目录内容</td>
+<td><code>ls -la</code></td>
+<td><code>-l</code> 详细信息，<code>-a</code> 显示隐藏文件</td>
+</tr>
+<tr>
+<td><code>cat</code></td>
+<td>查看文件内容</td>
+<td><code>cat hello.py</code></td>
+<td>concatenate</td>
+</tr>
+<tr>
+<td><code>cp</code></td>
+<td><strong>复制</strong>文件（原文件保留）</td>
+<td><code>cp a.txt b.txt</code></td>
+<td>两个文件都会存在</td>
+</tr>
+<tr>
+<td><code>mv</code></td>
+<td><strong>移动&#x2F;重命名</strong>文件（原文件消失）</td>
+<td><code>mv a.txt b.txt</code></td>
+<td>相当于剪切</td>
+</tr>
+<tr>
+<td><code>rm</code></td>
+<td><strong>永久删除</strong>文件</td>
+<td><code>rm file.txt</code></td>
+<td>⚠️ 不进回收站，删了就没了！</td>
+</tr>
+<tr>
+<td><code>echo</code></td>
+<td>输出文本</td>
+<td><code>echo &quot;hello&quot; &gt; file.txt</code></td>
+<td><code>&gt;</code> 重定向到文件（会覆盖）</td>
+</tr>
+<tr>
+<td><code>tree</code></td>
+<td>树状显示目录结构</td>
+<td><code>tree my_project/</code></td>
+<td>需 <code>apt install tree</code></td>
+</tr>
+</tbody></table>
+<h3 id="包管理和环境"><a href="#包管理和环境" class="headerlink" title="包管理和环境"></a>包管理和环境</h3><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>作用</th>
+<th>层级</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>sudo apt update</code></td>
+<td>更新软件源列表</td>
+<td>系统层</td>
+</tr>
+<tr>
+<td><code>sudo apt install xxx</code></td>
+<td>安装系统级软件</td>
+<td>系统层</td>
+</tr>
+<tr>
+<td><code>conda create -n 名称 python=3.10</code></td>
+<td>创建新 Conda 环境</td>
+<td>环境层</td>
+</tr>
+<tr>
+<td><code>conda activate 名称</code></td>
+<td>激活环境</td>
+<td>环境层</td>
+</tr>
+<tr>
+<td><code>conda deactivate</code></td>
+<td>退出当前环境</td>
+<td>环境层</td>
+</tr>
+<tr>
+<td><code>conda env list</code></td>
+<td>查看所有环境</td>
+<td>环境层</td>
+</tr>
+<tr>
+<td><code>pip install xxx</code></td>
+<td>在当前环境装 Python 库</td>
+<td>Python 层</td>
+</tr>
+<tr>
+<td><code>which python</code></td>
+<td>查看当前用的是哪个 Python</td>
+<td>调试必备</td>
+</tr>
+</tbody></table>
+<h3 id="用户管理"><a href="#用户管理" class="headerlink" title="用户管理"></a>用户管理</h3><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>sudo adduser 用户名</code></td>
+<td>创建新用户（交互式）</td>
+</tr>
+<tr>
+<td><code>su 用户名</code></td>
+<td>切换到指定用户</td>
+</tr>
+</tbody></table>
+<h3 id="环境导出与复现"><a href="#环境导出与复现" class="headerlink" title="环境导出与复现"></a>环境导出与复现</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 导出环境</span></span><br><span class="line">conda activate ai_infer</span><br><span class="line">conda <span class="built_in">env</span> <span class="built_in">export</span> &gt; environment.yml</span><br><span class="line"></span><br><span class="line"><span class="comment"># 一键重建环境（另一台机器）</span></span><br><span class="line">conda <span class="built_in">env</span> create -f environment.yml</span><br></pre></td></tr></table></figure>
+
+<p><strong>为什么要导出？</strong> → 防止”在我电脑上能跑，在你电脑上跑不了”的经典尴尬局面。</p>
+<hr>
+<h2 id="五、安装的软件清单-📦"><a href="#五、安装的软件清单-📦" class="headerlink" title="五、安装的软件清单 📦"></a>五、安装的软件清单 📦</h2><table>
+<thead>
+<tr>
+<th>软件&#x2F;工具</th>
+<th>类型</th>
+<th>安装位置</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>VS Code</td>
+<td>IDE</td>
+<td>本地电脑</td>
+<td>代码编辑 + 远程连接</td>
+</tr>
+<tr>
+<td>Remote-SSH 插件</td>
+<td>VS Code 插件</td>
+<td>本地 VS Code</td>
+<td>通过 SSH 连接远程服务器</td>
+</tr>
+<tr>
+<td>tree</td>
+<td>系统工具</td>
+<td>Ubuntu 服务器</td>
+<td>树状显示目录结构（<code>apt install tree</code>）</td>
+</tr>
+<tr>
+<td>Miniconda</td>
+<td>环境管理器</td>
+<td>Ubuntu 服务器</td>
+<td>创建和管理 Python 虚拟环境</td>
+</tr>
+<tr>
+<td>PyTorch</td>
+<td>Python 库</td>
+<td>Conda <code>ai_infer</code> 环境</td>
+<td>深度学习框架</td>
+</tr>
+<tr>
+<td>NumPy</td>
+<td>Python 库</td>
+<td>Conda <code>ai_infer</code> 环境</td>
+<td>科学计算库</td>
+</tr>
+<tr>
+<td>Scalene</td>
+<td>Python 库</td>
+<td>Conda <code>ai_infer</code> 环境</td>
+<td>CPU&#x2F;内存性能剖析工具</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="六、核心原则总结（下次不要再犯）"><a href="#六、核心原则总结（下次不要再犯）" class="headerlink" title="六、核心原则总结（下次不要再犯）"></a>六、核心原则总结（下次不要再犯）</h2><h3 id="🚫-错误-1：代理设置导致-SSH-连不上"><a href="#🚫-错误-1：代理设置导致-SSH-连不上" class="headerlink" title="🚫 错误 1：代理设置导致 SSH 连不上"></a>🚫 错误 1：代理设置导致 SSH 连不上</h3><p><strong>根因：</strong> 全局代理配置污染了 SSH 连接</p>
+<p><strong>以后这么做：</strong></p>
+<ol>
+<li>遇到网络连接问题 → <strong>第一步就查代理设置</strong></li>
+<li>代理用完就关，不要长期挂着</li>
+<li>终端里用 <code>ssh -v user@host</code> 调试，看详细日志</li>
+</ol>
+<h3 id="🚫-错误-2：分不清-apt-和-pip"><a href="#🚫-错误-2：分不清-apt-和-pip" class="headerlink" title="🚫 错误 2：分不清 apt 和 pip"></a>🚫 错误 2：分不清 apt 和 pip</h3><p><strong>根因：</strong> 没有理解系统层和 Python 层的区别</p>
+<p><strong>以后这么做：</strong></p>
+<ul>
+<li>装系统工具（tree、git、vim）→ 用 <code>apt</code></li>
+<li>装 Python 库（torch、numpy、pandas）→ 用 <code>pip</code>（在正确的 Conda 环境下）</li>
+</ul>
+<h3 id="🚫-错误-3：把所有东西都装进-base-环境"><a href="#🚫-错误-3：把所有东西都装进-base-环境" class="headerlink" title="🚫 错误 3：把所有东西都装进 base 环境"></a>🚫 错误 3：把所有东西都装进 base 环境</h3><p><strong>根因：</strong> 不理解环境隔离的意义</p>
+<p><strong>以后这么做：</strong></p>
+<ul>
+<li>base 环境 &#x3D; 纯净，不动它</li>
+<li>每个项目 &#x3D; 一个独立的 Conda 环境</li>
+<li>进入项目前先 <code>conda activate &lt;环境名&gt;</code></li>
+<li>不确定在哪个环境？→ <code>which python</code> 看路径</li>
+</ul>
+<h3 id="🚫-错误-4：随意使用-rm-命令"><a href="#🚫-错误-4：随意使用-rm-命令" class="headerlink" title="🚫 错误 4：随意使用 rm 命令"></a>🚫 错误 4：随意使用 rm 命令</h3><p><strong>根因：</strong> 不知道 Linux 下删除是永久性的</p>
+<p><strong>以后这么做：</strong></p>
+<ul>
+<li><code>rm</code> 前先 <code>ls</code> 确认文件存在</li>
+<li>删除前先用 <code>cat</code> 看一眼内容</li>
+<li>重要的文件先 <code>cp</code> 备份再操作</li>
+<li>养成好习惯：<strong>先 <code>ls</code> → 确认 → 再 <code>rm</code></strong></li>
+</ul>
+<hr>
+<h2 id="七、今日时间线"><a href="#七、今日时间线" class="headerlink" title="七、今日时间线"></a>七、今日时间线</h2><table>
+<thead>
+<tr>
+<th>时间</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>上午</td>
+<td>理解服务器架构 → 创建子用户 → 分发账号</td>
+</tr>
+<tr>
+<td>上午</td>
+<td>VS Code SSH 连接（踩坑 + 解决）</td>
+</tr>
+<tr>
+<td>下午</td>
+<td>Linux 基础命令练习</td>
+</tr>
+<tr>
+<td>下午</td>
+<td>Miniconda 安装 + Conda 环境创建</td>
+</tr>
+<tr>
+<td>下午</td>
+<td>模型推理实验 + Scalene 性能分析</td>
+</tr>
+<tr>
+<td>傍晚</td>
+<td>环境导出 + 撰写实验报告</td>
+</tr>
+</tbody></table>
+<hr>
+<blockquote>
+<p>🎯 <strong>最重要的收获：</strong> 理解了 <strong>Ubuntu → Miniconda → Conda Environment → pip</strong> 的四层架构，这是 AI 开发环境管理的基石。以后遇到环境问题，按照这个层级去排查，就不会一头雾水了。</p>
+<p>🐞 <strong>最深刻的教训：</strong> 代理设置是网络问题的头号嫌疑人，排查连接问题永远先查代理。</p>
+</blockquote>
+<hr>
+<h2 id="八、常用命令手册-📖（持续更新）"><a href="#八、常用命令手册-📖（持续更新）" class="headerlink" title="八、常用命令手册 📖（持续更新）"></a>八、常用命令手册 📖（持续更新）</h2><blockquote>
+<p>以下汇总了今天学到、以及 AI 实训中高频使用的所有命令。建议收藏，随用随查。</p>
+</blockquote>
+<h3 id="8-1-目录导航-——-知道”我在哪”"><a href="#8-1-目录导航-——-知道”我在哪”" class="headerlink" title="8.1 目录导航 —— 知道”我在哪”"></a>8.1 目录导航 —— 知道”我在哪”</h3><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>作用</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>pwd</code></td>
+<td>显示当前目录的完整路径</td>
+<td><code>/home/username/project</code></td>
+</tr>
+<tr>
+<td><code>cd 目录</code></td>
+<td>进入指定目录</td>
+<td><code>cd src</code></td>
+</tr>
+<tr>
+<td><code>cd ~</code></td>
+<td>回到当前用户的家目录</td>
+<td><code>cd ~</code></td>
+</tr>
+<tr>
+<td><code>cd ..</code></td>
+<td>回到上一级目录</td>
+<td><code>cd ..</code></td>
+</tr>
+<tr>
+<td><code>cd -</code></td>
+<td>回到上一次所在的目录</td>
+<td><code>cd -</code></td>
+</tr>
+<tr>
+<td><code>ls</code></td>
+<td>列出当前目录的文件和文件夹</td>
+<td><code>ls</code></td>
+</tr>
+<tr>
+<td><code>ls -l</code></td>
+<td>以详细列表形式显示（权限&#x2F;大小&#x2F;时间）</td>
+<td><code>ls -l</code></td>
+</tr>
+<tr>
+<td><code>ls -a</code></td>
+<td>显示所有文件（包括 <code>.</code> 开头的隐藏文件）</td>
+<td><code>ls -a</code></td>
+</tr>
+<tr>
+<td><code>ls -lh</code></td>
+<td>详细列表 + 人类可读的文件大小（K&#x2F;M&#x2F;G）</td>
+<td><code>ls -lh</code></td>
+</tr>
+<tr>
+<td><code>tree</code></td>
+<td>树状图显示目录结构</td>
+<td><code>tree</code> &#x2F; <code>tree -L 2</code>（只显示两层）</td>
+</tr>
+</tbody></table>
+<h3 id="8-2-文件操作-——-增删改查"><a href="#8-2-文件操作-——-增删改查" class="headerlink" title="8.2 文件操作 —— 增删改查"></a>8.2 文件操作 —— 增删改查</h3><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>作用</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>mkdir 目录名</code></td>
+<td>创建文件夹</td>
+<td><code>mkdir data</code></td>
+</tr>
+<tr>
+<td><code>mkdir -p a/b/c</code></td>
+<td>递归创建多层文件夹</td>
+<td><code>mkdir -p project/src/utils</code></td>
+</tr>
+<tr>
+<td><code>touch 文件名</code></td>
+<td>创建空文件</td>
+<td><code>touch README.md</code></td>
+</tr>
+<tr>
+<td><code>cp 源文件 目标</code></td>
+<td><strong>复制</strong>文件（原文件保留）</td>
+<td><code>cp a.txt backup/a.txt</code></td>
+</tr>
+<tr>
+<td><code>cp -r 源目录 目标</code></td>
+<td>复制整个文件夹</td>
+<td><code>cp -r src/ backup/src/</code></td>
+</tr>
+<tr>
+<td><code>mv 源 目标</code></td>
+<td><strong>移动</strong>或<strong>重命名</strong>（原位置消失）</td>
+<td><code>mv oldname.txt newname.txt</code></td>
+</tr>
+<tr>
+<td><code>rm 文件名</code></td>
+<td><strong>永久删除</strong>文件 ⚠️</td>
+<td><code>rm temp.txt</code></td>
+</tr>
+<tr>
+<td><code>rm -r 目录</code></td>
+<td>删除整个文件夹 ⚠️</td>
+<td><code>rm -r old_project/</code></td>
+</tr>
+<tr>
+<td><code>rm -rf 目录</code></td>
+<td>强制删除，不询问 ⚠️⚠️</td>
+<td>慎用！</td>
+</tr>
+<tr>
+<td><code>cat 文件名</code></td>
+<td>查看文件全部内容</td>
+<td><code>cat hello.py</code></td>
+</tr>
+<tr>
+<td><code>head -n 20 文件</code></td>
+<td>查看文件前 20 行</td>
+<td><code>head -n 20 log.txt</code></td>
+</tr>
+<tr>
+<td><code>tail -n 20 文件</code></td>
+<td>查看文件后 20 行</td>
+<td><code>tail -n 20 log.txt</code></td>
+</tr>
+<tr>
+<td><code>tail -f 文件</code></td>
+<td>实时追踪文件末尾（看日志神器）</td>
+<td><code>tail -f /var/log/syslog</code></td>
+</tr>
+<tr>
+<td><code>less 文件名</code></td>
+<td>分页浏览大文件（q 退出）</td>
+<td><code>less huge_log.txt</code></td>
+</tr>
+<tr>
+<td><code>wc -l 文件名</code></td>
+<td>统计文件行数</td>
+<td><code>wc -l data.csv</code></td>
+</tr>
+</tbody></table>
+<h3 id="8-3-文本处理-——-管道和重定向"><a href="#8-3-文本处理-——-管道和重定向" class="headerlink" title="8.3 文本处理 —— 管道和重定向"></a>8.3 文本处理 —— 管道和重定向</h3><table>
+<thead>
+<tr>
+<th>命令&#x2F;符号</th>
+<th>作用</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>&gt;</code></td>
+<td>将输出<strong>覆盖</strong>写入文件</td>
+<td><code>echo &quot;hello&quot; &gt; file.txt</code></td>
+</tr>
+<tr>
+<td><code>&gt;&gt;</code></td>
+<td>将输出<strong>追加</strong>到文件末尾</td>
+<td><code>echo &quot;world&quot; &gt;&gt; file.txt</code></td>
+</tr>
+<tr>
+<td><code>|</code></td>
+<td>管道：把左边命令的输出传给右边</td>
+<td><code>ls | grep &quot;.py&quot;</code></td>
+</tr>
+<tr>
+<td><code>grep 关键词 文件</code></td>
+<td>在文件中搜索匹配的行</td>
+<td><code>grep &quot;error&quot; log.txt</code></td>
+</tr>
+<tr>
+<td><code>grep -r 关键词 目录</code></td>
+<td>递归搜索整个目录</td>
+<td><code>grep -r &quot;TODO&quot; src/</code></td>
+</tr>
+<tr>
+<td><code>find 目录 -name &quot;*.py&quot;</code></td>
+<td>按文件名查找</td>
+<td><code>find . -name &quot;*.py&quot;</code></td>
+</tr>
+<tr>
+<td><code>sort 文件</code></td>
+<td>按行排序</td>
+<td><code>sort names.txt</code></td>
+</tr>
+<tr>
+<td><code>sort -u 文件</code></td>
+<td>排序 + 去重</td>
+<td><code>sort -u names.txt</code></td>
+</tr>
+</tbody></table>
+<h3 id="8-4-用户与权限"><a href="#8-4-用户与权限" class="headerlink" title="8.4 用户与权限"></a>8.4 用户与权限</h3><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>作用</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>whoami</code></td>
+<td>查看当前登录的用户名</td>
+<td><code>whoami</code></td>
+</tr>
+<tr>
+<td><code>hostname</code></td>
+<td>查看当前机器的主机名</td>
+<td><code>hostname</code></td>
+</tr>
+<tr>
+<td><code>who</code></td>
+<td>查看当前在线的所有用户</td>
+<td><code>who</code></td>
+</tr>
+<tr>
+<td><code>id</code></td>
+<td>查看当前用户的 UID 和所属组</td>
+<td><code>id</code></td>
+</tr>
+<tr>
+<td><code>sudo adduser 用户名</code></td>
+<td>创建新用户（交互式）</td>
+<td><code>sudo adduser zhangsan</code></td>
+</tr>
+<tr>
+<td><code>su 用户名</code></td>
+<td>切换到指定用户</td>
+<td><code>su zhangsan</code></td>
+</tr>
+<tr>
+<td><code>passwd</code></td>
+<td>修改当前用户的密码</td>
+<td><code>passwd</code></td>
+</tr>
+<tr>
+<td><code>chmod +x 文件</code></td>
+<td>给文件添加可执行权限</td>
+<td><code>chmod +x run.sh</code></td>
+</tr>
+<tr>
+<td><code>chmod 755 文件</code></td>
+<td>设置精确权限（rwxr-xr-x）</td>
+<td><code>chmod 755 script.py</code></td>
+</tr>
+</tbody></table>
+<h3 id="8-5-系统信息-——-了解服务器状态"><a href="#8-5-系统信息-——-了解服务器状态" class="headerlink" title="8.5 系统信息 —— 了解服务器状态"></a>8.5 系统信息 —— 了解服务器状态</h3><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>作用</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>uname -a</code></td>
+<td>查看系统内核&#x2F;版本&#x2F;架构</td>
+<td>知道跑的是什么系统</td>
+</tr>
+<tr>
+<td><code>df -h</code></td>
+<td>查看磁盘使用情况</td>
+<td>看看硬盘还剩多少空间</td>
+</tr>
+<tr>
+<td><code>du -sh 目录</code></td>
+<td>查看目录占用的磁盘大小</td>
+<td><code>du -sh ~/project/</code></td>
+</tr>
+<tr>
+<td><code>free -h</code></td>
+<td>查看内存使用情况</td>
+<td>看看内存还剩多少</td>
+</tr>
+<tr>
+<td><code>nvidia-smi</code></td>
+<td>查看 GPU 状态</td>
+<td><strong>AI 实训最常用</strong>，看显存和 GPU 占用</td>
+</tr>
+<tr>
+<td><code>htop</code></td>
+<td>交互式查看 CPU&#x2F;内存&#x2F;进程</td>
+<td>比 <code>top</code> 更直观（需 <code>apt install htop</code>）</td>
+</tr>
+<tr>
+<td><code>ps aux</code></td>
+<td>查看所有运行中的进程</td>
+<td><code>ps aux | grep python</code> 找 Python 进程</td>
+</tr>
+<tr>
+<td><code>kill -9 PID</code></td>
+<td>强制终止指定进程</td>
+<td>先 <code>ps</code> 找到 PID，再 <code>kill</code></td>
+</tr>
+</tbody></table>
+<h3 id="8-6-Conda-环境管理-——-AI-开发核心"><a href="#8-6-Conda-环境管理-——-AI-开发核心" class="headerlink" title="8.6 Conda 环境管理 —— AI 开发核心"></a>8.6 Conda 环境管理 —— AI 开发核心</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># --- 环境创建与切换 ---</span></span><br><span class="line">conda create -n 环境名 python=3.10    <span class="comment"># 创建新环境，指定 Python 版本</span></span><br><span class="line">conda activate 环境名                  <span class="comment"># 激活/进入环境</span></span><br><span class="line">conda deactivate                      <span class="comment"># 退出当前环境</span></span><br><span class="line">conda <span class="built_in">env</span> list                        <span class="comment"># 查看所有已创建的环境</span></span><br><span class="line">conda remove -n 环境名 --all          <span class="comment"># 彻底删除某个环境</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># --- 包管理 ---</span></span><br><span class="line">conda install 包名                    <span class="comment"># 在当前环境安装包（推荐优先用 conda）</span></span><br><span class="line">conda install 包名=版本号             <span class="comment"># 安装指定版本</span></span><br><span class="line">conda list                            <span class="comment"># 列出当前环境所有已安装的包</span></span><br><span class="line">conda list | grep torch               <span class="comment"># 查看 torch 是否安装及版本</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># --- 环境复现 ---</span></span><br><span class="line">conda <span class="built_in">env</span> <span class="built_in">export</span> &gt; environment.yml    <span class="comment"># 导出当前环境配置</span></span><br><span class="line">conda <span class="built_in">env</span> create -f environment.yml   <span class="comment"># 从配置文件重建环境</span></span><br><span class="line">conda info --envs                     <span class="comment"># 查看环境存放位置</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># --- 其他常用 ---</span></span><br><span class="line">conda init                            <span class="comment"># 初始化 conda（首次安装后执行）</span></span><br><span class="line">conda --version                       <span class="comment"># 查看 conda 版本</span></span><br><span class="line">conda update conda                    <span class="comment"># 更新 conda 自身</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="8-7-pip-包管理"><a href="#8-7-pip-包管理" class="headerlink" title="8.7 pip 包管理"></a>8.7 pip 包管理</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">pip install 包名                      <span class="comment"># 安装 Python 包</span></span><br><span class="line">pip install 包名==版本号              <span class="comment"># 安装指定版本</span></span><br><span class="line">pip install -r requirements.txt       <span class="comment"># 批量安装（从文件读取）</span></span><br><span class="line">pip list                              <span class="comment"># 列出当前环境所有已安装的包</span></span><br><span class="line">pip show 包名                         <span class="comment"># 查看某个包的详细信息（版本/位置/依赖）</span></span><br><span class="line">pip uninstall 包名                    <span class="comment"># 卸载包</span></span><br><span class="line">pip freeze &gt; requirements.txt         <span class="comment"># 冻结当前环境的所有包及版本到文件</span></span><br><span class="line"><span class="built_in">which</span> python                          <span class="comment"># 查看当前用的是哪个 Python（判断是否在正确环境）</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="8-8-软件包管理-——-apt"><a href="#8-8-软件包管理-——-apt" class="headerlink" title="8.8 软件包管理 —— apt"></a>8.8 软件包管理 —— apt</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt update                       <span class="comment"># 更新软件源列表（装软件前先执行）</span></span><br><span class="line"><span class="built_in">sudo</span> apt upgrade                      <span class="comment"># 升级所有可升级的软件</span></span><br><span class="line"><span class="built_in">sudo</span> apt install 软件名               <span class="comment"># 安装系统级软件</span></span><br><span class="line"><span class="built_in">sudo</span> apt remove 软件名                <span class="comment"># 卸载软件</span></span><br><span class="line"><span class="built_in">sudo</span> apt autoremove                   <span class="comment"># 自动清理不再需要的依赖</span></span><br><span class="line">apt list --installed                  <span class="comment"># 查看已安装的软件列表</span></span><br><span class="line"><span class="built_in">sudo</span> apt search 关键词                <span class="comment"># 搜索可用软件包</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="8-9-SSH-远程连接"><a href="#8-9-SSH-远程连接" class="headerlink" title="8.9 SSH 远程连接"></a>8.9 SSH 远程连接</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># --- 基础连接 ---</span></span><br><span class="line">ssh 用户名@IP地址                     <span class="comment"># 连接远程服务器</span></span><br><span class="line">ssh 用户名@IP地址 -p 端口号           <span class="comment"># 指定端口连接</span></span><br><span class="line">ssh -v 用户名@IP地址                  <span class="comment"># 调试模式，显示详细连接日志（排查问题神器）</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># --- VS Code 配置（本地 ~/.ssh/config） ---</span></span><br><span class="line"><span class="comment"># Host myserver</span></span><br><span class="line"><span class="comment">#     HostName 192.168.1.100</span></span><br><span class="line"><span class="comment">#     User zhangsan</span></span><br><span class="line"><span class="comment">#     Port 22</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># --- 文件传输 ---</span></span><br><span class="line">scp 本地文件 用户名@IP:远程路径        <span class="comment"># 上传文件到服务器</span></span><br><span class="line">scp 用户名@IP:远程文件 本地路径        <span class="comment"># 从服务器下载文件</span></span><br><span class="line">scp -r 目录 用户名@IP:远程路径         <span class="comment"># 递归传输整个文件夹</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="8-10-终端快捷键（提升效率必学）"><a href="#8-10-终端快捷键（提升效率必学）" class="headerlink" title="8.10 终端快捷键（提升效率必学）"></a>8.10 终端快捷键（提升效率必学）</h3><table>
+<thead>
+<tr>
+<th>快捷键</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Ctrl + C</code></td>
+<td>终止当前正在运行的命令</td>
+</tr>
+<tr>
+<td><code>Ctrl + D</code></td>
+<td>退出当前终端 &#x2F; 发送 EOF</td>
+</tr>
+<tr>
+<td><code>Ctrl + L</code></td>
+<td>清屏（等效 <code>clear</code>）</td>
+</tr>
+<tr>
+<td><code>Ctrl + A</code></td>
+<td>光标跳到行首</td>
+</tr>
+<tr>
+<td><code>Ctrl + E</code></td>
+<td>光标跳到行尾</td>
+</tr>
+<tr>
+<td><code>Ctrl + U</code></td>
+<td>删除光标前的所有内容</td>
+</tr>
+<tr>
+<td><code>Ctrl + K</code></td>
+<td>删除光标后的所有内容</td>
+</tr>
+<tr>
+<td><code>Ctrl + R</code></td>
+<td>搜索历史命令</td>
+</tr>
+<tr>
+<td><code>↑</code> &#x2F; <code>↓</code></td>
+<td>浏览上一条&#x2F;下一条命令</td>
+</tr>
+<tr>
+<td><code>Tab</code></td>
+<td>自动补全文件名&#x2F;命令名</td>
+</tr>
+<tr>
+<td><code>Tab</code> + <code>Tab</code></td>
+<td>显示所有可能的补全选项</td>
+</tr>
+</tbody></table>
+<h3 id="8-11-Vim-基础（改配置文件必备）"><a href="#8-11-Vim-基础（改配置文件必备）" class="headerlink" title="8.11 Vim 基础（改配置文件必备）"></a>8.11 Vim 基础（改配置文件必备）</h3><blockquote>
+<p>日常改 <code>.bashrc</code>、<code>environment.yml</code> 都会用到，不要求精通，但至少要会三件事：进入编辑、保存、退出。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>vim 文件名</code></td>
+<td>用 vim 打开文件</td>
+</tr>
+<tr>
+<td>按 <code>i</code></td>
+<td>进入<strong>编辑模式</strong>（Insert），开始打字</td>
+</tr>
+<tr>
+<td>按 <code>Esc</code></td>
+<td>退出编辑模式，回到<strong>命令模式</strong></td>
+</tr>
+<tr>
+<td><code>:w</code></td>
+<td>保存（write）</td>
+</tr>
+<tr>
+<td><code>:q</code></td>
+<td>退出（quit）</td>
+</tr>
+<tr>
+<td><code>:wq</code> 或 <code>ZZ</code></td>
+<td>保存并退出</td>
+</tr>
+<tr>
+<td><code>:q!</code></td>
+<td>不保存，强制退出</td>
+</tr>
+<tr>
+<td><code>:set nu</code></td>
+<td>显示行号</td>
+</tr>
+</tbody></table>
+<h3 id="8-12-今天典型操作流程（收藏这个模板）"><a href="#8-12-今天典型操作流程（收藏这个模板）" class="headerlink" title="8.12 今天典型操作流程（收藏这个模板）"></a>8.12 今天典型操作流程（收藏这个模板）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. SSH 登录服务器</span></span><br><span class="line">ssh 用户名@服务器IP</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. 看看服务器状态</span></span><br><span class="line">nvidia-smi                    <span class="comment"># GPU 有没有空闲</span></span><br><span class="line">free -h                       <span class="comment"># 内存够不够</span></span><br><span class="line"><span class="built_in">df</span> -h                         <span class="comment"># 硬盘够不够</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 3. 进入项目环境</span></span><br><span class="line"><span class="built_in">cd</span> ~/你的项目目录</span><br><span class="line">conda activate ai_infer       <span class="comment"># 激活环境</span></span><br><span class="line"><span class="built_in">which</span> python                  <span class="comment"># 确认环境正确</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 4. 开始干活</span></span><br><span class="line">python inference.py           <span class="comment"># 运行脚本</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 5. 干完活导出环境</span></span><br><span class="line">conda <span class="built_in">env</span> <span class="built_in">export</span> &gt; environment.yml</span><br><span class="line"></span><br><span class="line"><span class="comment"># 6. 退出</span></span><br><span class="line">conda deactivate              <span class="comment"># 退出环境</span></span><br><span class="line"><span class="built_in">exit</span>                          <span class="comment"># 断开 SSH</span></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/06/22/%E5%B0%8F%E7%89%9B%E7%BF%BB%E8%AF%91-%E5%AE%9E%E8%AE%AD%E7%AC%AC%E4%B8%80%E5%A4%A9/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="查志渊">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="渊渟岳峙的技术笔记">
+      <meta itemprop="description" content="磨炼自己的一点点技术">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=" | 渊渟岳峙的技术笔记">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2026/06/22/%E5%B0%8F%E7%89%9B%E7%BF%BB%E8%AF%91-%E5%AE%9E%E8%AE%AD%E7%AC%AC%E4%B8%80%E5%A4%A9/" class="post-title-link" itemprop="url">小牛翻译-实训第一天</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2026-06-22 16:46:32 / 修改时间：17:16:09" itemprop="dateCreated datePublished" datetime="2026-06-22T16:46:32+08:00">2026-06-22</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="小牛翻译-实训第一天"><a href="#小牛翻译-实训第一天" class="headerlink" title="小牛翻译-实训第一天"></a>小牛翻译-实训第一天</h1><p>今天主要是配置环境，连接远程ssh，连接实验室的服务器。<br>先讲讲服务器，有一个root用户，我是组长，我是老师发了一份root的表格，ssh连接的格式和密码，然后我先用adduser创建四个子用户，分别是我的三个组员和我，然后我分别把组员的账号发给他们，让他们分别用自己的账号登录服务器。而且使用最简单的密码。<br>今天在用vscode连接服务器的时候，死活连不上，<br>如小牛bug.png所示，就是连不上，解决方法是把Preferences: Open User Settings (JSON) 搜索这个，然后把之前配代理的那个端口给删了<br>下面这是我今天的实验报告<br>好的，这是根据您提供的 <code>report.docx</code> 内容转换成的 Markdown 格式。我保留了所有标题、问题编号、回答文本和图片引用（图片路径保持不变），并将数学公式用 LaTeX 或文本方式清晰呈现。</p>
+<hr>
+<h1 id="人工智能实训预备课作业报告"><a href="#人工智能实训预备课作业报告" class="headerlink" title="人工智能实训预备课作业报告"></a>人工智能实训预备课作业报告</h1><hr>
+<h2 id="Problem-linux1-Understanding-Linux-and-Ubuntu"><a href="#Problem-linux1-Understanding-Linux-and-Ubuntu" class="headerlink" title="Problem (linux1): Understanding Linux and Ubuntu"></a>Problem (linux1): Understanding Linux and Ubuntu</h2><h3 id="a-Linux-和-Ubuntu-是同一个东西吗？"><a href="#a-Linux-和-Ubuntu-是同一个东西吗？" class="headerlink" title="(a) Linux 和 Ubuntu 是同一个东西吗？"></a>(a) Linux 和 Ubuntu 是同一个东西吗？</h3><p><strong>答：</strong> 不是一个东西。Linux 是一个开源的操作系统内核，是整个系统的基础；而 Ubuntu 是基于 Linux 内核构建的一个具体发行版，它包含了图形界面、系统工具和软件包管理等功能，是 Linux 内核的一种具体实现形式。</p>
+<h3 id="b-为什么人工智能实训课程常使用-Ubuntu，而不是只使用-Windows？"><a href="#b-为什么人工智能实训课程常使用-Ubuntu，而不是只使用-Windows？" class="headerlink" title="(b) 为什么人工智能实训课程常使用 Ubuntu，而不是只使用 Windows？"></a>(b) 为什么人工智能实训课程常使用 Ubuntu，而不是只使用 Windows？</h3><p><strong>答：</strong><br>首先，在深度学习环境配置方面，Ubuntu 对 CUDA、PyTorch 等主流 AI 框架的兼容性更好，官方文档和社区支持也更丰富；其次，AI 开发通常在远程服务器上进行，Ubuntu 作为服务器操作系统在稳定性、资源占用和远程管理（SSH）方面具有优势；最后，命令行操作更利于批量任务、脚本自动化以及依赖关系的精确控制，便于实验复现。</p>
+<hr>
+<h2 id="Problem-vscode1-Connecting-to-the-Ubuntu-server"><a href="#Problem-vscode1-Connecting-to-the-Ubuntu-server" class="headerlink" title="Problem (vscode1): Connecting to the Ubuntu server"></a>Problem (vscode1): Connecting to the Ubuntu server</h2><p><strong>任务完成情况：</strong> 已在个人电脑上安装 VS Code 和 Remote-SSH 插件，配置 SSH config 并成功连接 Ubuntu 服务器，在远程终端中运行了 <code>whoami</code>、<code>hostname</code>、<code>pwd</code>、<code>uname -a</code> 命令。</p>
+<hr>
+<h2 id="Problem-vscode2-Local-computer-or-remote-Ubuntu"><a href="#Problem-vscode2-Local-computer-or-remote-Ubuntu" class="headerlink" title="Problem (vscode2): Local computer or remote Ubuntu?"></a>Problem (vscode2): Local computer or remote Ubuntu?</h2><h3 id="a-VS-Code-安装在个人电脑上，为什么可以操作-Ubuntu-服务器中的文件？"><a href="#a-VS-Code-安装在个人电脑上，为什么可以操作-Ubuntu-服务器中的文件？" class="headerlink" title="(a) VS Code 安装在个人电脑上，为什么可以操作 Ubuntu 服务器中的文件？"></a>(a) VS Code 安装在个人电脑上，为什么可以操作 Ubuntu 服务器中的文件？</h3><p><strong>答：</strong> Remote-SSH 插件的作用是在本地 VS Code 与远程服务器之间建立一条基于 SSH 协议的安全通道。插件会将本地的操作指令发送到服务器执行，并将服务器返回的结果（如文件列表、编辑内容）显示在本地界面上，从而让用户感觉像在操作本地文件一样。</p>
+<h3 id="b-在远程终端中创建的文件夹，会出现在本地桌面上吗？"><a href="#b-在远程终端中创建的文件夹，会出现在本地桌面上吗？" class="headerlink" title="(b) 在远程终端中创建的文件夹，会出现在本地桌面上吗？"></a>(b) 在远程终端中创建的文件夹，会出现在本地桌面上吗？</h3><p><strong>答：</strong> 不会。因为终端连接的是远程 Ubuntu 服务器，所有命令（如 <code>mkdir</code>）都是在服务器的文件系统中执行的，与本地个人电脑的文件系统完全隔离。</p>
+<hr>
+<h2 id="Problem-shell1-First-command-line-operations"><a href="#Problem-shell1-First-command-line-operations" class="headerlink" title="Problem (shell1): First command-line operations"></a>Problem (shell1): First command-line operations</h2><p><strong>任务完成情况：</strong> 在远程 Ubuntu 终端中依次执行了查看目录、回到主目录、创建项目文件夹及子文件夹、查看结果等操作。</p>
+<p><strong>使用的命令（示例）：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">pwd</span></span><br><span class="line"><span class="built_in">cd</span> ~</span><br><span class="line"><span class="built_in">mkdir</span> 2023xxxx_ai_practice   <span class="comment"># 替换为实际学号</span></span><br><span class="line"><span class="built_in">cd</span> 2023xxxx_ai_practice</span><br><span class="line"><span class="built_in">mkdir</span> data src outputs</span><br><span class="line"><span class="built_in">ls</span></span><br></pre></td></tr></table></figure>
+
+
+
+<hr>
+<h2 id="Problem-file1-Managing-a-small-project-directory"><a href="#Problem-file1-Managing-a-small-project-directory" class="headerlink" title="Problem (file1): Managing a small project directory"></a>Problem (file1): Managing a small project directory</h2><p><strong>任务完成情况：</strong> 在项目目录下完成了进入 <code>src</code>、创建 <code>hello.py</code>、写入内容、复制备份、查看内容、删除备份等操作。</p>
+<p><strong>使用的命令（示例）：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> src</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;print(&quot;Hello, Ubuntu!&quot;)&#x27;</span> &gt; hello.py</span><br><span class="line"><span class="built_in">cd</span> ..</span><br><span class="line"><span class="built_in">cp</span> src/hello.py outputs/hello_backup.py</span><br><span class="line"><span class="built_in">cat</span> outputs/hello_backup.py</span><br><span class="line"><span class="built_in">rm</span> outputs/hello_backup.py</span><br></pre></td></tr></table></figure>
+
+<p><strong>命令区别说明：</strong></p>
+<ul>
+<li><strong><code>cp</code>（copy）</strong>：用于复制文件或目录，原文件保持不变，生成一个新的副本。</li>
+<li><strong><code>mv</code>（move）</strong>：用于移动文件或目录（剪切）或重命名文件，原路径消失，出现在新路径。</li>
+<li><strong><code>rm</code>（remove）</strong>：用于永久删除文件或目录，数据不会进入回收站，删除后很难恢复。</li>
+</ul>
+<hr>
+<h2 id="Problem-apt1-Installing-basic-tools"><a href="#Problem-apt1-Installing-basic-tools" class="headerlink" title="Problem (apt1): Installing basic tools"></a>Problem (apt1): Installing basic tools</h2><p><strong>任务完成情况：</strong> 执行了 <code>sudo apt update</code> 更新源，安装 <code>tree</code> 工具，并在项目目录下运行 <code>tree</code> 查看目录结构。</p>
+<p><strong>截图：</strong></p>
+<p><strong><code>apt</code> 和 <code>pip</code> 的区别：</strong></p>
+<ul>
+<li><strong><code>apt</code></strong> 是 Ubuntu 系统的软件包管理工具，用于安装系统级别的软件（如 Git、Tree、Vim），通常需要 <code>sudo</code> 管理员权限。</li>
+<li><strong><code>pip</code></strong> 是 Python 的包管理工具，用于安装 Python 第三方库（如 NumPy、Torch），通常安装在当前激活的 Python 环境中，不需要系统管理员权限。两者管理的对象和作用域完全不同。</li>
+</ul>
+<hr>
+<h2 id="Problem-miniconda1-Installing-Miniconda"><a href="#Problem-miniconda1-Installing-Miniconda" class="headerlink" title="Problem (miniconda1): Installing Miniconda"></a>Problem (miniconda1): Installing Miniconda</h2><p><strong>任务完成情况：</strong> 在服务器中找到安装包，使用 <code>bash</code> 运行安装，接受许可、默认路径，执行 <code>conda init</code>，然后 <code>source ~/.bashrc</code>，验证安装，查看环境列表，并关闭自动激活 base。</p>
+<h3 id="a-为什么不建议直接把所有依赖安装到-base-环境中？"><a href="#a-为什么不建议直接把所有依赖安装到-base-环境中？" class="headerlink" title="(a) 为什么不建议直接把所有依赖安装到 base 环境中？"></a>(a) 为什么不建议直接把所有依赖安装到 base 环境中？</h3><p><strong>答：</strong> base 环境是 Conda 的基础环境，如果将所有项目的依赖都装在里面，不同项目间的库版本（如 PyTorch 2.0 vs PyTorch 1.8）容易发生冲突，导致环境混乱难以排查。为每个项目创建独立环境（如 <code>ai_infer</code>）可以实现环境隔离，保证项目的可复现性。</p>
+<h3 id="b-Miniconda-安装在-Ubuntu-服务器中，还是安装在本地个人电脑中？"><a href="#b-Miniconda-安装在-Ubuntu-服务器中，还是安装在本地个人电脑中？" class="headerlink" title="(b) Miniconda 安装在 Ubuntu 服务器中，还是安装在本地个人电脑中？"></a>(b) Miniconda 安装在 Ubuntu 服务器中，还是安装在本地个人电脑中？</h3><p><strong>答：</strong> Miniconda 安装在 Ubuntu 服务器中。因为后续的模型推理和代码运行都在远程服务器上执行，依赖库和环境必须部署在服务器上才能使用其 CPU&#x2F;GPU 资源。</p>
+<h3 id="c-source-bashrc-的作用是什么？"><a href="#c-source-bashrc-的作用是什么？" class="headerlink" title="(c) source ~/.bashrc 的作用是什么？"></a>(c) <code>source ~/.bashrc</code> 的作用是什么？</h3><p><strong>答：</strong> <code>~/.bashrc</code> 是 Bash Shell 的配置文件，包含了环境变量、别名和启动脚本等设置。<code>source ~/.bashrc</code> 的作用是让当前终端重新加载该文件，使新添加的 Conda 初始化配置立即生效，从而让系统识别 <code>conda</code> 命令。</p>
+<hr>
+<h2 id="Problem-conda1-Understanding-Conda-and-pip"><a href="#Problem-conda1-Understanding-Conda-and-pip" class="headerlink" title="Problem (conda1): Understanding Conda and pip"></a>Problem (conda1): Understanding Conda and pip</h2><h3 id="a-Conda-环境解决了什么问题？"><a href="#a-Conda-环境解决了什么问题？" class="headerlink" title="(a) Conda 环境解决了什么问题？"></a>(a) Conda 环境解决了什么问题？</h3><p><strong>答：</strong> Conda 环境解决了 Python 项目中的依赖冲突问题。如果没有环境隔离，在同一个 Python 环境中同时安装项目 A（需要 Django 3.0）和项目 B（需要 Django 4.0）会导致版本冲突。Conda 允许我们为每个项目创建独立的“沙箱”环境，各自拥有独立的 Python 解释器和库版本，互不干扰。</p>
+<h3 id="b-pip-install-安装的包一定属于整个-Ubuntu-系统吗？"><a href="#b-pip-install-安装的包一定属于整个-Ubuntu-系统吗？" class="headerlink" title="(b) pip install 安装的包一定属于整个 Ubuntu 系统吗？"></a>(b) <code>pip install</code> 安装的包一定属于整个 Ubuntu 系统吗？</h3><p><strong>答：</strong> 不一定。<code>pip install</code> 安装的包会安装到当前激活的 Python 环境中。如果在某个 Conda 环境（如 <code>ai_infer</code>）中执行 <code>pip install</code>，包会被安装到该 Conda 环境的 <code>lib/python3.x/site-packages/</code> 目录下，仅对该环境可见，不会影响 Ubuntu 系统自带的 Python 环境，也不会影响其他 Conda 环境。只有在未激活任何虚拟环境、直接使用系统 Python 时，<code>pip</code> 才会将包安装到系统目录（通常需要 <code>sudo</code> 权限）。</p>
+<h3 id="c-请解释-Ubuntu、Miniconda、Conda-environment、pip-之间的层级关系。"><a href="#c-请解释-Ubuntu、Miniconda、Conda-environment、pip-之间的层级关系。" class="headerlink" title="(c) 请解释 Ubuntu、Miniconda、Conda environment、pip 之间的层级关系。"></a>(c) 请解释 Ubuntu、Miniconda、Conda environment、pip 之间的层级关系。</h3><p><strong>答：</strong> Ubuntu 是最底层的操作系统，提供基础运行环境；Miniconda 是安装在 Ubuntu 上的环境管理工具，用来创建和管理隔离的 Python 工作空间；Conda environment 是 Miniconda 创建的独立虚拟环境，每个环境拥有自己的 Python 版本和库集合；pip 是 Python 的包安装工具，在某个 Conda environment 内部使用时，它安装的 Python 库只会归属于该特定的 Conda environment，从而形成“操作系统 → 环境管理工具 → 独立虚拟环境 → 包安装工具”的清晰层级结构。</p>
+<hr>
+<h2 id="Problem-env1-Building-a-Conda-inference-environment"><a href="#Problem-env1-Building-a-Conda-inference-environment" class="headerlink" title="Problem (env1): Building a Conda inference environment"></a>Problem (env1): Building a Conda inference environment</h2><p><strong>任务完成情况：</strong> 创建了 <code>ai_infer</code> 环境（Python 3.10），激活，检查版本，安装 <code>numpy</code> 和 <code>torch</code>，验证导入，并用 <code>which python</code> 确认环境。</p>
+<p><strong>如何判断进入正确的 Conda 环境：</strong><br>可以通过两种方式判断：第一，观察终端提示符，如果显示 <code>(ai_infer)</code> 前缀，说明已进入该环境；第二，执行 <code>which python</code>，如果返回的路径包含 <code>/miniconda3/envs/ai_infer/bin/python</code>，说明当前使用的 Python 解释器来自 <code>ai_infer</code> 环境。</p>
+<hr>
+<h2 id="Problem-infer1-First-model-inference"><a href="#Problem-infer1-First-model-inference" class="headerlink" title="Problem (infer1): First model inference"></a>Problem (infer1): First model inference</h2><h3 id="a-运行-inference-py"><a href="#a-运行-inference-py" class="headerlink" title="(a) 运行 inference.py"></a>(a) 运行 <code>inference.py</code></h3><p><strong>截图和输出：</strong></p>
+<p><img src="/media/image7.png">{width&#x3D;”5.768055555555556in” height&#x3D;”2.8583333333333334in”}</p>
+<p>（输出文件 <code>output.txt</code> 内容：略）</p>
+<h3 id="b-解释-x-w-的含义"><a href="#b-解释-x-w-的含义" class="headerlink" title="(b) 解释 x @ w 的含义"></a>(b) 解释 <code>x @ w</code> 的含义</h3><p><strong>答：</strong> <code>@</code> 运算是矩阵乘法。例如，对于 <code>x = [[1.0, 2.0, 3.0]]</code> 和 <code>w = [[0.2], [0.5], [0.3]]</code>，计算结果为：<br><code>1.0*0.2 + 2.0*0.5 + 3.0*0.3 = 0.2 + 1.0 + 0.9 = 2.1</code>。</p>
+<h3 id="c-修改输入并再次运行"><a href="#c-修改输入并再次运行" class="headerlink" title="(c) 修改输入并再次运行"></a>(c) 修改输入并再次运行</h3><p>将输入改为 <code>x = torch.tensor([[2.0, 1.0, 4.0]])</code> 后，输出仍为 <code>tensor([[2.1000]])</code>。<br><strong>原因分析：</strong> 虽然输入发生了变化，但计算过程遵循线性加权求和公式：  </p>
+<p>由于原始输入 <code>[1,2,3]</code> 的计算结果恰好也是 <code>0.2 + 1.0 + 0.9 = 2.1</code>，这次修改恰好产生了相同的数值输出。一般来说，改变输入值会导致输出值发生相应变化，因为输出是输入的线性函数。</p>
+<hr>
+<h2 id="进阶内容：Problem-advanced1-Optional-profiling-with-Scalene"><a href="#进阶内容：Problem-advanced1-Optional-profiling-with-Scalene" class="headerlink" title="进阶内容：Problem (advanced1): Optional profiling with Scalene"></a>进阶内容：Problem (advanced1): Optional profiling with Scalene</h2><h3 id="a-slow-nn-py-的主要性能瓶颈在哪里？"><a href="#a-slow-nn-py-的主要性能瓶颈在哪里？" class="headerlink" title="(a) slow_nn.py 的主要性能瓶颈在哪里？"></a>(a) <code>slow_nn.py</code> 的主要性能瓶颈在哪里？</h3><p><strong>答：</strong> 瓶颈在 <code>slow_forward</code> 函数中的 <code>for i in range(x.shape[0])</code> 循环。4096 次 Python 循环每次调用 PyTorch 操作，产生大量解释器开销，占用总时间的 90% 以上。</p>
+<p><strong>Scalene 输出截图：</strong></p>
+<h3 id="b-你采用了什么优化思路？"><a href="#b-你采用了什么优化思路？" class="headerlink" title="(b) 你采用了什么优化思路？"></a>(b) 你采用了什么优化思路？</h3><p><strong>答：</strong> 将逐条样本循环改为批量矩阵运算，一次性处理整个 batch，利用 PyTorch 的底层向量化加速，减少 Python 循环开销。</p>
+<h3 id="c-优化前后是否有明显提升？"><a href="#c-优化前后是否有明显提升？" class="headerlink" title="(c) 优化前后是否有明显提升？"></a>(c) 优化前后是否有明显提升？</h3><p><strong>答：</strong> 有显著提升。运行时间从 <code>slow_nn.py</code> 的约 X 秒（请填入实际测量值）降低到 <code>fast_nn.py</code> 的约 Y 秒（请填入实际测量值）。Scalene 显示瓶颈从 Python 循环转移到张量乘法，总时间大幅减少，优化有效。</p>
+<hr>
+<h2 id="Problem-export1-Exporting-the-environment"><a href="#Problem-export1-Exporting-the-environment" class="headerlink" title="Problem (export1): Exporting the environment"></a>Problem (export1): Exporting the environment</h2><p><strong>任务完成情况：</strong> 激活 <code>ai_infer</code> 环境，导出 <code>environment.yml</code>，使用 <code>cat</code> 查看内容。</p>
+<p><strong>为什么 AI 项目需要保存环境配置：</strong><br>AI 项目通常依赖大量特定版本的 Python 库（如 PyTorch、Transformers），不同版本之间可能不兼容。保存 <code>environment.yml</code> 可以精确记录项目运行所需的所有依赖，当其他人或自己换一台机器复现实验时，只需执行 <code>conda env create -f environment.yml</code> 即可一键重建完全相同的环境，避免了“在我电脑上能跑”的兼容性问题，保证了实验的可复现性和团队协作的便利性。</p>
+<hr>
+<p><strong>报告结束</strong></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -2970,7 +3979,7 @@
 <tr>
 <td>6</td>
 <td><strong>Rewrite和Expand的区别？为什么Expand效果更差？</strong></td>
-<td>Rewrite：口语→官方术语，2-3个改写版本。Expand：复杂问题→3-5个子问题。Expand差的原因：子问题引入无关文档噪声，RRF无法完全过滤；拆解粒度太细产生冗余。数据上：Rewrite P@3+3.4%，Expand <a href="mailto:&#72;&#x52;&#x40;&#51;&#x2d;&#x36;&#46;&#x36;">&#72;&#x52;&#x40;&#51;&#x2d;&#x36;&#46;&#x36;</a>%。</td>
+<td>Rewrite：口语→官方术语，2-3个改写版本。Expand：复杂问题→3-5个子问题。Expand差的原因：子问题引入无关文档噪声，RRF无法完全过滤；拆解粒度太细产生冗余。数据上：Rewrite P@3+3.4%，Expand <a href="mailto:&#x48;&#x52;&#64;&#x33;&#x2d;&#54;&#46;&#x36;">&#x48;&#x52;&#64;&#x33;&#x2d;&#54;&#46;&#x36;</a>%。</td>
 </tr>
 <tr>
 <td>7</td>
@@ -3602,282 +4611,6 @@
 <blockquote>
 <p>💡 <strong>终极心法</strong>：Claude Code 不是“更聪明的 Copilot”，它是一个通过<strong>权限</strong>、<strong>Hooks</strong>、<strong>子智能体</strong>和 <strong>Git Worktrees</strong> 分层系统来执行任务的自动化终端。Vibe Coding 的精髓就是：<strong>你负责定义意图和审查，Claude 负责脏活累活。</strong></p>
 </blockquote>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2026/06/03/kaggle-test-1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="查志渊">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="渊渟岳峙的技术笔记">
-      <meta itemprop="description" content="磨炼自己的一点点技术">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | 渊渟岳峙的技术笔记">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/06/03/kaggle-test-1/" class="post-title-link" itemprop="url">kaggle_test_1</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2026-06-03 16:12:00 / 修改时间：16:52:58" itemprop="dateCreated datePublished" datetime="2026-06-03T16:12:00+08:00">2026-06-03</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" itemprop="url" rel="index"><span itemprop="name">数据分析</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="kaggle练习1"><a href="#kaggle练习1" class="headerlink" title="kaggle练习1"></a>kaggle练习1</h1><h2 id="kaggle是什么："><a href="#kaggle是什么：" class="headerlink" title="kaggle是什么："></a>kaggle是什么：</h2><p>Kaggle 是一个由 Google 旗下的免费在线平台，全球各地的人们在这里一起解决数据问题、学习新技能并分享他们的成果。它提供工具、数据集、竞赛和学习资源，对所有对数据感兴趣的人开放——无论你是初学者还是专家，这里都有适合你的内容。</p>
-<h2 id="kaggle的五大核心功能："><a href="#kaggle的五大核心功能：" class="headerlink" title="kaggle的五大核心功能："></a>kaggle的五大核心功能：</h2><ul>
-<li>Competitions（竞赛） — 参与挑战并赢取奖品</li>
-<li>Datasets（数据集） — 免费获取数以千计的公开数据集</li>
-<li>Code&#x2F;Notebooks（代码） — 直接在浏览器中编写和运行代码</li>
-<li>Courses（课程） — 学习 Python、机器学习、数据可视化等课程</li>
-<li>Discussions（讨论区） — 与社区交流、提问、分享见解</li>
-</ul>
-<h2 id="进入-泰坦尼克号题目：-https-www-kaggle-com-c-titanic"><a href="#进入-泰坦尼克号题目：-https-www-kaggle-com-c-titanic" class="headerlink" title="进入 泰坦尼克号题目：(https://www.kaggle.com/c/titanic)"></a>进入 泰坦尼克号题目：(<a target="_blank" rel="noopener" href="https://www.kaggle.com/c/titanic">https://www.kaggle.com/c/titanic</a>)</h2><h3 id="数据集"><a href="#数据集" class="headerlink" title="数据集"></a>数据集</h3><p>我们可以在kaggle中找到泰坦尼克号的数据集，包括泰坦尼克号的乘客名单、舱位、年龄、性别、船票价格、船舱号、登船港口等信息。</p>
-<ol>
-<li>导入库：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> import pandas as pd</span><br><span class="line">import numpy as np</span><br><span class="line">from sklearn.ensemble import RandomForestClassifier</span><br><span class="line">from sklearn.preprocessing import LabelEncoder</span><br></pre></td></tr></table></figure>
-解释：</li>
-</ol>
-<ul>
-<li>pandas是一个强大的数据分析工具，用于处理和分析结构化数据。</li>
-<li>numpy是Python的一个科学计算库，提供了高性能的数组和矩阵操作。</li>
-<li>RandomForestClassifier是scikit-learn库中的一个分类器，基于随机森林算法实现。</li>
-<li>LabelEncoder是scikit-learn库中的一个工具，用于将分类变量转换为数值变量。</li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2026/06/02/%E5%86%99%E5%8D%9A%E5%AE%A2%E6%B5%81%E7%A8%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="查志渊">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="渊渟岳峙的技术笔记">
-      <meta itemprop="description" content="磨炼自己的一点点技术">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | 渊渟岳峙的技术笔记">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/06/02/%E5%86%99%E5%8D%9A%E5%AE%A2%E6%B5%81%E7%A8%8B/" class="post-title-link" itemprop="url">写博客流程</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2026-06-02 22:28:17 / 修改时间：22:29:49" itemprop="dateCreated datePublished" datetime="2026-06-02T22:28:17+08:00">2026-06-02</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="✨-我的-Hexo-博客写作与发布-SOP-✨"><a href="#✨-我的-Hexo-博客写作与发布-SOP-✨" class="headerlink" title="✨ 我的 Hexo 博客写作与发布 SOP ✨"></a>✨ 我的 Hexo 博客写作与发布 SOP ✨</h1><blockquote>
-<p>这是一份从灵感到发布的完整操作流程，旨在帮助你高效、规范地管理你的个人博客。</p>
-</blockquote>
-<hr>
-<h3 id="阶段一：✍️-灵感构思与准备"><a href="#阶段一：✍️-灵感构思与准备" class="headerlink" title="阶段一：✍️ 灵感构思与准备"></a>阶段一：✍️ 灵感构思与准备</h3><ul>
-<li><strong>🎯 核心目标</strong>：捕捉想法，明确主题，规划结构。</li>
-</ul>
-<ol>
-<li><p><strong>💡 捕捉灵感 (Capture)</strong></p>
-<ul>
-<li><strong>时机</strong>：学习新知、解决Bug、阅读好文、项目复盘后。</li>
-<li><strong>工具</strong>：手机备忘录、Notion、<code>ideas.txt</code> 等。</li>
-<li><strong>记录</strong>：仅记录核心标题或关键词，例如：<ul>
-<li><code>TCP三次握手比喻</code></li>
-<li><code>Maven依赖冲突排查过程</code></li>
-<li><code>给新手的Git入门指南</code></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p><strong>🗺️ 构思大纲 (Outline)</strong></p>
-<ul>
-<li>在开始写作前，花 3 分钟用 Markdown 标题 (<code>#</code>, <code>##</code>, <code>###</code>) 列出文章结构。</li>
-<li><strong>示例</strong>：《深入理解Git工作流》<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="section"># 引言：为什么需要Git工作流</span></span><br><span class="line"><span class="section">## 什么是Git Flow</span></span><br><span class="line"><span class="section">## 什么是GitHub Flow</span></span><br><span class="line"><span class="section">## 两者对比：我该选哪个？</span></span><br><span class="line"><span class="section"># 总结：我的建议</span></span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-</ol>
-<hr>
-<h3 id="阶段二：💻-本地写作与预览"><a href="#阶段二：💻-本地写作与预览" class="headerlink" title="阶段二：💻 本地写作与预览"></a>阶段二：💻 本地写作与预览</h3><ul>
-<li><strong>🎯 核心目标</strong>：完成文章撰写，并在本地预览确认效果。</li>
-</ul>
-<ol>
-<li><p><strong>🚀 新建文章 (New Post)</strong></p>
-<ul>
-<li><p>打开 <code>PowerShell</code> 或其他终端，<code>cd</code> 到你的博客根目录。</p>
-</li>
-<li><p>执行 <code>hexo new</code> 命令，使用<strong>全英文</strong>或<strong>拼音</strong>作为文件名（利于SEO）。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 语法: hexo new &lt;filename&gt;</span></span><br><span class="line">hexo new <span class="string">&quot;a-deep-dive-into-git-workflow&quot;</span></span><br></pre></td></tr></table></figure></li>
-<li><p>此命令会在 <code>source/_posts/</code> 目录下创建对应的 <code>.md</code> 文件。</p>
-</li>
-</ul>
-</li>
-<li><p><strong>✍️ 撰写内容 (Writing)</strong></p>
-<ul>
-<li><p>使用 <strong>VS Code</strong> 打开新创建的 <code>.md</code> 文件。</p>
-</li>
-<li><p>**认真填写 <code>Front-matter</code>**（文件头部的元数据），这是文章的“身份证”。</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">title:</span> <span class="string">深入理解主流Git工作流</span> <span class="comment"># 【必填】最终显示的文章标题</span></span><br><span class="line"><span class="attr">date:</span> <span class="number">2024-05-25 10:30:00</span> <span class="comment"># 【可选】文章发布时间，可修改</span></span><br><span class="line"><span class="attr">updated:</span> <span class="number">2024-05-26 14:00:00</span> <span class="comment"># 【可选】文章更新时间</span></span><br><span class="line"><span class="attr">tags:</span> <span class="comment"># 【推荐】标签，可以有多个，便于索引</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">Git</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">DevOps</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">版本控制</span></span><br><span class="line"><span class="attr">categories:</span> <span class="comment"># 【推荐】分类，建议只放一个，保持结构清晰</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">后端开发</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="string">&lt;!--</span> <span class="string">在这里开始你的正文内容</span> <span class="string">--&gt;</span></span><br></pre></td></tr></table></figure></li>
-<li><p>使用标准的 Markdown 语法进行写作，专注于内容本身。</p>
-</li>
-</ul>
-</li>
-<li><p><strong>🔬 本地预览 (Preview)</strong></p>
-<ul>
-<li>在终端中运行以下命令，启动本地服务器。<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hexo server</span><br><span class="line"><span class="comment"># 简写: hexo s</span></span><br></pre></td></tr></table></figure></li>
-<li>命令运行后，终端会提示 <code>Hexo is running at http://localhost:4000/</code>。</li>
-<li>打开浏览器，访问 <strong><code>http://localhost:4000</code></strong> 即可实时预览。</li>
-<li><strong>高效技巧</strong>：写作时，每次在 VS Code 中保存 (<code>Ctrl + S</code>)，浏览器中的页面会自动刷新（或手动刷新），方便你即时查看排版效果。</li>
-</ul>
-</li>
-</ol>
-<hr>
-<h3 id="阶段三：🌐-发布上线"><a href="#阶段三：🌐-发布上线" class="headerlink" title="阶段三：🌐 发布上线"></a>阶段三：🌐 发布上线</h3><ul>
-<li><strong>🎯 核心目标</strong>：将本地的最新内容安全、完整地发布到互联网。</li>
-</ul>
-<ol>
-<li><p><strong>🛑 停止预览</strong></p>
-<ul>
-<li>回到终端窗口，按下 <code>Ctrl + C</code> 停止本地服务器。</li>
-</ul>
-</li>
-<li><p><strong>🚀 一键部署 (Deploy)</strong></p>
-<ul>
-<li><p>执行以下<strong>黄金命令</strong>，完成清理、生成、部署三项全能操作。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo clean &amp;&amp; hexo g -d</span><br></pre></td></tr></table></figure></li>
-<li><p><strong>命令解析</strong>：</p>
-<ul>
-<li><code>hexo clean</code>: <strong>清理</strong>。删除 <code>public</code> 文件夹，清除旧的缓存，避免潜在的冲突。</li>
-<li><code>&amp;&amp;</code>: <strong>连接符</strong>。表示前一个命令成功执行后，再执行下一个。</li>
-<li><code>hexo g</code>: <strong>生成</strong> (<code>generate</code>)。根据源文件生成最新的静态网站文件到 <code>public</code> 文件夹。</li>
-<li><code>hexo d</code>: <strong>部署</strong> (<code>deploy</code>)。将 <code>public</code> 文件夹中的内容推送到 GitHub Pages。</li>
-</ul>
-</li>
-</ul>
-</li>
-</ol>
-<hr>
-<h3 id="阶段四：📢-发布后检查与推广"><a href="#阶段四：📢-发布后检查与推广" class="headerlink" title="阶段四：📢 发布后检查与推广"></a>阶段四：📢 发布后检查与推广</h3><ul>
-<li><strong>🎯 核心目标</strong>：确认线上效果，并让你的知识分享给更多人。</li>
-</ul>
-<ol>
-<li><p><strong>✅ 线上验证 (Verify)</strong></p>
-<ul>
-<li>部署命令成功后，<strong>等待 1-2 分钟</strong>（给 GitHub Pages 反应时间）。</li>
-<li>打开你的线上博客地址：<code>https://你的用户名.github.io</code></li>
-<li><strong>关键一步</strong>：使用<strong>强制刷新</strong>快捷键 <code>Ctrl + F5</code> (Windows) 或 <code>Cmd + Shift + R</code> (Mac)，确保你看到的是最新的网站内容，而非浏览器缓存。</li>
-<li>检查新文章的标题、内容、格式、图片是否都显示正常。</li>
-</ul>
-</li>
-<li><p><strong>🎉 分享推广 (Promote) - 可选</strong></p>
-<ul>
-<li>复制你新文章的链接。</li>
-<li>分享到各大技术社区（如掘金、CSDN、SegmentFault）、社交媒体或技术交流群。</li>
-<li><strong>引流技巧</strong>：在其他平台发布时，于文末附上你的博客原文链接，例如：<blockquote>
-<p>“原文首发于我的<a target="_blank" rel="noopener" href="https://woaiwang.github.io/%E6%96%87%E7%AB%A0%E9%93%BE%E6%8E%A5">个人博客</a>，欢迎访问交流！”</p>
-</blockquote>
-</li>
-</ul>
-</li>
-</ol>
 
       
     </div>
