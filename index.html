@@ -139,7 +139,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-count">16</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -150,7 +150,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-count">31</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -172,6 +172,501 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/06/25/MewCode-%E7%AC%AC%E4%B8%80%E9%98%B6%E6%AE%B5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="查志渊">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="渊渟岳峙的技术笔记">
+      <meta itemprop="description" content="磨炼自己的一点点技术">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=" | 渊渟岳峙的技术笔记">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2026/06/25/MewCode-%E7%AC%AC%E4%B8%80%E9%98%B6%E6%AE%B5/" class="post-title-link" itemprop="url">MewCode 第一阶段 — 核心概念与 Claude Code 实战笔记</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2026-06-25 19:29:08 / 修改时间：21:32:39" itemprop="dateCreated datePublished" datetime="2026-06-25T19:29:08+08:00">2026-06-25</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="一、这个阶段在做什么"><a href="#一、这个阶段在做什么" class="headerlink" title="一、这个阶段在做什么"></a>一、这个阶段在做什么</h2><p>第一阶段的目标是<strong>建立对 Coding Agent 的整体认知</strong>。我们从最核心的概念出发——Agent 到底是什么，然后拆解一个 Coding Agent（MewCode）的架构分层，最后通过 Claude Code 的实战技巧来理解一个成熟的 Coding Agent 是怎么用的、能做什么、以及怎么用好它。</p>
+<hr>
+<h2 id="二、Agent-是什么"><a href="#二、Agent-是什么" class="headerlink" title="二、Agent 是什么"></a>二、Agent 是什么</h2><h3 id="2-1-一句话定义"><a href="#2-1-一句话定义" class="headerlink" title="2.1 一句话定义"></a>2.1 一句话定义</h3><blockquote>
+<p><strong>Agent &#x3D; LLM + 循环 + 反馈 + 工具</strong></p>
+</blockquote>
+<p>拆开来看：</p>
+<table>
+<thead>
+<tr>
+<th>要素</th>
+<th>含义</th>
+<th>类比</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>LLM</strong></td>
+<td>大语言模型，是 Agent 的「大脑」</td>
+<td>人的思考能力</td>
+</tr>
+<tr>
+<td><strong>循环（Loop）</strong></td>
+<td>不是一问一答就结束，而是持续地「思考→行动→观察→再思考」</td>
+<td>人做事时反复试、反复调整</td>
+</tr>
+<tr>
+<td><strong>反馈（Feedback）</strong></td>
+<td>每执行一个动作，拿到结果，用来修正下一步</td>
+<td>眼睛看到结果，告诉大脑要不要继续</td>
+</tr>
+<tr>
+<td><strong>工具（Tools）</strong></td>
+<td>读写文件、执行命令、搜索代码……这些是 Agent 的「手」</td>
+<td>人的手和工具</td>
+</tr>
+</tbody></table>
+<h3 id="2-2-Agent-的工作循环"><a href="#2-2-Agent-的工作循环" class="headerlink" title="2.2 Agent 的工作循环"></a>2.2 Agent 的工作循环</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">flowchart LR</span><br><span class="line">    A[🧠 LLM 思考] --&gt; B[🔧 调用工具]</span><br><span class="line">    B --&gt; C[📋 获取反馈]</span><br><span class="line">    C --&gt; D&#123;任务完成?&#125;</span><br><span class="line">    D --&gt;|否| A</span><br><span class="line">    D --&gt;|是| E[✅ 返回结果]</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-3-本项目：MewCode"><a href="#2-3-本项目：MewCode" class="headerlink" title="2.3 本项目：MewCode"></a>2.3 本项目：MewCode</h3><p><strong>MewCode 是一个 Coding Agent</strong>——在终端里运行的 AI 编程助手，设计上参考了 Claude Code。它可以直接在你的项目里读写文件、执行命令、搜索代码，像一个坐在你旁边的 AI 程序员。</p>
+<hr>
+<h2 id="三、MewCode-五层架构"><a href="#三、MewCode-五层架构" class="headerlink" title="三、MewCode 五层架构"></a>三、MewCode 五层架构</h2><p>这是 MewCode 的顶层设计，每一层有明确的职责：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">graph TB</span><br><span class="line">    subgraph 五层架构</span><br><span class="line">        L1[🔵 交互层&lt;br/&gt;Interaction Layer] </span><br><span class="line">        L2[🟠 引擎层&lt;br/&gt;Engine Layer]</span><br><span class="line">        L3[🟢 工具层&lt;br/&gt;Tool Layer]</span><br><span class="line">        L4[🟡 记忆层&lt;br/&gt;Memory Layer]</span><br><span class="line">        L5[🔴 安全层&lt;br/&gt;Security Layer]</span><br><span class="line">    end</span><br><span class="line">    </span><br><span class="line">    L1 --&gt; L2 --&gt; L3</span><br><span class="line">    L4 --&gt; L2</span><br><span class="line">    L5 --&gt; L3</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-1-交互层（Interaction-Layer）"><a href="#3-1-交互层（Interaction-Layer）" class="headerlink" title="3.1 交互层（Interaction Layer）"></a>3.1 交互层（Interaction Layer）</h3><p><strong>职责</strong>：处理用户与 Agent 之间的对话。</p>
+<ul>
+<li>接收用户的输入（自然语言、命令）</li>
+<li>展示 Agent 的回复和执行过程</li>
+<li>管理对话历史和上下文窗口</li>
+<li>这是用户唯一能直接感知到的一层</li>
+</ul>
+<h3 id="3-2-引擎层（Engine-Layer）"><a href="#3-2-引擎层（Engine-Layer）" class="headerlink" title="3.2 引擎层（Engine Layer）"></a>3.2 引擎层（Engine Layer）</h3><p><strong>职责</strong>：Agent 的「大脑」，核心调度中心。</p>
+<ul>
+<li>调用 LLM 进行推理</li>
+<li>管理 Agent 的主循环（思考→行动→观察→再思考）</li>
+<li>决定什么时候该调用什么工具</li>
+<li>解析 LLM 的输出，转换为具体操作</li>
+</ul>
+<h3 id="3-3-工具层（Tool-Layer）"><a href="#3-3-工具层（Tool-Layer）" class="headerlink" title="3.3 工具层（Tool Layer）"></a>3.3 工具层（Tool Layer）</h3><p><strong>职责</strong>：Agent 的「手脚」，执行具体操作。</p>
+<table>
+<thead>
+<tr>
+<th>工具类型</th>
+<th>能力</th>
+<th>典型场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>文件读写</td>
+<td>读、写、编辑文件</td>
+<td>修改代码、生成文档</td>
+</tr>
+<tr>
+<td>命令执行</td>
+<td>在终端执行 shell 命令</td>
+<td>运行测试、安装依赖</td>
+</tr>
+<tr>
+<td>代码搜索</td>
+<td>正则搜索文件内容</td>
+<td>定位函数、查找引用</td>
+</tr>
+<tr>
+<td>MCP 扩展</td>
+<td>通过 MCP 协议接入外部能力</td>
+<td>搜网页、操作数据库</td>
+</tr>
+</tbody></table>
+<h3 id="3-4-记忆层（Memory-Layer）"><a href="#3-4-记忆层（Memory-Layer）" class="headerlink" title="3.4 记忆层（Memory Layer）"></a>3.4 记忆层（Memory Layer）</h3><p><strong>职责</strong>：让 Agent 记住该记住的东西，跨对话保持上下文。</p>
+<ul>
+<li><strong>项目记忆</strong>：CLAUDE.md &#x2F; CLAUDE.local.md</li>
+<li><strong>用户记忆</strong>：<code>~/.claude/CLAUDE.md</code>（跨项目生效）</li>
+<li><strong>会话记忆</strong>：当前对话的上下文</li>
+<li><strong>长期记忆</strong>：<code>/memory</code> 命令保存的跨项目记忆</li>
+</ul>
+<h3 id="3-5-安全层（Security-Layer）"><a href="#3-5-安全层（Security-Layer）" class="headerlink" title="3.5 安全层（Security Layer）"></a>3.5 安全层（Security Layer）</h3><p><strong>职责</strong>：保证 Agent 的操作是安全的、经过授权的。</p>
+<ul>
+<li>权限控制：哪些操作需要用户确认</li>
+<li>沙箱隔离：防止危险命令影响系统</li>
+<li>审计日志：记录 Agent 做了什么</li>
+</ul>
+<hr>
+<h2 id="四、Claude-Code-实战技巧"><a href="#四、Claude-Code-实战技巧" class="headerlink" title="四、Claude Code 实战技巧"></a>四、Claude Code 实战技巧</h2><p>以下是 Claude Code 的 9 大核心使用技巧，覆盖从入门到进阶的全部内容。</p>
+<hr>
+<h3 id="4-1-技巧一：用好-文件引用"><a href="#4-1-技巧一：用好-文件引用" class="headerlink" title="4.1 技巧一：用好 @ 文件引用"></a>4.1 技巧一：用好 <code>@</code> 文件引用</h3><p><strong>问题</strong>：Claude 不知道你的项目结构，会自己猜测文件位置，浪费上下文去「搜索」。</p>
+<p><strong>解法</strong>：用 <code>@文件名</code> 直接告诉它读哪个文件。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># ❌ 不推荐</span><br><span class="line">帮我改一下登录逻辑</span><br><span class="line"></span><br><span class="line"># ✅ 推荐  </span><br><span class="line">@src/auth/login.ts 帮我把登录逻辑改成 JWT 方式</span><br></pre></td></tr></table></figure>
+
+<p><strong>核心原则</strong>：<strong>精准投喂 &gt; 让它自己找</strong>。上下文是有限资源，省着用。</p>
+<hr>
+<h3 id="4-2-技巧二：四种模式，按场景切换"><a href="#4-2-技巧二：四种模式，按场景切换" class="headerlink" title="4.2 技巧二：四种模式，按场景切换"></a>4.2 技巧二：四种模式，按场景切换</h3><p>Claude Code 有四种运行模式，控制<strong>自主程度</strong>从低到高：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    A[&quot;🛡️ Plan 模式&lt;br/&gt;只分析不动手&quot;] </span><br><span class="line">    B[&quot;🐢 Normal 模式&lt;br/&gt;步步确认&quot;]</span><br><span class="line">    C[&quot;🏃 Accept Edits 模式&lt;br/&gt;自动编辑，命令需确认&quot;]</span><br><span class="line">    D[&quot;🚀 Auto 模式&lt;br/&gt;完全自主&quot;]</span><br><span class="line">    </span><br><span class="line">    A --&gt;|&quot;确认计划可行&quot;| B</span><br><span class="line">    B --&gt;|&quot;信任编辑能力&quot;| C</span><br><span class="line">    C --&gt;|&quot;信任命令执行&quot;| D</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>模式</th>
+<th align="center">编辑文件</th>
+<th align="center">执行命令</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Plan</strong></td>
+<td align="center">❌ 不动</td>
+<td align="center">❌ 不动</td>
+<td>复杂任务，先看方案再动手</td>
+</tr>
+<tr>
+<td><strong>Normal</strong></td>
+<td align="center">每次询问</td>
+<td align="center">每次询问</td>
+<td>默认模式，稳妥可靠</td>
+</tr>
+<tr>
+<td><strong>Accept Edits</strong></td>
+<td align="center">✅ 自动</td>
+<td align="center">需要确认</td>
+<td>信任它的代码能力，但命令要审</td>
+</tr>
+<tr>
+<td><strong>Auto</strong></td>
+<td align="center">✅ 自动</td>
+<td align="center">✅ 自动</td>
+<td>完全放手，适合重复性任务</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>💡 <strong>建议</strong>：日常用 Normal，熟悉后编辑密集的任务用 Accept Edits，复杂的先开 Plan 看方案。</p>
+</blockquote>
+<hr>
+<h3 id="4-3-技巧三：后悔药——改错了怎么撤回"><a href="#4-3-技巧三：后悔药——改错了怎么撤回" class="headerlink" title="4.3 技巧三：后悔药——改错了怎么撤回"></a>4.3 技巧三：后悔药——改错了怎么撤回</h3><p>这是<strong>终端里的撤销机制</strong>，分两层：</p>
+<h4 id="第一层：快速撤回（适合小改动）"><a href="#第一层：快速撤回（适合小改动）" class="headerlink" title="第一层：快速撤回（适合小改动）"></a>第一层：快速撤回（适合小改动）</h4><table>
+<thead>
+<tr>
+<th>操作</th>
+<th>效果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>连续按两次 <code>Esc</code>，然后用 <code>↑</code> <code>↓</code> 选择</td>
+<td>恢复到之前某个文件状态</td>
+</tr>
+<tr>
+<td>输入 <code>/rewind</code> 命令</td>
+<td>回到对话的某个历史节点</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>⚠️ <strong>局限</strong>：只能恢复<strong>被修改的文件</strong>。如果 Agent 执行了某个命令（比如 <code>rm -rf</code> 或生成了大量新文件），撤回机制无能为力。</p>
+</blockquote>
+<h4 id="第二层：Git（适合大改动）"><a href="#第二层：Git（适合大改动）" class="headerlink" title="第二层：Git（适合大改动）"></a>第二层：Git（适合大改动）</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 每次大改动前，先 commit 一个检查点</span><br><span class="line">git add -A &amp;&amp; git commit -m &quot;checkpoint: before claude refactor&quot;</span><br><span class="line"></span><br><span class="line"># 改坏了直接回滚</span><br><span class="line">git reset --hard HEAD</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>🎯 <strong>黄金法则</strong>：小改动用 <code>Esc+Esc</code> 或 <code>/rewind</code>，大改动用 Git。两者配合，万无一失。</p>
+</blockquote>
+<hr>
+<h3 id="4-4-技巧四：后台运行长时间任务"><a href="#4-4-技巧四：后台运行长时间任务" class="headerlink" title="4.4 技巧四：后台运行长时间任务"></a>4.4 技巧四：后台运行长时间任务</h3><p><strong>场景</strong>：测试、构建、安装依赖这些操作可能跑很久，不要让它占着对话。</p>
+<p><strong>用法</strong>：直接告诉 Claude「在后台运行」。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看所有后台任务</span></span><br><span class="line">/tasks</span><br></pre></td></tr></table></figure>
+
+<p><strong>适用场景</strong>：</p>
+<ul>
+<li>项目构建（<code>npm run build</code>）</li>
+<li>跑测试套件</li>
+<li>安装大型依赖</li>
+<li>长时间的数据处理</li>
+</ul>
+<blockquote>
+<p>💡 <strong>原理</strong>：后台任务跑完会自动通知你，期间你可以继续对话，不用干等。</p>
+</blockquote>
+<hr>
+<h3 id="4-5-技巧五：CLAUDE-md-记忆系统"><a href="#4-5-技巧五：CLAUDE-md-记忆系统" class="headerlink" title="4.5 技巧五：CLAUDE.md 记忆系统"></a>4.5 技巧五：CLAUDE.md 记忆系统</h3><p><strong>问题</strong>：每次新对话，Claude 就像失忆了一样，需要重新了解你的项目。</p>
+<p><strong>解法</strong>：CLAUDE.md 是 Claude Code 的「项目记忆文件」。每次在这个项目启动 Claude，它会<strong>先读 CLAUDE.md</strong>，自动获得项目背景。</p>
+<h4 id="创建方式"><a href="#创建方式" class="headerlink" title="创建方式"></a>创建方式</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/init    <span class="comment"># 自动扫描项目，生成 CLAUDE.md</span></span><br></pre></td></tr></table></figure>
+<p>或者手动在项目根目录创建 <code>CLAUDE.md</code>。</p>
+<h4 id="三级记忆体系"><a href="#三级记忆体系" class="headerlink" title="三级记忆体系"></a>三级记忆体系</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">graph TB</span><br><span class="line">    subgraph &quot;用户级（跨所有项目）&quot;</span><br><span class="line">        U[~/.claude/CLAUDE.md&lt;br/&gt;个人通用偏好&lt;br/&gt;如：请用中文回复]</span><br><span class="line">    end</span><br><span class="line">    </span><br><span class="line">    subgraph &quot;个人项目级（仅本项目，不提交）&quot;</span><br><span class="line">        P[CLAUDE.local.md&lt;br/&gt;个人调试偏好&lt;br/&gt;沙箱地址等私密配置]</span><br><span class="line">    end</span><br><span class="line">    </span><br><span class="line">    subgraph &quot;项目级（仅本项目，团队共享）&quot;</span><br><span class="line">        S[CLAUDE.md&lt;br/&gt;或 .claude/CLAUDE.md&lt;br/&gt;技术栈、目录结构、项目约定]</span><br><span class="line">    end</span><br><span class="line">    </span><br><span class="line">    U --&gt; S</span><br><span class="line">    P --&gt; S</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>层级</th>
+<th>文件位置</th>
+<th align="center">提交 Git</th>
+<th>作用范围</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>项目级</strong></td>
+<td><code>项目根/CLAUDE.md</code> 或 <code>.claude/CLAUDE.md</code></td>
+<td align="center">✅ 提交</td>
+<td>本项目所有人共享</td>
+</tr>
+<tr>
+<td><strong>个人项目级</strong></td>
+<td><code>项目根/CLAUDE.local.md</code></td>
+<td align="center">❌ <code>.gitignore</code></td>
+<td>只你一人，不干扰队友</td>
+</tr>
+<tr>
+<td><strong>用户级</strong></td>
+<td><code>~/.claude/CLAUDE.md</code></td>
+<td align="center">—</td>
+<td>你所有的项目</td>
+</tr>
+</tbody></table>
+<h4 id="怎么写-CLAUDE-md"><a href="#怎么写-CLAUDE-md" class="headerlink" title="怎么写 CLAUDE.md"></a>怎么写 CLAUDE.md</h4><blockquote>
+<p>🎯 <strong>核心原则：越精准越好。</strong> 不要写成 README，要写 Claude 真正需要知道的上下文。</p>
+</blockquote>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="section"># 推荐写法（精准）</span></span><br><span class="line"></span><br><span class="line"><span class="section">## 技术栈</span></span><br><span class="line"><span class="bullet">-</span> Node.js 18+ / TypeScript 5.x</span><br><span class="line"><span class="bullet">-</span> 测试框架：Vitest</span><br><span class="line"></span><br><span class="line"><span class="section">## 关键约定</span></span><br><span class="line"><span class="bullet">-</span> API 返回格式统一用 &#123; code, data, message &#125;</span><br><span class="line"><span class="bullet">-</span> 文件名用 kebab-case</span><br><span class="line"></span><br><span class="line"><span class="section">## 当前状态</span></span><br><span class="line"><span class="bullet">-</span> 正在把 express 迁移到 fastify</span><br><span class="line"><span class="bullet">-</span> 数据库从 MySQL 切到 PostgreSQL</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="section"># ❌ 不推荐（太啰嗦）</span></span><br><span class="line"></span><br><span class="line">这是一个博客项目，我花了很多心思来写它。</span><br><span class="line">技术栈用了 JavaScript，有时候也用 TypeScript。</span><br><span class="line">后面计划支持多语言，现在先不急……</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="4-6-技巧六：MCP——给-Claude-装外挂"><a href="#4-6-技巧六：MCP——给-Claude-装外挂" class="headerlink" title="4.6 技巧六：MCP——给 Claude 装外挂"></a>4.6 技巧六：MCP——给 Claude 装外挂</h3><p><strong>Claude Code 内置能力</strong>：读写文件 + 执行命令 + 搜索代码。这三样对 Coding Agent 来说已经够用，但有时你需要更多。</p>
+<p><strong>MCP（Model Context Protocol）</strong> 就是 Claude 的「外设接口」——通过安装 MCP Server，给 Claude 接入新的能力。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    CC[Claude Code&lt;br/&gt;内置：文件/命令/搜索]</span><br><span class="line">    </span><br><span class="line">    subgraph MCP Servers</span><br><span class="line">        M1[🔍 Brave Search&lt;br/&gt;搜索网页]</span><br><span class="line">        M2[🗄️ Postgres&lt;br/&gt;操作数据库]</span><br><span class="line">        M3[🎭 Playwright&lt;br/&gt;浏览器自动化]</span><br><span class="line">        M4[📁 Filesystem&lt;br/&gt;访问额外目录]</span><br><span class="line">    end</span><br><span class="line">    </span><br><span class="line">    CC -- &quot;MCP 协议&quot; --&gt; M1</span><br><span class="line">    CC -- &quot;MCP 协议&quot; --&gt; M2</span><br><span class="line">    CC -- &quot;MCP 协议&quot; --&gt; M3</span><br><span class="line">    CC -- &quot;MCP 协议&quot; --&gt; M4</span><br></pre></td></tr></table></figure>
+
+<h4 id="常用-MCP-Server-举例"><a href="#常用-MCP-Server-举例" class="headerlink" title="常用 MCP Server 举例"></a>常用 MCP Server 举例</h4><table>
+<thead>
+<tr>
+<th>MCP Server</th>
+<th>能力</th>
+<th>场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Brave Search</strong></td>
+<td>搜索网页</td>
+<td>查最新文档、找解决方案</td>
+</tr>
+<tr>
+<td><strong>Postgres</strong></td>
+<td>操作 PostgreSQL</td>
+<td>直接查询&#x2F;修改数据库</td>
+</tr>
+<tr>
+<td><strong>Playwright</strong></td>
+<td>控制浏览器</td>
+<td>自动化测试、截图对比</td>
+</tr>
+<tr>
+<td><strong>Filesystem</strong></td>
+<td>访问指定目录外的文件</td>
+<td>操作项目外的配置文件</td>
+</tr>
+</tbody></table>
+<h4 id="如何添加"><a href="#如何添加" class="headerlink" title="如何添加"></a>如何添加</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 最方便的方式</span></span><br><span class="line">claude mcp add &lt;server-name&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 管理入口</span></span><br><span class="line">/mcp</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="4-7-技巧七：Skills-和-Hooks——自动化工作流"><a href="#4-7-技巧七：Skills-和-Hooks——自动化工作流" class="headerlink" title="4.7 技巧七：Skills 和 Hooks——自动化工作流"></a>4.7 技巧七：Skills 和 Hooks——自动化工作流</h3><p>这是让 Claude Code 从「工具」变成「平台」的两个机制。</p>
+<h4 id="Skills（技能包）"><a href="#Skills（技能包）" class="headerlink" title="Skills（技能包）"></a>Skills（技能包）</h4><p><strong>是什么</strong>：可安装的功能模块，让 Claude 在特定领域表现更好。</p>
+<p><strong>示例</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/plugin install frontend-design@claude-plugins-official</span><br></pre></td></tr></table></figure>
+
+<p><strong>拆解这条命令</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/plugin install frontend-design @ claude-plugins-official</span><br><span class="line">           └─ skill 名称 ─┘   └─ 官方插件市场 ─┘</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>frontend-design</code>：Skill 的名字，装完后 Claude 做前端设计时水平明显提升</li>
+<li><code>claude-plugins-official</code>：官方插件市场，Claude Code 内置，<strong>不需要额外 add</strong></li>
+</ul>
+<blockquote>
+<p>💡 <strong>类比你懂的</strong>：Skills 就像 VS Code 的插件，需要什么装什么。</p>
+</blockquote>
+<h4 id="Hooks（钩子）"><a href="#Hooks（钩子）" class="headerlink" title="Hooks（钩子）"></a>Hooks（钩子）</h4><p><strong>是什么</strong>：在特定操作「之前」或「之后」自动触发你的自定义脚本。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">flowchart LR</span><br><span class="line">    A[Claude 执行操作] --&gt; B&#123;Hook 触发点&#125;</span><br><span class="line">    B --&gt;|&quot;Before Hook&quot;| C[执行你的脚本]</span><br><span class="line">    C --&gt; D[执行操作本身]</span><br><span class="line">    D --&gt; E&#123;After Hook&#125;</span><br><span class="line">    E --&gt; F[再次执行你的脚本]</span><br><span class="line">    F --&gt; G[操作完成]</span><br></pre></td></tr></table></figure>
+
+<p><strong>典型场景</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>Hook 时机</th>
+<th>做什么</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>修改代码后</strong></td>
+<td>自动跑测试、lint</td>
+</tr>
+<tr>
+<td><strong>执行命令前</strong></td>
+<td>记录日志、备份文件</td>
+</tr>
+<tr>
+<td><strong>对话开始前</strong></td>
+<td>加载项目上下文</td>
+</tr>
+</tbody></table>
+<h4 id="如何配置"><a href="#如何配置" class="headerlink" title="如何配置"></a>如何配置</h4><p>配置文件： <code>项目根/.claude/settings.json</code>（项目级）或 <code>~/.claude/settings.json</code>（全局）。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;hooks&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;PostToolUse&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">      <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;matcher&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Edit|Write&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;hooks&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">          <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;command&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;command&quot;</span><span class="punctuation">:</span> <span class="string">&quot;npm run lint&quot;</span></span><br><span class="line">          <span class="punctuation">&#125;</span></span><br><span class="line">        <span class="punctuation">]</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>⚠️ <strong>重要细节</strong>：Hook 脚本不是通过环境变量拿文件路径的，而是通过 <strong>stdin 标准输入</strong> 接收一段 JSON，里面包含了这次操作的全部信息。你可以通过 <code>$CLAUDE_PROJECT_DIR</code> 拿到项目根目录，但具体改了哪个文件，需要从 stdin 的 JSON 里解析。</p>
+</blockquote>
+<hr>
+<h3 id="4-8-技巧八：子代理（Sub-Agent）"><a href="#4-8-技巧八：子代理（Sub-Agent）" class="headerlink" title="4.8 技巧八：子代理（Sub-Agent）"></a>4.8 技巧八：子代理（Sub-Agent）</h3><p><strong>是什么</strong>：Claude 的「分身」——创建独立的 Agent 实例，有自己独立的上下文空间。</p>
+<h4 id="为什么要用子代理"><a href="#为什么要用子代理" class="headerlink" title="为什么要用子代理"></a>为什么要用子代理</h4><table>
+<thead>
+<tr>
+<th>原因</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>审查更客观</strong></td>
+<td>相当于找另一个人看你的代码，不受主对话偏见影响</td>
+</tr>
+<tr>
+<td><strong>保护上下文</strong></td>
+<td>脏活累活交给分身干，主对话保持清爽</td>
+</tr>
+<tr>
+<td><strong>并行处理</strong></td>
+<td>多个子代理可以同时做不同的事</td>
+</tr>
+</tbody></table>
+<h4 id="典型用法"><a href="#典型用法" class="headerlink" title="典型用法"></a>典型用法</h4><table>
+<thead>
+<tr>
+<th>场景</th>
+<th>怎么做</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>代码审查</strong></td>
+<td>让子代理用独立视角审查代码质量</td>
+</tr>
+<tr>
+<td><strong>写测试</strong></td>
+<td>让子代理补齐单元测试，不受主对话干扰</td>
+</tr>
+<tr>
+<td><strong>查文档</strong></td>
+<td>让子代理去读某个库的文档，总结要点后汇报</td>
+</tr>
+<tr>
+<td><strong>批量修改</strong></td>
+<td>让子代理独立处理一组文件的修改</td>
+</tr>
+</tbody></table>
+<h4 id="相关命令"><a href="#相关命令" class="headerlink" title="相关命令"></a>相关命令</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">/agents         <span class="comment"># 查看子代理列表</span></span><br><span class="line">/agents -d      <span class="comment"># 查看详细信息</span></span><br><span class="line">/agents -c      <span class="comment"># 清理所有子代理的上下文</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>🎯 <strong>一句话总结</strong>：子代理是 Claude 的「分身」，有独立的上下文空间，适合做代码审查、写测试等需要「独立视角」的任务。</p>
+</blockquote>
+<hr>
+<h3 id="4-9-技巧九：高频命令速查"><a href="#4-9-技巧九：高频命令速查" class="headerlink" title="4.9 技巧九：高频命令速查"></a>4.9 技巧九：高频命令速查</h3><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>/agents</code></td>
+<td>列出所有子代理</td>
+</tr>
+<tr>
+<td><code>/agents -d</code></td>
+<td>列出子代理的详细信息</td>
+</tr>
+<tr>
+<td><code>/agents -c</code></td>
+<td>清理所有子代理的上下文</td>
+</tr>
+<tr>
+<td><code>/context</code></td>
+<td>查看当前用了多少上下文</td>
+</tr>
+<tr>
+<td><code>/compact</code></td>
+<td>压缩对话，释放上下文空间</td>
+</tr>
+<tr>
+<td><code>/clear</code></td>
+<td>清空对话</td>
+</tr>
+<tr>
+<td><code>/init</code></td>
+<td>初始化 CLAUDE.md</td>
+</tr>
+<tr>
+<td><code>/mcp</code></td>
+<td>进入 MCP 管理</td>
+</tr>
+<tr>
+<td><code>/memory</code></td>
+<td>管理跨项目记忆</td>
+</tr>
+<tr>
+<td><code>/rewind</code></td>
+<td>回退到对话历史节点</td>
+</tr>
+<tr>
+<td><code>/tasks</code></td>
+<td>查看后台任务</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h2><p>第一阶段的收获可以浓缩成下面这张图：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">mindmap</span><br><span class="line">  root((MewCode 第一阶段))</span><br><span class="line">    Agent 本质</span><br><span class="line">      LLM 大脑</span><br><span class="line">      循环 思考-行动-观察</span><br><span class="line">      反馈 修正方向</span><br><span class="line">      工具 读写文件/执行命令</span><br><span class="line">    五层架构</span><br><span class="line">      交互层 用户对话</span><br><span class="line">      引擎层 调度推理</span><br><span class="line">      工具层 文件/命令/搜索/MCP</span><br><span class="line">      记忆层 CLAUDE.md / 跨项目记忆</span><br><span class="line">      安全层 权限/沙箱/审计</span><br><span class="line">    Claude Code 技巧</span><br><span class="line">      文件引用 @</span><br><span class="line">      四种模式 Plan/Normal/AcceptEdits/Auto</span><br><span class="line">      后悔药 Esc+Esc / /rewind + Git</span><br><span class="line">      后台任务 /tasks</span><br><span class="line">      记忆系统 CLAUDE.md 三级体系</span><br><span class="line">      MCP 外挂 扩展能力</span><br><span class="line">      Skills + Hooks 自动化</span><br><span class="line">      子代理 分身/独立上下文</span><br><span class="line">      高频命令 速查表</span><br></pre></td></tr></table></figure>
+
+<p><strong>下一步</strong>：进入第二阶段——把这些概念落地到 MewCode 的代码实现中。</p>
+<hr>
+<blockquote>
+<p>📝 <em>本文是 2026-06-25 全天学习总结，从概念到实战，梳理了 Coding Agent 的核心知识体系。</em></p>
+</blockquote>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -4676,7 +5171,7 @@
 <tr>
 <td>6</td>
 <td><strong>Rewrite和Expand的区别？为什么Expand效果更差？</strong></td>
-<td>Rewrite：口语→官方术语，2-3个改写版本。Expand：复杂问题→3-5个子问题。Expand差的原因：子问题引入无关文档噪声，RRF无法完全过滤；拆解粒度太细产生冗余。数据上：Rewrite P@3+3.4%，Expand <a href="mailto:&#72;&#x52;&#64;&#51;&#45;&#x36;&#46;&#54;">&#72;&#x52;&#64;&#51;&#45;&#x36;&#46;&#54;</a>%。</td>
+<td>Rewrite：口语→官方术语，2-3个改写版本。Expand：复杂问题→3-5个子问题。Expand差的原因：子问题引入无关文档噪声，RRF无法完全过滤；拆解粒度太细产生冗余。数据上：Rewrite P@3+3.4%，Expand <a href="mailto:&#72;&#82;&#x40;&#x33;&#x2d;&#x36;&#x2e;&#x36;">&#72;&#82;&#x40;&#x33;&#x2d;&#x36;&#x2e;&#x36;</a>%。</td>
 </tr>
 <tr>
 <td>7</td>
@@ -4771,326 +5266,6 @@
 <li><strong>RRF 融合模式</strong>是语言无关的，中文政策文档有效，英文文档同样有效</li>
 <li><strong>“Can Do &#x2F; Cannot Do”分析法</strong>是面试中展示工程判断力的利器</li>
 </ul>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2026/06/10/HNSW%E7%90%86%E8%A7%A3/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="查志渊">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="渊渟岳峙的技术笔记">
-      <meta itemprop="description" content="磨炼自己的一点点技术">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | 渊渟岳峙的技术笔记">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/06/10/HNSW%E7%90%86%E8%A7%A3/" class="post-title-link" itemprop="url">HNSW理解</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2026-06-10 19:46:27 / 修改时间：19:47:13" itemprop="dateCreated datePublished" datetime="2026-06-10T19:46:27+08:00">2026-06-10</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">算法</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="HNSW-算法理解"><a href="#HNSW-算法理解" class="headerlink" title="HNSW 算法理解"></a>HNSW 算法理解</h1><blockquote>
-<p>Hierarchical Navigable Small World — 分层可导航小世界图</p>
-<p>核心思想：用<strong>多层图</strong>让搜索从”全局粗筛”到”局部精搜”，每一步都在图上贪心走，而不是暴力扫表。</p>
-</blockquote>
-<hr>
-<h2 id="基本原理"><a href="#基本原理" class="headerlink" title="基本原理"></a>基本原理</h2><ol>
-<li>HNSW 本质是<strong>多个层次的图</strong>堆叠在一起</li>
-<li>每个节点有一个<strong>层级</strong>（<code>random_level</code> 决定），出现在该层及以下所有层</li>
-<li>层级越高 → 该层的节点越<strong>稀疏</strong>（指数级减少）</li>
-<li>每层内部是一个<strong>可导航小世界图（NSW）</strong>：每个节点有若干邻居，邻居之间形成<strong>短程 + 长程连接</strong></li>
-<li>搜索时<strong>从顶向下</strong>：高层做路由（快速定位区域），低层做精搜（找到具体近邻）</li>
-<li>时间复杂度 <strong>O(log N)</strong></li>
-</ol>
-<h3 id="结构示意"><a href="#结构示意" class="headerlink" title="结构示意"></a>结构示意</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">层 2 (最高)     ● ── ●</span><br><span class="line">                极少节点，长程连接，只做路由</span><br><span class="line"></span><br><span class="line">层 1             ○ ── ○ ── ○</span><br><span class="line">                节点变多，短程 + 中程连接</span><br><span class="line"></span><br><span class="line">层 0 (最密)     ★ ── ★ ── ★ ── ★</span><br><span class="line">                所有节点都在这里，精细搜索</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h2 id="一、节点的层级分配-—-random-level"><a href="#一、节点的层级分配-—-random-level" class="headerlink" title="一、节点的层级分配 — random_level()"></a>一、节点的层级分配 — <code>random_level()</code></h2><p>每个新节点加入时，需要决定它出现在哪些层。</p>
-<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// mL_ = 1.0 / ln(M) , M 是每个节点的最大邻居数（默认 16）</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">random_level</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">std::uniform_real_distribution&lt;<span class="type">float</span>&gt; <span class="title">dist</span><span class="params">(<span class="number">0.0f</span>, <span class="number">1.0f</span>)</span></span>;</span><br><span class="line">    <span class="type">float</span> r = <span class="built_in">dist</span>(rng_);       <span class="comment">// 在 (0, 1] 均匀采样</span></span><br><span class="line">    <span class="keyword">if</span> (r == <span class="number">0.0f</span>) &#123;</span><br><span class="line">        r = <span class="number">1e-6f</span>;              <span class="comment">// 避免 log(0)</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">static_cast</span>&lt;<span class="type">int</span>&gt;(std::<span class="built_in">floor</span>(-std::<span class="built_in">log</span>(r) * mL_));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="数学原理"><a href="#数学原理" class="headerlink" title="数学原理"></a>数学原理</h3><ul>
-<li><code>r ~ Uniform(0, 1]</code> → <code>-ln(r)</code> 服从<strong>参数 λ&#x3D;1 的指数分布</strong></li>
-<li>乘以 <code>mL_ = 1 / ln(M)</code> → 缩放后取整，得到<strong>几何分布</strong>的层数</li>
-<li>层数 ≥ L 的概率：$P(level \ge L) &#x3D; 1 &#x2F; M^L$</li>
-</ul>
-<h3 id="实际效果（M-16）"><a href="#实际效果（M-16）" class="headerlink" title="实际效果（M&#x3D;16）"></a>实际效果（M&#x3D;16）</h3><table>
-<thead>
-<tr>
-<th>层级</th>
-<th>出现在该层的概率</th>
-<th>约为</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>0</td>
-<td>100%</td>
-<td>所有节点</td>
-</tr>
-<tr>
-<td>1</td>
-<td>~1&#x2F;16 ≈ 6.25%</td>
-<td>每 16 个中有 1 个</td>
-</tr>
-<tr>
-<td>2</td>
-<td>~1&#x2F;256 ≈ 0.39%</td>
-<td>每 256 个中有 1 个</td>
-</tr>
-<tr>
-<td>3</td>
-<td>~1&#x2F;4096 ≈ 0.024%</td>
-<td>每 4096 个中有 1 个</td>
-</tr>
-</tbody></table>
-<blockquote>
-<p>🔑 这就是”上层稀疏，下层密集”的来源。</p>
-</blockquote>
-<hr>
-<h2 id="二、插入节点流程"><a href="#二、插入节点流程" class="headerlink" title="二、插入节点流程"></a>二、插入节点流程</h2><blockquote>
-<p>以 <strong>M&#x3D;16（每层最大邻居数），ef_construction&#x3D;200（候选池大小）</strong> 为例。</p>
-</blockquote>
-<h3 id="整体入口"><a href="#整体入口" class="headerlink" title="整体入口"></a>整体入口</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">add</span><span class="params">(<span class="type">const</span> Vector&lt;<span class="type">float</span>&gt;&amp; vec)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 1. 保存向量</span></span><br><span class="line">    <span class="type">size_t</span> internal_idx = vectors_.<span class="built_in">size</span>();</span><br><span class="line">    vectors_.<span class="built_in">push_back</span>(vec);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. 分配层级</span></span><br><span class="line">    <span class="type">int</span> l = <span class="built_in">random_level</span>();</span><br><span class="line">    max_level_.<span class="built_in">push_back</span>(l);</span><br><span class="line">    <span class="comment">// 为该节点在 0~l 层各创建一个空的邻接表</span></span><br><span class="line">    adjacency_.<span class="built_in">push_back</span>(vector&lt;vector&lt;<span class="type">size_t</span>&gt;&gt;(l + <span class="number">1</span>));</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 3. 如果是第一个节点 → 直接设为入口点</span></span><br><span class="line">    <span class="keyword">if</span> (internal_idx == <span class="number">0</span>) &#123;</span><br><span class="line">        entry_point_ = <span class="number">0</span>;</span><br><span class="line">        max_level_global_ = l;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 4. 否则，执行完整插入流程</span></span><br><span class="line">    <span class="built_in">add_impl</span>(internal_idx, l, distance_func);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="第-1-步：从上到下找入口（路由阶段）"><a href="#第-1-步：从上到下找入口（路由阶段）" class="headerlink" title="第 1 步：从上到下找入口（路由阶段）"></a>第 1 步：从上到下找入口（路由阶段）</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">size_t</span> current_ep = entry_point_;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 从最高层往下，走到 l 的上一层为止</span></span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> level = max_level_global_; level &gt; l; --level) &#123;</span><br><span class="line">    <span class="keyword">auto</span> results = <span class="built_in">search_layer</span>(query_vec, current_ep, <span class="comment">/*ef=*/</span><span class="number">1</span>, level, distance_func);</span><br><span class="line">    <span class="comment">//                           ↑                     ↑</span></span><br><span class="line">    <span class="comment">//                     从当前入口出发        每层只找 1 个最近的</span></span><br><span class="line">    <span class="keyword">if</span> (!results.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">        current_ep = results[<span class="number">0</span>].second;  <span class="comment">// 把找到的最近节点设为下一层的入口</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>💡 节点只出现在 0~l 层。比 l 高的层它不在，所以只需<strong>经过</strong>那些层，找到下层的入口即可。</p>
-</blockquote>
-<h3 id="第-2-步：在-l-0-层逐层插入"><a href="#第-2-步：在-l-0-层逐层插入" class="headerlink" title="第 2 步：在 l ~ 0 层逐层插入"></a>第 2 步：在 l ~ 0 层逐层插入</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="type">int</span> level = <span class="built_in">min</span>(l, max_level_global_); level &gt;= <span class="number">0</span>; --level) &#123;</span><br><span class="line">    <span class="comment">// 2a. 在当前层搜索 ef_construction 个候选节点</span></span><br><span class="line">    <span class="keyword">auto</span> candidates = <span class="built_in">search_layer</span>(query_vec, current_ep, ef_construction_, level, distance_func);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2b. 用启发式从候选中选出真正的邻居</span></span><br><span class="line">    <span class="type">size_t</span> max_conn = (level == <span class="number">0</span>) ? M_max0_ : M_;</span><br><span class="line">    <span class="comment">//                     第 0 层可以连 M_max0_=2M=32 个邻居</span></span><br><span class="line">    <span class="comment">//                     以上各层最多连 M=16 个邻居</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">auto</span> neighbors = <span class="built_in">select_neighbors</span>(distance_func, query_vec, candidates, max_conn);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2c. 双向连接：新节点 ←→ 选出的邻居</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">size_t</span> n : neighbors) &#123;</span><br><span class="line">        adjacency_[new_node][level].<span class="built_in">push_back</span>(n);  <span class="comment">// 我指向邻居</span></span><br><span class="line">        adjacency_[n][level].<span class="built_in">push_back</span>(new_node);   <span class="comment">// 邻居指向我</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2d. 如果某个邻居的边数超过了上限 → 帮它重新裁剪</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">size_t</span> n : neighbors) &#123;</span><br><span class="line">        <span class="keyword">auto</span>&amp; n_adj = adjacency_[n][level];</span><br><span class="line">        <span class="keyword">if</span> (n_adj.<span class="built_in">size</span>() &gt; max_conn) &#123;</span><br><span class="line">            <span class="comment">// 重新对它的所有邻居跑 select_neighbors，只保留 max_conn 个</span></span><br><span class="line">            <span class="keyword">auto</span> pruned = <span class="built_in">select_neighbors</span>(distance_func, vectors_[n],</span><br><span class="line">                                           n_candidates, max_conn);</span><br><span class="line">            n_adj = std::<span class="built_in">move</span>(pruned);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2e. 更新下一层的入口</span></span><br><span class="line">    current_ep = candidates[<span class="number">0</span>].second;  <span class="comment">// 用当前层找到的最佳节点</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="第-3-步：如果新节点层级比全局最高还高-→-成为新入口点"><a href="#第-3-步：如果新节点层级比全局最高还高-→-成为新入口点" class="headerlink" title="第 3 步：如果新节点层级比全局最高还高 → 成为新入口点"></a>第 3 步：如果新节点层级比全局最高还高 → 成为新入口点</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (l &gt; max_level_global_) &#123;</span><br><span class="line">    max_level_global_ = l;</span><br><span class="line">    entry_point_ = internal_idx;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>🔑 入口点永远是<strong>当前全局最高层的那个节点</strong>（最早插入到该层的人）。</p>
-</blockquote>
-<hr>
-<h2 id="三、查找与-q-最近的节点的流程"><a href="#三、查找与-q-最近的节点的流程" class="headerlink" title="三、查找与 q 最近的节点的流程"></a>三、查找与 q 最近的节点的流程</h2><h3 id="整体入口-1"><a href="#整体入口-1" class="headerlink" title="整体入口"></a>整体入口</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">search_impl</span>(query_vec, k, distance_func) &#123;</span><br><span class="line">    <span class="type">size_t</span> current_ep = entry_point_;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 阶段 A：从最高层下降到第 0 层</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> level = max_level_global_; level &gt; <span class="number">0</span>; --level) &#123;</span><br><span class="line">        <span class="keyword">auto</span> results = <span class="built_in">search_layer</span>(query_vec, current_ep, ef=<span class="number">1</span>, level, distance_func);</span><br><span class="line">        <span class="comment">// 只取最近的一个作为下层入口</span></span><br><span class="line">        current_ep = results[<span class="number">0</span>].second;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 阶段 B：在第 0 层（所有节点都在此）做实打实的搜索</span></span><br><span class="line">    <span class="keyword">auto</span> results = <span class="built_in">search_layer</span>(query_vec, current_ep, ef=ef_, level=<span class="number">0</span>, distance_func);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 返回前 k 个</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">top_k</span>(results, k);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="核心函数：search-layer-做了什么"><a href="#核心函数：search-layer-做了什么" class="headerlink" title="核心函数：search_layer 做了什么"></a>核心函数：<code>search_layer</code> 做了什么</h3><blockquote>
-<p><strong>从入口 ep 出发，沿着当前层的图边”贪心 BFS”，找到离 q 最近的 ef 个节点。</strong></p>
-</blockquote>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">search_layer</span>(query_vec, ep, ef, level, distance_func) &#123;</span><br><span class="line">    <span class="comment">// 两个堆</span></span><br><span class="line">    priority_queue&lt;Candidate, ..., greater&lt;Candidate&gt;&gt; candidates;  <span class="comment">// ⚡ 小顶堆</span></span><br><span class="line">    priority_queue&lt;Candidate&gt; results;                               <span class="comment">// 🔥 大顶堆</span></span><br><span class="line"></span><br><span class="line">    visited_[ep] = visited_tag_++;</span><br><span class="line">    candidates.<span class="built_in">emplace</span>(<span class="built_in">d</span>(ep), ep);</span><br><span class="line">    results.<span class="built_in">emplace</span>(<span class="built_in">d</span>(ep), ep);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (!candidates.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">        <span class="keyword">auto</span> [c_dist, c_idx] = candidates.<span class="built_in">top</span>();   <span class="comment">// 取最近未探索节点</span></span><br><span class="line">        candidates.<span class="built_in">pop</span>();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// ★ 核心终止条件 ★</span></span><br><span class="line">        <span class="keyword">if</span> (c_dist &gt; results.<span class="built_in">top</span>().first) &#123;</span><br><span class="line">            <span class="keyword">break</span>;  <span class="comment">// 最近的候选都比最差结果远 → 后面的只会更远 → 结束</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">size_t</span> neighbor : adjacency_[c_idx][level]) &#123;</span><br><span class="line">            <span class="keyword">if</span> (visited_[neighbor]) <span class="keyword">continue</span>;</span><br><span class="line">            visited_[neighbor] = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">            <span class="type">float</span> d = <span class="built_in">distance_func</span>(query_vec, vectors_[neighbor]);</span><br><span class="line">            <span class="type">float</span> worst = results.<span class="built_in">top</span>().first;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (d &lt; worst || results.<span class="built_in">size</span>() &lt; ef) &#123;</span><br><span class="line">                candidates.<span class="built_in">emplace</span>(d, neighbor);  <span class="comment">// 加入待探索</span></span><br><span class="line">                results.<span class="built_in">emplace</span>(d, neighbor);     <span class="comment">// 加入结果集</span></span><br><span class="line">                <span class="keyword">if</span> (results.<span class="built_in">size</span>() &gt; ef) &#123;</span><br><span class="line">                    results.<span class="built_in">pop</span>();                <span class="comment">// 踢掉最远的</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 将 results 转为排序数组（从近到远）返回</span></span><br><span class="line">    <span class="keyword">return</span> sorted_results;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="两个堆的分工"><a href="#两个堆的分工" class="headerlink" title="两个堆的分工"></a>两个堆的分工</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">candidates (小顶堆)  ← &quot;我打算去看看这些节点&quot;    堆顶 = 离 q 最近的待探索节点</span><br><span class="line">results    (大顶堆)  ← &quot;我目前找到的 ef 个候选&quot;   堆顶 = 离 q 最远的候选（最差的那个）</span><br></pre></td></tr></table></figure>
-
-<h3 id="提前终止条件的直觉"><a href="#提前终止条件的直觉" class="headerlink" title="提前终止条件的直觉"></a>提前终止条件的直觉</h3><p>每轮从 <code>candidates</code> 中取出最近未探索节点。如果它已经比 <code>results</code> 中最差的结果还要远——那剩下的候选者只会更远，不可能改善结果集，<strong>再搜就是浪费时间</strong>。</p>
-<blockquote>
-<p>就好比你已经在手里攥着 3 个离你 10 米以内的人，现在名单上排第一的陌生人站 15 米远，那名单上剩下的只会更远，没必要找了。</p>
-</blockquote>
-<h3 id="上层-vs-第-0-层的区别"><a href="#上层-vs-第-0-层的区别" class="headerlink" title="上层 vs 第 0 层的区别"></a>上层 vs 第 0 层的区别</h3><table>
-<thead>
-<tr>
-<th>参数</th>
-<th>上层（路由阶段）</th>
-<th>第 0 层（精搜阶段）</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>ef</code></td>
-<td><strong>1</strong></td>
-<td><strong><code>ef_</code>（默认 16）</strong></td>
-</tr>
-<tr>
-<td>目的</td>
-<td>找到 1 个路由节点即可</td>
-<td>找到足够多的候选者</td>
-</tr>
-<tr>
-<td>原因</td>
-<td>上层稀疏，只需要”方向”</td>
-<td>第 0 层稠密，需要精确结果</td>
-</tr>
-</tbody></table>
-<h3 id="为什么不用暴力搜索"><a href="#为什么不用暴力搜索" class="headerlink" title="为什么不用暴力搜索"></a>为什么不用暴力搜索</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">不用暴力搜索的原因：</span><br><span class="line">在第 0 层也是从入口出发走图，不是遍历所有节点。</span><br><span class="line">只是因为 ef 开大了，所以探索得更广。</span><br><span class="line"></span><br><span class="line">暴力搜索 = O(N)</span><br><span class="line">HNSW    = O(log N)，靠的是&quot;图结构引导搜索方向&quot;，不是&quot;把所有点算一遍&quot;。</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h2 id="四、启发式邻居选择-—-select-neighbors"><a href="#四、启发式邻居选择-—-select-neighbors" class="headerlink" title="四、启发式邻居选择 — select_neighbors"></a>四、启发式邻居选择 — <code>select_neighbors</code></h2><h3 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">select_neighbors</span>(distance_func, query, candidates, max_conn) &#123;</span><br><span class="line">    vector&lt;<span class="type">size_t</span>&gt; result;</span><br><span class="line">    vector&lt;<span class="type">size_t</span>&gt; discard;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> [dist_c, idx_c] : candidates) &#123;   <span class="comment">// 从近到远遍历候选</span></span><br><span class="line">        <span class="keyword">if</span> (result.<span class="built_in">size</span>() &gt;= max_conn) <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">        <span class="type">bool</span> should_keep = <span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">size_t</span> idx_r : result) &#123;           <span class="comment">// 检查每个已选邻居</span></span><br><span class="line">            <span class="type">float</span> d_c_to_r = <span class="built_in">distance_func</span>(vectors_[idx_c], vectors_[idx_r]);</span><br><span class="line">            <span class="keyword">if</span> (d_c_to_r &lt; dist_c) &#123;            <span class="comment">// ❌ 候选离已选邻居比离 query 更近</span></span><br><span class="line">                should_keep = <span class="literal">false</span>;             <span class="comment">// → 这个候选被&quot;遮挡&quot;了，不要</span></span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (should_keep)</span><br><span class="line">            result.<span class="built_in">push_back</span>(idx_c);</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            discard.<span class="built_in">push_back</span>(idx_c);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 如果还不够，把被淘汰的补进来</span></span><br><span class="line">    <span class="keyword">if</span> (result.<span class="built_in">size</span>() &lt; max_conn) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">size_t</span> idx_d : discard) &#123;</span><br><span class="line">            <span class="keyword">if</span> (result.<span class="built_in">size</span>() &gt;= max_conn) <span class="keyword">break</span>;</span><br><span class="line">            result.<span class="built_in">push_back</span>(idx_d);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="一句话解释"><a href="#一句话解释" class="headerlink" title="一句话解释"></a>一句话解释</h3><blockquote>
-<p><strong>如果一个候选离我已经选中的邻居，比离 query 还近 → 它被”遮挡”了，选它和选那个邻居没区别 → 跳过它，找其他方向的。</strong></p>
-</blockquote>
-<h3 id="示意图"><a href="#示意图" class="headerlink" title="示意图"></a>示意图</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">         query(a)</span><br><span class="line">           │</span><br><span class="line">           │ dist_c</span><br><span class="line">           │</span><br><span class="line">    idx_c  ●</span><br><span class="line">      ╲    │</span><br><span class="line">       ╲   │ d_c_to_r</span><br><span class="line">        ╲  │</span><br><span class="line">         ╲ │</span><br><span class="line">          ● idx_r (已选中的邻居)</span><br><span class="line"></span><br><span class="line">如果 d_c_to_r &lt; dist_c</span><br><span class="line">→ idx_c 在 idx_r 的&quot;势力范围&quot;内</span><br><span class="line">→ 选 idx_c 不会带来新的方向信息</span><br><span class="line">→ 剔除！</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h2 id="五、容易遇到的问题-常见疑问"><a href="#五、容易遇到的问题-常见疑问" class="headerlink" title="五、容易遇到的问题 &#x2F; 常见疑问"></a>五、容易遇到的问题 &#x2F; 常见疑问</h2><h3 id="Q1：为什么要层层往下推？为什么不在最高层直接找？"><a href="#Q1：为什么要层层往下推？为什么不在最高层直接找？" class="headerlink" title="Q1：为什么要层层往下推？为什么不在最高层直接找？"></a>Q1：为什么要层层往下推？为什么不在最高层直接找？</h3><pre><code>答：每一层的节点数量不同。在层 2 找到的最近节点 a，只是&quot;层 2 里离 q 最近的&quot;。到了层 1，节点变多了，a 旁边可能出现一个 b 比 a 更近。每往下一层，图更密，你能找到更好的入口。
-
-所以层间下降相当于：**先用粗糙的图定位区域，再用精细的图锁定目标。**
-</code></pre>
-<h3 id="Q2：ef-construction-和-ef-有什么区别？"><a href="#Q2：ef-construction-和-ef-有什么区别？" class="headerlink" title="Q2：ef_construction 和 ef 有什么区别？"></a>Q2：<code>ef_construction</code> 和 <code>ef</code> 有什么区别？</h3><table>
-<thead>
-<tr>
-<th>参数</th>
-<th>用在</th>
-<th>作用</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>ef_construction</code></td>
-<td>插入时</td>
-<td>插入时搜多宽 → 影响<strong>建图质量</strong></td>
-</tr>
-<tr>
-<td><code>ef</code></td>
-<td>查询时</td>
-<td>查询时搜多宽 → 影响<strong>查询精度</strong></td>
-</tr>
-</tbody></table>
-<p>两者越大：</p>
-<ul>
-<li>✅ recall 越高（找到真正近邻的概率越大）</li>
-<li>❌ 速度越慢</li>
-</ul>
-<h3 id="Q3：为什么上层用-ef-1-就够了？"><a href="#Q3：为什么上层用-ef-1-就够了？" class="headerlink" title="Q3：为什么上层用 ef=1 就够了？"></a>Q3：为什么上层用 <code>ef=1</code> 就够了？</h3><p>因为上层节点<strong>极其稀疏</strong>。层 2 可能只有几十个节点，层 1 几百个。在这些层上你不需要找到很多候选——你只需要”走对方向”，到了第 0 层再展开。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">你从机场去朋友家：</span><br><span class="line">  机场（高层）→ 找到正确的城区      → ef=1 就够了</span><br><span class="line">  城区（中层）→ 找到正确的街道      → ef=1 就够了</span><br><span class="line">  街道（低层）→ 找到正确的门牌号    → ef=16 要开大</span><br></pre></td></tr></table></figure>
-
-<h3 id="Q4：如果最高层只有-entry-point-一个节点，search-layer-怎么走？"><a href="#Q4：如果最高层只有-entry-point-一个节点，search-layer-怎么走？" class="headerlink" title="Q4：如果最高层只有 entry_point 一个节点，search_layer 怎么走？"></a>Q4：如果最高层只有 entry_point 一个节点，search_layer 怎么走？</h3><p>走不了——<code>adjacency_[ep][level]</code> 是空的。但没关系：</p>
-<ul>
-<li><code>search_layer</code> 会返回 <code>[(d(ep), ep)]</code></li>
-<li><code>results[0].second = ep</code></li>
-<li><code>current_ep</code> 不变</li>
-<li>继续往下一层走</li>
-</ul>
-<p>所以唯一节点唯一节点即使没有邻居，它自己就是一个有效的路由节点。</p>
-<h3 id="Q5：如何提高-recall？"><a href="#Q5：如何提高-recall？" class="headerlink" title="Q5：如何提高 recall？"></a>Q5：如何提高 recall？</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">增大 ef_construction（插入时）：建图更密，邻居选得更准 → 建图变慢，但查询 recall 提高</span><br><span class="line">增大 ef（查询时）：         搜索更广 → 查询变慢，但 recall 提高</span><br><span class="line">增大 M：                    每层更多边 → 图更连通，但内存更大</span><br><span class="line">减小 M：                    每层更少边 → 图稀疏，可能 recall 下降</span><br></pre></td></tr></table></figure>
-
-<p>典型调参路径：先固定 M&#x3D;16，调 <code>ef_construction</code>（100<del>300）让 recall 达标，再用 <code>ef</code>（16</del>200）做查询时的速度&#x2F;精度权衡。</p>
-<h3 id="Q6：visited-tag-是什么？为什么用-tag-而不是清空数组？"><a href="#Q6：visited-tag-是什么？为什么用-tag-而不是清空数组？" class="headerlink" title="Q6：visited_tag_ 是什么？为什么用 tag 而不是清空数组？"></a>Q6：<code>visited_tag_</code> 是什么？为什么用 tag 而不是清空数组？</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 每次 search_layer 开始时：</span></span><br><span class="line">visited_tag_++;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 判断是否已访问：</span></span><br><span class="line"><span class="keyword">if</span> (visited_[neighbor] == visited_tag_) <span class="keyword">continue</span>;  <span class="comment">// 已访问</span></span><br><span class="line">visited_[neighbor] = visited_tag_;                  <span class="comment">// 标记已访问</span></span><br></pre></td></tr></table></figure>
-
-<p><strong>不用 <code>std::fill</code> 清空的原因</strong>：<code>visited_</code> 数组长度 &#x3D; 向量总数（可能百万级）。每次搜索都清一遍是 O(N) 的，太慢。</p>
-<p>Tag 方案的妙处：</p>
-<ul>
-<li><code>visited_tag_</code> 从 0 开始，每次 +1</li>
-<li>数组初始化为 0</li>
-<li><code>visited_[i] == visited_tag_</code> 等价于”本次是否访问过”</li>
-<li>每次搜索只 O(1) 增加一个计数器，不清数组</li>
-</ul>
-<p>⚠️ <strong>但有个坑</strong>：<code>visited_tag_</code> 是 <code>int</code>，长期运行会溢出。实践中会在溢出时做一次全量重置，VecFlow 当前版本尚未处理这个边界情况。</p>
-<h3 id="Q7：select-neighbors-和直接取-top-K-有什么区别？"><a href="#Q7：select-neighbors-和直接取-top-K-有什么区别？" class="headerlink" title="Q7：select_neighbors 和直接取 top-K 有什么区别？"></a>Q7：<code>select_neighbors</code> 和直接取 top-K 有什么区别？</h3><p>直接取 top-K：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">候选按距离排序，取前 16 个</span><br><span class="line">结果：16 个节点可能全在一坨 → 图退化成&quot;星形&quot; → 搜索时容易掉进局部最优</span><br></pre></td></tr></table></figure>
-
-<p>启发式选择（<code>select_neighbors</code>）：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">候选从近到远遍历，但每个候选要和已选邻居做&quot;遮挡测试&quot;</span><br><span class="line">结果：选出的 16 个节点覆盖不同方向 → 图更&quot;立体&quot; → 搜索时更容易找到全局近邻</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h2 id="六、代码结构速查"><a href="#六、代码结构速查" class="headerlink" title="六、代码结构速查"></a>六、代码结构速查</h2><table>
-<thead>
-<tr>
-<th>函数</th>
-<th>所在行</th>
-<th>作用</th>
-<th>返回</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>random_level()</code></td>
-<td>~121</td>
-<td>为新节点分配层级</td>
-<td><code>int</code>（层级）</td>
-</tr>
-<tr>
-<td><code>add()</code></td>
-<td>~57</td>
-<td>插入入口</td>
-<td><code>void</code></td>
-</tr>
-<tr>
-<td><code>add_impl()</code></td>
-<td>~244</td>
-<td>完整的多层插入逻辑</td>
-<td><code>void</code></td>
-</tr>
-<tr>
-<td><code>search()</code></td>
-<td>~89</td>
-<td>搜索入口</td>
-<td><code>vector&lt;SearchResult&gt;</code></td>
-</tr>
-<tr>
-<td><code>search_impl()</code></td>
-<td>~307</td>
-<td>完整的层间下降搜索</td>
-<td><code>vector&lt;SearchResult&gt;</code></td>
-</tr>
-<tr>
-<td><code>search_layer()</code></td>
-<td>~132</td>
-<td>单层贪心 BFS 搜索</td>
-<td><code>vector&lt;pair&lt;float, size_t&gt;&gt;</code></td>
-</tr>
-<tr>
-<td><code>select_neighbors()</code></td>
-<td>~198</td>
-<td>启发式邻居选择（多样性剪枝）</td>
-<td><code>vector&lt;size_t&gt;</code></td>
-</tr>
-</tbody></table>
-<hr>
-<blockquote>
-<p><strong>回顾关键直觉：</strong></p>
-<p>插入时：从顶向下找入口 → 每层搜 <code>ef_construction</code> 个候选 → 启发式选邻居 → 双向连边</p>
-<p>搜索时：从顶向下路由（ef&#x3D;1）→ 在第 0 层精搜（ef&#x3D;ef_）→ 返回 top-k</p>
-<p>整个算法 &#x3D; <strong>多层图 + 贪心 BFS + 提前终止 + 多样性剪枝</strong></p>
-</blockquote>
 
       
     </div>

@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="一、这个阶段在做什么第一阶段的目标是建立对 Coding Agent 的整体认知。我们从最核心的概念出发——Agent 到底是什么，然后拆解一个 Coding Agent（MewCode）的架构分层，最后通过 Claude Code 的实战技巧来理解一个成熟的 Coding Agent 是怎么用的、能做什么、以及怎么用好它。  二、Agent 是什么2.1 一句话定义 Agent &#x3D; L">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MewCode 第一阶段 — 核心概念与 Claude Code 实战笔记">
+<meta property="og:url" content="http://example.com/2026/06/25/MewCode-%E7%AC%AC%E4%B8%80%E9%98%B6%E6%AE%B5/index.html">
+<meta property="og:site_name" content="渊渟岳峙的技术笔记">
+<meta property="og:description" content="一、这个阶段在做什么第一阶段的目标是建立对 Coding Agent 的整体认知。我们从最核心的概念出发——Agent 到底是什么，然后拆解一个 Coding Agent（MewCode）的架构分层，最后通过 Claude Code 的实战技巧来理解一个成熟的 Coding Agent 是怎么用的、能做什么、以及怎么用好它。  二、Agent 是什么2.1 一句话定义 Agent &#x3D; L">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-06-25T11:29:08.000Z">
+<meta property="article:modified_time" content="2026-06-25T13:32:39.479Z">
+<meta property="article:author" content="查志渊">
+<meta property="article:tag" content="MewCode">
+<meta property="article:tag" content="Claude Code">
+<meta property="article:tag" content="Coding Agent">
+<meta property="article:tag" content="学习笔记">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2026/06/25/MewCode-%E7%AC%AC%E4%B8%80%E9%98%B6%E6%AE%B5/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2026/06/25/MewCode-%E7%AC%AC%E4%B8%80%E9%98%B6%E6%AE%B5/","path":"2026/06/25/MewCode-第一阶段/","title":"MewCode 第一阶段 — 核心概念与 Claude Code 实战笔记"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>MewCode 第一阶段 — 核心概念与 Claude Code 实战笔记 | 渊渟岳峙的技术笔记</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">渊渟岳峙的技术笔记</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">用你喜欢的方式去度过一生</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E8%BF%99%E4%B8%AA%E9%98%B6%E6%AE%B5%E5%9C%A8%E5%81%9A%E4%BB%80%E4%B9%88"><span class="nav-number">1.</span> <span class="nav-text">一、这个阶段在做什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81Agent-%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">2.</span> <span class="nav-text">二、Agent 是什么</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E4%B8%80%E5%8F%A5%E8%AF%9D%E5%AE%9A%E4%B9%89"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 一句话定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-Agent-%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%BE%AA%E7%8E%AF"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 Agent 的工作循环</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-%E6%9C%AC%E9%A1%B9%E7%9B%AE%EF%BC%9AMewCode"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 本项目：MewCode</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81MewCode-%E4%BA%94%E5%B1%82%E6%9E%B6%E6%9E%84"><span class="nav-number">3.</span> <span class="nav-text">三、MewCode 五层架构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E4%BA%A4%E4%BA%92%E5%B1%82%EF%BC%88Interaction-Layer%EF%BC%89"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 交互层（Interaction Layer）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E5%BC%95%E6%93%8E%E5%B1%82%EF%BC%88Engine-Layer%EF%BC%89"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 引擎层（Engine Layer）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-%E5%B7%A5%E5%85%B7%E5%B1%82%EF%BC%88Tool-Layer%EF%BC%89"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 工具层（Tool Layer）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-%E8%AE%B0%E5%BF%86%E5%B1%82%EF%BC%88Memory-Layer%EF%BC%89"><span class="nav-number">3.4.</span> <span class="nav-text">3.4 记忆层（Memory Layer）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-5-%E5%AE%89%E5%85%A8%E5%B1%82%EF%BC%88Security-Layer%EF%BC%89"><span class="nav-number">3.5.</span> <span class="nav-text">3.5 安全层（Security Layer）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81Claude-Code-%E5%AE%9E%E6%88%98%E6%8A%80%E5%B7%A7"><span class="nav-number">4.</span> <span class="nav-text">四、Claude Code 实战技巧</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-%E6%8A%80%E5%B7%A7%E4%B8%80%EF%BC%9A%E7%94%A8%E5%A5%BD-%E6%96%87%E4%BB%B6%E5%BC%95%E7%94%A8"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 技巧一：用好 @ 文件引用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-%E6%8A%80%E5%B7%A7%E4%BA%8C%EF%BC%9A%E5%9B%9B%E7%A7%8D%E6%A8%A1%E5%BC%8F%EF%BC%8C%E6%8C%89%E5%9C%BA%E6%99%AF%E5%88%87%E6%8D%A2"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 技巧二：四种模式，按场景切换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-%E6%8A%80%E5%B7%A7%E4%B8%89%EF%BC%9A%E5%90%8E%E6%82%94%E8%8D%AF%E2%80%94%E2%80%94%E6%94%B9%E9%94%99%E4%BA%86%E6%80%8E%E4%B9%88%E6%92%A4%E5%9B%9E"><span class="nav-number">4.3.</span> <span class="nav-text">4.3 技巧三：后悔药——改错了怎么撤回</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E5%B1%82%EF%BC%9A%E5%BF%AB%E9%80%9F%E6%92%A4%E5%9B%9E%EF%BC%88%E9%80%82%E5%90%88%E5%B0%8F%E6%94%B9%E5%8A%A8%EF%BC%89"><span class="nav-number">4.3.1.</span> <span class="nav-text">第一层：快速撤回（适合小改动）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E5%B1%82%EF%BC%9AGit%EF%BC%88%E9%80%82%E5%90%88%E5%A4%A7%E6%94%B9%E5%8A%A8%EF%BC%89"><span class="nav-number">4.3.2.</span> <span class="nav-text">第二层：Git（适合大改动）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-%E6%8A%80%E5%B7%A7%E5%9B%9B%EF%BC%9A%E5%90%8E%E5%8F%B0%E8%BF%90%E8%A1%8C%E9%95%BF%E6%97%B6%E9%97%B4%E4%BB%BB%E5%8A%A1"><span class="nav-number">4.4.</span> <span class="nav-text">4.4 技巧四：后台运行长时间任务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-5-%E6%8A%80%E5%B7%A7%E4%BA%94%EF%BC%9ACLAUDE-md-%E8%AE%B0%E5%BF%86%E7%B3%BB%E7%BB%9F"><span class="nav-number">4.5.</span> <span class="nav-text">4.5 技巧五：CLAUDE.md 记忆系统</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%96%B9%E5%BC%8F"><span class="nav-number">4.5.1.</span> <span class="nav-text">创建方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%89%E7%BA%A7%E8%AE%B0%E5%BF%86%E4%BD%93%E7%B3%BB"><span class="nav-number">4.5.2.</span> <span class="nav-text">三级记忆体系</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%8E%E4%B9%88%E5%86%99-CLAUDE-md"><span class="nav-number">4.5.3.</span> <span class="nav-text">怎么写 CLAUDE.md</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-6-%E6%8A%80%E5%B7%A7%E5%85%AD%EF%BC%9AMCP%E2%80%94%E2%80%94%E7%BB%99-Claude-%E8%A3%85%E5%A4%96%E6%8C%82"><span class="nav-number">4.6.</span> <span class="nav-text">4.6 技巧六：MCP——给 Claude 装外挂</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8-MCP-Server-%E4%B8%BE%E4%BE%8B"><span class="nav-number">4.6.1.</span> <span class="nav-text">常用 MCP Server 举例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E6%B7%BB%E5%8A%A0"><span class="nav-number">4.6.2.</span> <span class="nav-text">如何添加</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-7-%E6%8A%80%E5%B7%A7%E4%B8%83%EF%BC%9ASkills-%E5%92%8C-Hooks%E2%80%94%E2%80%94%E8%87%AA%E5%8A%A8%E5%8C%96%E5%B7%A5%E4%BD%9C%E6%B5%81"><span class="nav-number">4.7.</span> <span class="nav-text">4.7 技巧七：Skills 和 Hooks——自动化工作流</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Skills%EF%BC%88%E6%8A%80%E8%83%BD%E5%8C%85%EF%BC%89"><span class="nav-number">4.7.1.</span> <span class="nav-text">Skills（技能包）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Hooks%EF%BC%88%E9%92%A9%E5%AD%90%EF%BC%89"><span class="nav-number">4.7.2.</span> <span class="nav-text">Hooks（钩子）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E9%85%8D%E7%BD%AE"><span class="nav-number">4.7.3.</span> <span class="nav-text">如何配置</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-8-%E6%8A%80%E5%B7%A7%E5%85%AB%EF%BC%9A%E5%AD%90%E4%BB%A3%E7%90%86%EF%BC%88Sub-Agent%EF%BC%89"><span class="nav-number">4.8.</span> <span class="nav-text">4.8 技巧八：子代理（Sub-Agent）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E7%94%A8%E5%AD%90%E4%BB%A3%E7%90%86"><span class="nav-number">4.8.1.</span> <span class="nav-text">为什么要用子代理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B8%E5%9E%8B%E7%94%A8%E6%B3%95"><span class="nav-number">4.8.2.</span> <span class="nav-text">典型用法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E5%91%BD%E4%BB%A4"><span class="nav-number">4.8.3.</span> <span class="nav-text">相关命令</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-9-%E6%8A%80%E5%B7%A7%E4%B9%9D%EF%BC%9A%E9%AB%98%E9%A2%91%E5%91%BD%E4%BB%A4%E9%80%9F%E6%9F%A5"><span class="nav-number">4.9.</span> <span class="nav-text">4.9 技巧九：高频命令速查</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E3%80%81%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">五、总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">查志渊</p>
+  <div class="site-description" itemprop="description">磨炼自己的一点点技术</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/woaiwang" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;woaiwang" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/06/25/MewCode-%E7%AC%AC%E4%B8%80%E9%98%B6%E6%AE%B5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="查志渊">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="渊渟岳峙的技术笔记">
+      <meta itemprop="description" content="磨炼自己的一点点技术">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="MewCode 第一阶段 — 核心概念与 Claude Code 实战笔记 | 渊渟岳峙的技术笔记">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MewCode 第一阶段 — 核心概念与 Claude Code 实战笔记
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2026-06-25 19:29:08 / 修改时间：21:32:39" itemprop="dateCreated datePublished" datetime="2026-06-25T19:29:08+08:00">2026-06-25</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="一、这个阶段在做什么"><a href="#一、这个阶段在做什么" class="headerlink" title="一、这个阶段在做什么"></a>一、这个阶段在做什么</h2><p>第一阶段的目标是<strong>建立对 Coding Agent 的整体认知</strong>。我们从最核心的概念出发——Agent 到底是什么，然后拆解一个 Coding Agent（MewCode）的架构分层，最后通过 Claude Code 的实战技巧来理解一个成熟的 Coding Agent 是怎么用的、能做什么、以及怎么用好它。</p>
+<hr>
+<h2 id="二、Agent-是什么"><a href="#二、Agent-是什么" class="headerlink" title="二、Agent 是什么"></a>二、Agent 是什么</h2><h3 id="2-1-一句话定义"><a href="#2-1-一句话定义" class="headerlink" title="2.1 一句话定义"></a>2.1 一句话定义</h3><blockquote>
+<p><strong>Agent &#x3D; LLM + 循环 + 反馈 + 工具</strong></p>
+</blockquote>
+<p>拆开来看：</p>
+<table>
+<thead>
+<tr>
+<th>要素</th>
+<th>含义</th>
+<th>类比</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>LLM</strong></td>
+<td>大语言模型，是 Agent 的「大脑」</td>
+<td>人的思考能力</td>
+</tr>
+<tr>
+<td><strong>循环（Loop）</strong></td>
+<td>不是一问一答就结束，而是持续地「思考→行动→观察→再思考」</td>
+<td>人做事时反复试、反复调整</td>
+</tr>
+<tr>
+<td><strong>反馈（Feedback）</strong></td>
+<td>每执行一个动作，拿到结果，用来修正下一步</td>
+<td>眼睛看到结果，告诉大脑要不要继续</td>
+</tr>
+<tr>
+<td><strong>工具（Tools）</strong></td>
+<td>读写文件、执行命令、搜索代码……这些是 Agent 的「手」</td>
+<td>人的手和工具</td>
+</tr>
+</tbody></table>
+<h3 id="2-2-Agent-的工作循环"><a href="#2-2-Agent-的工作循环" class="headerlink" title="2.2 Agent 的工作循环"></a>2.2 Agent 的工作循环</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">flowchart LR</span><br><span class="line">    A[🧠 LLM 思考] --&gt; B[🔧 调用工具]</span><br><span class="line">    B --&gt; C[📋 获取反馈]</span><br><span class="line">    C --&gt; D&#123;任务完成?&#125;</span><br><span class="line">    D --&gt;|否| A</span><br><span class="line">    D --&gt;|是| E[✅ 返回结果]</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-3-本项目：MewCode"><a href="#2-3-本项目：MewCode" class="headerlink" title="2.3 本项目：MewCode"></a>2.3 本项目：MewCode</h3><p><strong>MewCode 是一个 Coding Agent</strong>——在终端里运行的 AI 编程助手，设计上参考了 Claude Code。它可以直接在你的项目里读写文件、执行命令、搜索代码，像一个坐在你旁边的 AI 程序员。</p>
+<hr>
+<h2 id="三、MewCode-五层架构"><a href="#三、MewCode-五层架构" class="headerlink" title="三、MewCode 五层架构"></a>三、MewCode 五层架构</h2><p>这是 MewCode 的顶层设计，每一层有明确的职责：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">graph TB</span><br><span class="line">    subgraph 五层架构</span><br><span class="line">        L1[🔵 交互层&lt;br/&gt;Interaction Layer] </span><br><span class="line">        L2[🟠 引擎层&lt;br/&gt;Engine Layer]</span><br><span class="line">        L3[🟢 工具层&lt;br/&gt;Tool Layer]</span><br><span class="line">        L4[🟡 记忆层&lt;br/&gt;Memory Layer]</span><br><span class="line">        L5[🔴 安全层&lt;br/&gt;Security Layer]</span><br><span class="line">    end</span><br><span class="line">    </span><br><span class="line">    L1 --&gt; L2 --&gt; L3</span><br><span class="line">    L4 --&gt; L2</span><br><span class="line">    L5 --&gt; L3</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-1-交互层（Interaction-Layer）"><a href="#3-1-交互层（Interaction-Layer）" class="headerlink" title="3.1 交互层（Interaction Layer）"></a>3.1 交互层（Interaction Layer）</h3><p><strong>职责</strong>：处理用户与 Agent 之间的对话。</p>
+<ul>
+<li>接收用户的输入（自然语言、命令）</li>
+<li>展示 Agent 的回复和执行过程</li>
+<li>管理对话历史和上下文窗口</li>
+<li>这是用户唯一能直接感知到的一层</li>
+</ul>
+<h3 id="3-2-引擎层（Engine-Layer）"><a href="#3-2-引擎层（Engine-Layer）" class="headerlink" title="3.2 引擎层（Engine Layer）"></a>3.2 引擎层（Engine Layer）</h3><p><strong>职责</strong>：Agent 的「大脑」，核心调度中心。</p>
+<ul>
+<li>调用 LLM 进行推理</li>
+<li>管理 Agent 的主循环（思考→行动→观察→再思考）</li>
+<li>决定什么时候该调用什么工具</li>
+<li>解析 LLM 的输出，转换为具体操作</li>
+</ul>
+<h3 id="3-3-工具层（Tool-Layer）"><a href="#3-3-工具层（Tool-Layer）" class="headerlink" title="3.3 工具层（Tool Layer）"></a>3.3 工具层（Tool Layer）</h3><p><strong>职责</strong>：Agent 的「手脚」，执行具体操作。</p>
+<table>
+<thead>
+<tr>
+<th>工具类型</th>
+<th>能力</th>
+<th>典型场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>文件读写</td>
+<td>读、写、编辑文件</td>
+<td>修改代码、生成文档</td>
+</tr>
+<tr>
+<td>命令执行</td>
+<td>在终端执行 shell 命令</td>
+<td>运行测试、安装依赖</td>
+</tr>
+<tr>
+<td>代码搜索</td>
+<td>正则搜索文件内容</td>
+<td>定位函数、查找引用</td>
+</tr>
+<tr>
+<td>MCP 扩展</td>
+<td>通过 MCP 协议接入外部能力</td>
+<td>搜网页、操作数据库</td>
+</tr>
+</tbody></table>
+<h3 id="3-4-记忆层（Memory-Layer）"><a href="#3-4-记忆层（Memory-Layer）" class="headerlink" title="3.4 记忆层（Memory Layer）"></a>3.4 记忆层（Memory Layer）</h3><p><strong>职责</strong>：让 Agent 记住该记住的东西，跨对话保持上下文。</p>
+<ul>
+<li><strong>项目记忆</strong>：CLAUDE.md &#x2F; CLAUDE.local.md</li>
+<li><strong>用户记忆</strong>：<code>~/.claude/CLAUDE.md</code>（跨项目生效）</li>
+<li><strong>会话记忆</strong>：当前对话的上下文</li>
+<li><strong>长期记忆</strong>：<code>/memory</code> 命令保存的跨项目记忆</li>
+</ul>
+<h3 id="3-5-安全层（Security-Layer）"><a href="#3-5-安全层（Security-Layer）" class="headerlink" title="3.5 安全层（Security Layer）"></a>3.5 安全层（Security Layer）</h3><p><strong>职责</strong>：保证 Agent 的操作是安全的、经过授权的。</p>
+<ul>
+<li>权限控制：哪些操作需要用户确认</li>
+<li>沙箱隔离：防止危险命令影响系统</li>
+<li>审计日志：记录 Agent 做了什么</li>
+</ul>
+<hr>
+<h2 id="四、Claude-Code-实战技巧"><a href="#四、Claude-Code-实战技巧" class="headerlink" title="四、Claude Code 实战技巧"></a>四、Claude Code 实战技巧</h2><p>以下是 Claude Code 的 9 大核心使用技巧，覆盖从入门到进阶的全部内容。</p>
+<hr>
+<h3 id="4-1-技巧一：用好-文件引用"><a href="#4-1-技巧一：用好-文件引用" class="headerlink" title="4.1 技巧一：用好 @ 文件引用"></a>4.1 技巧一：用好 <code>@</code> 文件引用</h3><p><strong>问题</strong>：Claude 不知道你的项目结构，会自己猜测文件位置，浪费上下文去「搜索」。</p>
+<p><strong>解法</strong>：用 <code>@文件名</code> 直接告诉它读哪个文件。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># ❌ 不推荐</span><br><span class="line">帮我改一下登录逻辑</span><br><span class="line"></span><br><span class="line"># ✅ 推荐  </span><br><span class="line">@src/auth/login.ts 帮我把登录逻辑改成 JWT 方式</span><br></pre></td></tr></table></figure>
+
+<p><strong>核心原则</strong>：<strong>精准投喂 &gt; 让它自己找</strong>。上下文是有限资源，省着用。</p>
+<hr>
+<h3 id="4-2-技巧二：四种模式，按场景切换"><a href="#4-2-技巧二：四种模式，按场景切换" class="headerlink" title="4.2 技巧二：四种模式，按场景切换"></a>4.2 技巧二：四种模式，按场景切换</h3><p>Claude Code 有四种运行模式，控制<strong>自主程度</strong>从低到高：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    A[&quot;🛡️ Plan 模式&lt;br/&gt;只分析不动手&quot;] </span><br><span class="line">    B[&quot;🐢 Normal 模式&lt;br/&gt;步步确认&quot;]</span><br><span class="line">    C[&quot;🏃 Accept Edits 模式&lt;br/&gt;自动编辑，命令需确认&quot;]</span><br><span class="line">    D[&quot;🚀 Auto 模式&lt;br/&gt;完全自主&quot;]</span><br><span class="line">    </span><br><span class="line">    A --&gt;|&quot;确认计划可行&quot;| B</span><br><span class="line">    B --&gt;|&quot;信任编辑能力&quot;| C</span><br><span class="line">    C --&gt;|&quot;信任命令执行&quot;| D</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>模式</th>
+<th align="center">编辑文件</th>
+<th align="center">执行命令</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Plan</strong></td>
+<td align="center">❌ 不动</td>
+<td align="center">❌ 不动</td>
+<td>复杂任务，先看方案再动手</td>
+</tr>
+<tr>
+<td><strong>Normal</strong></td>
+<td align="center">每次询问</td>
+<td align="center">每次询问</td>
+<td>默认模式，稳妥可靠</td>
+</tr>
+<tr>
+<td><strong>Accept Edits</strong></td>
+<td align="center">✅ 自动</td>
+<td align="center">需要确认</td>
+<td>信任它的代码能力，但命令要审</td>
+</tr>
+<tr>
+<td><strong>Auto</strong></td>
+<td align="center">✅ 自动</td>
+<td align="center">✅ 自动</td>
+<td>完全放手，适合重复性任务</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>💡 <strong>建议</strong>：日常用 Normal，熟悉后编辑密集的任务用 Accept Edits，复杂的先开 Plan 看方案。</p>
+</blockquote>
+<hr>
+<h3 id="4-3-技巧三：后悔药——改错了怎么撤回"><a href="#4-3-技巧三：后悔药——改错了怎么撤回" class="headerlink" title="4.3 技巧三：后悔药——改错了怎么撤回"></a>4.3 技巧三：后悔药——改错了怎么撤回</h3><p>这是<strong>终端里的撤销机制</strong>，分两层：</p>
+<h4 id="第一层：快速撤回（适合小改动）"><a href="#第一层：快速撤回（适合小改动）" class="headerlink" title="第一层：快速撤回（适合小改动）"></a>第一层：快速撤回（适合小改动）</h4><table>
+<thead>
+<tr>
+<th>操作</th>
+<th>效果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>连续按两次 <code>Esc</code>，然后用 <code>↑</code> <code>↓</code> 选择</td>
+<td>恢复到之前某个文件状态</td>
+</tr>
+<tr>
+<td>输入 <code>/rewind</code> 命令</td>
+<td>回到对话的某个历史节点</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>⚠️ <strong>局限</strong>：只能恢复<strong>被修改的文件</strong>。如果 Agent 执行了某个命令（比如 <code>rm -rf</code> 或生成了大量新文件），撤回机制无能为力。</p>
+</blockquote>
+<h4 id="第二层：Git（适合大改动）"><a href="#第二层：Git（适合大改动）" class="headerlink" title="第二层：Git（适合大改动）"></a>第二层：Git（适合大改动）</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 每次大改动前，先 commit 一个检查点</span><br><span class="line">git add -A &amp;&amp; git commit -m &quot;checkpoint: before claude refactor&quot;</span><br><span class="line"></span><br><span class="line"># 改坏了直接回滚</span><br><span class="line">git reset --hard HEAD</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>🎯 <strong>黄金法则</strong>：小改动用 <code>Esc+Esc</code> 或 <code>/rewind</code>，大改动用 Git。两者配合，万无一失。</p>
+</blockquote>
+<hr>
+<h3 id="4-4-技巧四：后台运行长时间任务"><a href="#4-4-技巧四：后台运行长时间任务" class="headerlink" title="4.4 技巧四：后台运行长时间任务"></a>4.4 技巧四：后台运行长时间任务</h3><p><strong>场景</strong>：测试、构建、安装依赖这些操作可能跑很久，不要让它占着对话。</p>
+<p><strong>用法</strong>：直接告诉 Claude「在后台运行」。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看所有后台任务</span></span><br><span class="line">/tasks</span><br></pre></td></tr></table></figure>
+
+<p><strong>适用场景</strong>：</p>
+<ul>
+<li>项目构建（<code>npm run build</code>）</li>
+<li>跑测试套件</li>
+<li>安装大型依赖</li>
+<li>长时间的数据处理</li>
+</ul>
+<blockquote>
+<p>💡 <strong>原理</strong>：后台任务跑完会自动通知你，期间你可以继续对话，不用干等。</p>
+</blockquote>
+<hr>
+<h3 id="4-5-技巧五：CLAUDE-md-记忆系统"><a href="#4-5-技巧五：CLAUDE-md-记忆系统" class="headerlink" title="4.5 技巧五：CLAUDE.md 记忆系统"></a>4.5 技巧五：CLAUDE.md 记忆系统</h3><p><strong>问题</strong>：每次新对话，Claude 就像失忆了一样，需要重新了解你的项目。</p>
+<p><strong>解法</strong>：CLAUDE.md 是 Claude Code 的「项目记忆文件」。每次在这个项目启动 Claude，它会<strong>先读 CLAUDE.md</strong>，自动获得项目背景。</p>
+<h4 id="创建方式"><a href="#创建方式" class="headerlink" title="创建方式"></a>创建方式</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/init    <span class="comment"># 自动扫描项目，生成 CLAUDE.md</span></span><br></pre></td></tr></table></figure>
+<p>或者手动在项目根目录创建 <code>CLAUDE.md</code>。</p>
+<h4 id="三级记忆体系"><a href="#三级记忆体系" class="headerlink" title="三级记忆体系"></a>三级记忆体系</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">graph TB</span><br><span class="line">    subgraph &quot;用户级（跨所有项目）&quot;</span><br><span class="line">        U[~/.claude/CLAUDE.md&lt;br/&gt;个人通用偏好&lt;br/&gt;如：请用中文回复]</span><br><span class="line">    end</span><br><span class="line">    </span><br><span class="line">    subgraph &quot;个人项目级（仅本项目，不提交）&quot;</span><br><span class="line">        P[CLAUDE.local.md&lt;br/&gt;个人调试偏好&lt;br/&gt;沙箱地址等私密配置]</span><br><span class="line">    end</span><br><span class="line">    </span><br><span class="line">    subgraph &quot;项目级（仅本项目，团队共享）&quot;</span><br><span class="line">        S[CLAUDE.md&lt;br/&gt;或 .claude/CLAUDE.md&lt;br/&gt;技术栈、目录结构、项目约定]</span><br><span class="line">    end</span><br><span class="line">    </span><br><span class="line">    U --&gt; S</span><br><span class="line">    P --&gt; S</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>层级</th>
+<th>文件位置</th>
+<th align="center">提交 Git</th>
+<th>作用范围</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>项目级</strong></td>
+<td><code>项目根/CLAUDE.md</code> 或 <code>.claude/CLAUDE.md</code></td>
+<td align="center">✅ 提交</td>
+<td>本项目所有人共享</td>
+</tr>
+<tr>
+<td><strong>个人项目级</strong></td>
+<td><code>项目根/CLAUDE.local.md</code></td>
+<td align="center">❌ <code>.gitignore</code></td>
+<td>只你一人，不干扰队友</td>
+</tr>
+<tr>
+<td><strong>用户级</strong></td>
+<td><code>~/.claude/CLAUDE.md</code></td>
+<td align="center">—</td>
+<td>你所有的项目</td>
+</tr>
+</tbody></table>
+<h4 id="怎么写-CLAUDE-md"><a href="#怎么写-CLAUDE-md" class="headerlink" title="怎么写 CLAUDE.md"></a>怎么写 CLAUDE.md</h4><blockquote>
+<p>🎯 <strong>核心原则：越精准越好。</strong> 不要写成 README，要写 Claude 真正需要知道的上下文。</p>
+</blockquote>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="section"># 推荐写法（精准）</span></span><br><span class="line"></span><br><span class="line"><span class="section">## 技术栈</span></span><br><span class="line"><span class="bullet">-</span> Node.js 18+ / TypeScript 5.x</span><br><span class="line"><span class="bullet">-</span> 测试框架：Vitest</span><br><span class="line"></span><br><span class="line"><span class="section">## 关键约定</span></span><br><span class="line"><span class="bullet">-</span> API 返回格式统一用 &#123; code, data, message &#125;</span><br><span class="line"><span class="bullet">-</span> 文件名用 kebab-case</span><br><span class="line"></span><br><span class="line"><span class="section">## 当前状态</span></span><br><span class="line"><span class="bullet">-</span> 正在把 express 迁移到 fastify</span><br><span class="line"><span class="bullet">-</span> 数据库从 MySQL 切到 PostgreSQL</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="section"># ❌ 不推荐（太啰嗦）</span></span><br><span class="line"></span><br><span class="line">这是一个博客项目，我花了很多心思来写它。</span><br><span class="line">技术栈用了 JavaScript，有时候也用 TypeScript。</span><br><span class="line">后面计划支持多语言，现在先不急……</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="4-6-技巧六：MCP——给-Claude-装外挂"><a href="#4-6-技巧六：MCP——给-Claude-装外挂" class="headerlink" title="4.6 技巧六：MCP——给 Claude 装外挂"></a>4.6 技巧六：MCP——给 Claude 装外挂</h3><p><strong>Claude Code 内置能力</strong>：读写文件 + 执行命令 + 搜索代码。这三样对 Coding Agent 来说已经够用，但有时你需要更多。</p>
+<p><strong>MCP（Model Context Protocol）</strong> 就是 Claude 的「外设接口」——通过安装 MCP Server，给 Claude 接入新的能力。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    CC[Claude Code&lt;br/&gt;内置：文件/命令/搜索]</span><br><span class="line">    </span><br><span class="line">    subgraph MCP Servers</span><br><span class="line">        M1[🔍 Brave Search&lt;br/&gt;搜索网页]</span><br><span class="line">        M2[🗄️ Postgres&lt;br/&gt;操作数据库]</span><br><span class="line">        M3[🎭 Playwright&lt;br/&gt;浏览器自动化]</span><br><span class="line">        M4[📁 Filesystem&lt;br/&gt;访问额外目录]</span><br><span class="line">    end</span><br><span class="line">    </span><br><span class="line">    CC -- &quot;MCP 协议&quot; --&gt; M1</span><br><span class="line">    CC -- &quot;MCP 协议&quot; --&gt; M2</span><br><span class="line">    CC -- &quot;MCP 协议&quot; --&gt; M3</span><br><span class="line">    CC -- &quot;MCP 协议&quot; --&gt; M4</span><br></pre></td></tr></table></figure>
+
+<h4 id="常用-MCP-Server-举例"><a href="#常用-MCP-Server-举例" class="headerlink" title="常用 MCP Server 举例"></a>常用 MCP Server 举例</h4><table>
+<thead>
+<tr>
+<th>MCP Server</th>
+<th>能力</th>
+<th>场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Brave Search</strong></td>
+<td>搜索网页</td>
+<td>查最新文档、找解决方案</td>
+</tr>
+<tr>
+<td><strong>Postgres</strong></td>
+<td>操作 PostgreSQL</td>
+<td>直接查询&#x2F;修改数据库</td>
+</tr>
+<tr>
+<td><strong>Playwright</strong></td>
+<td>控制浏览器</td>
+<td>自动化测试、截图对比</td>
+</tr>
+<tr>
+<td><strong>Filesystem</strong></td>
+<td>访问指定目录外的文件</td>
+<td>操作项目外的配置文件</td>
+</tr>
+</tbody></table>
+<h4 id="如何添加"><a href="#如何添加" class="headerlink" title="如何添加"></a>如何添加</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 最方便的方式</span></span><br><span class="line">claude mcp add &lt;server-name&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 管理入口</span></span><br><span class="line">/mcp</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="4-7-技巧七：Skills-和-Hooks——自动化工作流"><a href="#4-7-技巧七：Skills-和-Hooks——自动化工作流" class="headerlink" title="4.7 技巧七：Skills 和 Hooks——自动化工作流"></a>4.7 技巧七：Skills 和 Hooks——自动化工作流</h3><p>这是让 Claude Code 从「工具」变成「平台」的两个机制。</p>
+<h4 id="Skills（技能包）"><a href="#Skills（技能包）" class="headerlink" title="Skills（技能包）"></a>Skills（技能包）</h4><p><strong>是什么</strong>：可安装的功能模块，让 Claude 在特定领域表现更好。</p>
+<p><strong>示例</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/plugin install frontend-design@claude-plugins-official</span><br></pre></td></tr></table></figure>
+
+<p><strong>拆解这条命令</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/plugin install frontend-design @ claude-plugins-official</span><br><span class="line">           └─ skill 名称 ─┘   └─ 官方插件市场 ─┘</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>frontend-design</code>：Skill 的名字，装完后 Claude 做前端设计时水平明显提升</li>
+<li><code>claude-plugins-official</code>：官方插件市场，Claude Code 内置，<strong>不需要额外 add</strong></li>
+</ul>
+<blockquote>
+<p>💡 <strong>类比你懂的</strong>：Skills 就像 VS Code 的插件，需要什么装什么。</p>
+</blockquote>
+<h4 id="Hooks（钩子）"><a href="#Hooks（钩子）" class="headerlink" title="Hooks（钩子）"></a>Hooks（钩子）</h4><p><strong>是什么</strong>：在特定操作「之前」或「之后」自动触发你的自定义脚本。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">flowchart LR</span><br><span class="line">    A[Claude 执行操作] --&gt; B&#123;Hook 触发点&#125;</span><br><span class="line">    B --&gt;|&quot;Before Hook&quot;| C[执行你的脚本]</span><br><span class="line">    C --&gt; D[执行操作本身]</span><br><span class="line">    D --&gt; E&#123;After Hook&#125;</span><br><span class="line">    E --&gt; F[再次执行你的脚本]</span><br><span class="line">    F --&gt; G[操作完成]</span><br></pre></td></tr></table></figure>
+
+<p><strong>典型场景</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>Hook 时机</th>
+<th>做什么</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>修改代码后</strong></td>
+<td>自动跑测试、lint</td>
+</tr>
+<tr>
+<td><strong>执行命令前</strong></td>
+<td>记录日志、备份文件</td>
+</tr>
+<tr>
+<td><strong>对话开始前</strong></td>
+<td>加载项目上下文</td>
+</tr>
+</tbody></table>
+<h4 id="如何配置"><a href="#如何配置" class="headerlink" title="如何配置"></a>如何配置</h4><p>配置文件： <code>项目根/.claude/settings.json</code>（项目级）或 <code>~/.claude/settings.json</code>（全局）。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;hooks&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;PostToolUse&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">      <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;matcher&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Edit|Write&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;hooks&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">          <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;command&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;command&quot;</span><span class="punctuation">:</span> <span class="string">&quot;npm run lint&quot;</span></span><br><span class="line">          <span class="punctuation">&#125;</span></span><br><span class="line">        <span class="punctuation">]</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>⚠️ <strong>重要细节</strong>：Hook 脚本不是通过环境变量拿文件路径的，而是通过 <strong>stdin 标准输入</strong> 接收一段 JSON，里面包含了这次操作的全部信息。你可以通过 <code>$CLAUDE_PROJECT_DIR</code> 拿到项目根目录，但具体改了哪个文件，需要从 stdin 的 JSON 里解析。</p>
+</blockquote>
+<hr>
+<h3 id="4-8-技巧八：子代理（Sub-Agent）"><a href="#4-8-技巧八：子代理（Sub-Agent）" class="headerlink" title="4.8 技巧八：子代理（Sub-Agent）"></a>4.8 技巧八：子代理（Sub-Agent）</h3><p><strong>是什么</strong>：Claude 的「分身」——创建独立的 Agent 实例，有自己独立的上下文空间。</p>
+<h4 id="为什么要用子代理"><a href="#为什么要用子代理" class="headerlink" title="为什么要用子代理"></a>为什么要用子代理</h4><table>
+<thead>
+<tr>
+<th>原因</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>审查更客观</strong></td>
+<td>相当于找另一个人看你的代码，不受主对话偏见影响</td>
+</tr>
+<tr>
+<td><strong>保护上下文</strong></td>
+<td>脏活累活交给分身干，主对话保持清爽</td>
+</tr>
+<tr>
+<td><strong>并行处理</strong></td>
+<td>多个子代理可以同时做不同的事</td>
+</tr>
+</tbody></table>
+<h4 id="典型用法"><a href="#典型用法" class="headerlink" title="典型用法"></a>典型用法</h4><table>
+<thead>
+<tr>
+<th>场景</th>
+<th>怎么做</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>代码审查</strong></td>
+<td>让子代理用独立视角审查代码质量</td>
+</tr>
+<tr>
+<td><strong>写测试</strong></td>
+<td>让子代理补齐单元测试，不受主对话干扰</td>
+</tr>
+<tr>
+<td><strong>查文档</strong></td>
+<td>让子代理去读某个库的文档，总结要点后汇报</td>
+</tr>
+<tr>
+<td><strong>批量修改</strong></td>
+<td>让子代理独立处理一组文件的修改</td>
+</tr>
+</tbody></table>
+<h4 id="相关命令"><a href="#相关命令" class="headerlink" title="相关命令"></a>相关命令</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">/agents         <span class="comment"># 查看子代理列表</span></span><br><span class="line">/agents -d      <span class="comment"># 查看详细信息</span></span><br><span class="line">/agents -c      <span class="comment"># 清理所有子代理的上下文</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>🎯 <strong>一句话总结</strong>：子代理是 Claude 的「分身」，有独立的上下文空间，适合做代码审查、写测试等需要「独立视角」的任务。</p>
+</blockquote>
+<hr>
+<h3 id="4-9-技巧九：高频命令速查"><a href="#4-9-技巧九：高频命令速查" class="headerlink" title="4.9 技巧九：高频命令速查"></a>4.9 技巧九：高频命令速查</h3><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>/agents</code></td>
+<td>列出所有子代理</td>
+</tr>
+<tr>
+<td><code>/agents -d</code></td>
+<td>列出子代理的详细信息</td>
+</tr>
+<tr>
+<td><code>/agents -c</code></td>
+<td>清理所有子代理的上下文</td>
+</tr>
+<tr>
+<td><code>/context</code></td>
+<td>查看当前用了多少上下文</td>
+</tr>
+<tr>
+<td><code>/compact</code></td>
+<td>压缩对话，释放上下文空间</td>
+</tr>
+<tr>
+<td><code>/clear</code></td>
+<td>清空对话</td>
+</tr>
+<tr>
+<td><code>/init</code></td>
+<td>初始化 CLAUDE.md</td>
+</tr>
+<tr>
+<td><code>/mcp</code></td>
+<td>进入 MCP 管理</td>
+</tr>
+<tr>
+<td><code>/memory</code></td>
+<td>管理跨项目记忆</td>
+</tr>
+<tr>
+<td><code>/rewind</code></td>
+<td>回退到对话历史节点</td>
+</tr>
+<tr>
+<td><code>/tasks</code></td>
+<td>查看后台任务</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h2><p>第一阶段的收获可以浓缩成下面这张图：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">mindmap</span><br><span class="line">  root((MewCode 第一阶段))</span><br><span class="line">    Agent 本质</span><br><span class="line">      LLM 大脑</span><br><span class="line">      循环 思考-行动-观察</span><br><span class="line">      反馈 修正方向</span><br><span class="line">      工具 读写文件/执行命令</span><br><span class="line">    五层架构</span><br><span class="line">      交互层 用户对话</span><br><span class="line">      引擎层 调度推理</span><br><span class="line">      工具层 文件/命令/搜索/MCP</span><br><span class="line">      记忆层 CLAUDE.md / 跨项目记忆</span><br><span class="line">      安全层 权限/沙箱/审计</span><br><span class="line">    Claude Code 技巧</span><br><span class="line">      文件引用 @</span><br><span class="line">      四种模式 Plan/Normal/AcceptEdits/Auto</span><br><span class="line">      后悔药 Esc+Esc / /rewind + Git</span><br><span class="line">      后台任务 /tasks</span><br><span class="line">      记忆系统 CLAUDE.md 三级体系</span><br><span class="line">      MCP 外挂 扩展能力</span><br><span class="line">      Skills + Hooks 自动化</span><br><span class="line">      子代理 分身/独立上下文</span><br><span class="line">      高频命令 速查表</span><br></pre></td></tr></table></figure>
+
+<p><strong>下一步</strong>：进入第二阶段——把这些概念落地到 MewCode 的代码实现中。</p>
+<hr>
+<blockquote>
+<p>📝 <em>本文是 2026-06-25 全天学习总结，从概念到实战，梳理了 Coding Agent 的核心知识体系。</em></p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/MewCode/" rel="tag"># MewCode</a>
+              <a href="/tags/Claude-Code/" rel="tag"># Claude Code</a>
+              <a href="/tags/Coding-Agent/" rel="tag"># Coding Agent</a>
+              <a href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="tag"># 学习笔记</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/06/22/Oncall-Agent-2-0/" rel="prev" title="Oncall Agent-2.0">
+                  <i class="fa fa-angle-left"></i> Oncall Agent-2.0
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2024 – 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">查志渊</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>
