@@ -1,0 +1,142 @@
+/* ===================================================
+ * custom.css — 科技极客风格全局样式
+ * =================================================== */
+
+/* ----- 暗色模式默认配色增强 ----- */
+:root {
+  --neon-cyan: #1cd0fd;
+  --neon-blue: #3b82f6;
+  --neon-purple: #8b5cf6;
+  --neon-green: #22d3bb;
+  --glow-cyan: 0 0 20px rgba(28, 208, 253, 0.3);
+  --glow-blue: 0 0 15px rgba(59, 130, 246, 0.25);
+}
+
+/* ----- 站点整体毛玻璃背景增强 ----- */
+body {
+  background-attachment: fixed;
+}
+
+/* ----- 侧边栏增强: 更强的毛玻璃 + 微光边框 ----- */
+#l_left {
+  backdrop-filter: blur(var(--blur-px, 100px)) saturate(var(--blur-sat, 300%));
+  -webkit-backdrop-filter: blur(var(--blur-px, 100px)) saturate(var(--blur-sat, 300%));
+}
+
+#l_left .widget {
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#l_left .widget:hover {
+  border-color: rgba(28, 208, 253, 0.15);
+  box-shadow: var(--glow-cyan);
+}
+
+/* ----- 导航菜单栏增强 ----- */
+.menubar .menubar-item {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.menubar .menubar-item:hover {
+  transform: translateY(-2px);
+}
+
+.menubar .menubar-item.active {
+  box-shadow: 0 4px 12px rgba(28, 208, 253, 0.2);
+}
+
+/* ----- 修复：导航标签（近期发布/分类/标签/归档）文字对比度 ----- */
+.nav-tabs .tab,
+.tabs .tab,
+.blog-tabs a {
+  opacity: 0.65;
+  transition: opacity 0.2s ease, color 0.2s ease;
+}
+
+.nav-tabs .tab:hover,
+.tabs .tab:hover,
+.blog-tabs a:hover {
+  opacity: 0.85;
+}
+
+.nav-tabs .tab.active,
+.tabs .tab.active,
+.blog-tabs a.active {
+  opacity: 1;
+}
+
+/* ----- 欢迎 Widget 增强 ----- */
+.widget.welcome {
+  border-left: 3px solid var(--neon-cyan);
+  transition: border-color 0.3s ease;
+}
+
+/* ----- 卡片悬停微动效（仅文章列表卡片，不影响内部按钮） ----- */
+.post-list .post-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.post-list .post-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* ----- 超链接荧光笔效果 ----- */
+.md-text a:not([class]) {
+  background: linear-gradient(180deg, transparent 60%, rgba(28, 208, 253, 0.2) 60%);
+  transition: background 0.2s ease;
+  text-decoration: none;
+}
+
+.md-text a:not([class]):hover {
+  background: linear-gradient(180deg, transparent 40%, rgba(28, 208, 253, 0.35) 40%);
+}
+
+/* ----- 选中文本颜色 ----- */
+::selection {
+  background: rgba(28, 208, 253, 0.3);
+  color: #fff;
+}
+
+/* ----- 滚动条美化 ----- */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(28, 208, 253, 0.3);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(28, 208, 253, 0.5);
+}
+
+/* ----- 标题装饰线 ----- */
+.md-text h2 {
+  border-left: 4px solid var(--neon-cyan);
+  padding-left: 14px;
+  border-radius: 0 4px 4px 0;
+}
+
+.md-text h3 {
+  border-left: 3px solid var(--neon-purple);
+  padding-left: 12px;
+  border-radius: 0 4px 4px 0;
+}
+
+/* ----- 移动端优化 ----- */
+@media (max-width: 768px) {
+  .post-card:hover {
+    transform: none;
+  }
+  #l_left .widget:hover {
+    box-shadow: none;
+  }
+}

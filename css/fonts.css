@@ -1,0 +1,30 @@
+/* ===================================================
+ * fonts.css — 自定义字体配置
+ * 使用系统字体栈 + 等宽代码字体，保证加载速度
+ * 如需引入中文字体，取消注释下方 @import
+ * =================================================== */
+
+/* ----- 可选：Google Fonts 引入（按需取消注释）----- */
+/* @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap'); */
+/* @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap'); */
+
+/* ----- LXGW WenKai 中文字体 CDN（按需取消注释）----- */
+/* @import url('https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/style.css'); */
+/* @import url('https://cdn.jsdelivr.net/npm/lxgw-wenkai-screen-webfont@1.7.0/style.css'); */
+
+/* ----- 代码块使用 JetBrains Mono ----- */
+/*
+figure.highlight,
+figure.highlight pre,
+figure.highlight code {
+  font-family: 'JetBrains Mono', 'Cascadia Code', 'Fira Code', Menlo, Monaco, Consolas, monospace !important;
+}
+*/
+
+/* ----- 正文使用思源/霞鹜字体 ----- */
+/*
+body,
+.md-text {
+  font-family: 'LXGW WenKai', 'Noto Serif SC', 'Source Han Serif SC', serif;
+}
+*/

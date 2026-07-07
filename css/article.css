@@ -1,0 +1,137 @@
+/* ===================================================
+ * article.css — 文章页阅读体验美化
+ * =================================================== */
+
+/* ----- 文章横幅/封面美化 ----- */
+.md-text .post-cover,
+.md-text .post-banner {
+  border-radius: var(--card-l, 24px);
+  overflow: hidden;
+}
+
+/* ----- 文章元信息区域 ----- */
+.post-meta {
+  font-size: 0.9em;
+  opacity: 0.75;
+  transition: opacity 0.2s ease;
+}
+
+.post-meta:hover {
+  opacity: 1;
+}
+
+/* ----- 文章标签美化 ----- */
+.post-tags .tag {
+  background: rgba(28, 208, 253, 0.08);
+  color: var(--neon-cyan, #1cd0fd);
+  border: 1px solid rgba(28, 208, 253, 0.15);
+  border-radius: 20px;
+  padding: 2px 12px;
+  font-size: 0.85em;
+  transition: all 0.2s ease;
+}
+
+.post-tags .tag:hover {
+  background: rgba(28, 208, 253, 0.18);
+  border-color: rgba(28, 208, 253, 0.3);
+  transform: translateY(-1px);
+}
+
+/* ----- 目录（TOC）美化 ----- */
+.toc {
+  border-left: 2px solid rgba(255, 255, 255, 0.08);
+  padding-left: 12px;
+}
+
+.toc .toc-item {
+  transition: all 0.2s ease;
+  border-radius: 4px;
+}
+
+.toc .toc-item.active {
+  background: rgba(28, 208, 253, 0.1);
+  border-left: 2px solid var(--neon-cyan);
+  margin-left: -14px;
+  padding-left: 12px;
+}
+
+/* ----- 引用块（blockquote）美化 ----- */
+.md-text blockquote {
+  border-left: 4px solid var(--neon-cyan);
+  background: rgba(28, 208, 253, 0.05);
+  border-radius: 0 8px 8px 0;
+  padding: 12px 20px;
+  margin: 1em 0;
+  transition: border-color 0.2s ease;
+}
+
+.md-text blockquote:hover {
+  border-color: var(--neon-purple);
+}
+
+/* ----- 表格美化 ----- */
+.md-text table {
+  border-radius: var(--card-s, 12px);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.md-text th {
+  background: rgba(28, 208, 253, 0.1);
+  color: var(--neon-cyan);
+  font-weight: 600;
+  padding: 10px 16px;
+  border-bottom: 2px solid rgba(28, 208, 253, 0.2);
+}
+
+.md-text td {
+  padding: 8px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+/* ----- 搜索框美化 ----- */
+.search-form input {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 8px 20px;
+  color: inherit;
+  transition: all 0.3s ease;
+}
+
+.search-form input:focus {
+  border-color: var(--neon-cyan);
+  box-shadow: var(--glow-cyan);
+  outline: none;
+}
+
+/* ----- 分页器美化 ----- */
+.paginator .page-number,
+.paginator .extend {
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.paginator .page-number.current {
+  background: rgba(28, 208, 253, 0.15);
+  color: var(--neon-cyan);
+  border: 1px solid rgba(28, 208, 253, 0.3);
+}
+
+/* ----- 分类/标签页面美化 ----- */
+.category-list-item,
+.tag-list-item {
+  transition: transform 0.2s ease;
+}
+
+.category-list-item:hover,
+.tag-list-item:hover {
+  transform: translateX(4px);
+}
+
+/* ----- 移动端 ----- */
+@media (max-width: 768px) {
+  .md-text blockquote {
+    padding: 8px 14px;
+  }
+}
